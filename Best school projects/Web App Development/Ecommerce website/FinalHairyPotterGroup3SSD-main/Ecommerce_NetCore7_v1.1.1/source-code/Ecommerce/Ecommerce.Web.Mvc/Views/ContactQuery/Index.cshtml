@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Contact Query";
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Contact Query</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblSize" class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="all text-nowrap">Full Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- details-modal start -->
+<div class="modal fade" id="contact-query-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Query Details</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- details-modal end -->
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+
+            suTable = $('#tblSize').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5 //number of pages to cache
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    //{ "targets": [5], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "fullName", "name": "FullName" },
+                    { "data": "email", "name": "Email" },
+                    { "data": "subject", "name": "Subject" },
+                    { "data": "messageBody", "name": "MessageBody" },
+
+                    //{
+                    //    'data': null,
+                    //    'render': function (data, type, row) {
+                    //        var myHtml = '<button class="btn btn-soft-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#contact-query-modal"><i class="fa fa-search"></i></button>';
+                    //        return myHtml;
+                    //    }
+                    //}
+                ]
+            });
+        });
+
+
+    </script>
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Tray" ALTER COLUMN "inOutTime" DROP NOT NULL,
+ALTER COLUMN "status" SET DEFAULT 'OUT';

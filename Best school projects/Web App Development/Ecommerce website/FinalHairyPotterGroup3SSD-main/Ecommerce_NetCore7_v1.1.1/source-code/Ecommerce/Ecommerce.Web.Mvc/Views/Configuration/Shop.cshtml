@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Shop Configuration";
+}
+
+@section Styles{
+<style>
+    .table td, .table th {
+        vertical-align: top;
+    }
+</style>
+}
+
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Shop Configuration</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage shop configuration</div>
+    </div>
+    <div class="card-body">
+        <partial name="_ConfigurationTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-shop">
+                <div class="mt-4">
+                    <div class="">
+                        <div class="general-label">
+                            <form>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Header Slide</th>
+                                        <td>
+                                            <p>Set homepage top <strong>Header Slide</strong> Image. for best result keep the image size to <span class="text-danger">(1920×630)</span> ratio.</p>
+                                            <span class="d-block"><a class="fw-bold" asp-action="HeaderSlider" asp-controller="Configuration">Set Header Slide</a></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Top Categories</th>
+                                        <td><a class="fw-bold" asp-action="TopCategories" asp-controller="Configuration">Set Top Categories</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Feature Items</th>
+                                        <td><a class="fw-bold" asp-action="FeatureItems" asp-controller="Configuration">Set Feature Items</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Banner</th>
+                                        <td><a class="fw-bold" asp-action="Banner" asp-controller="Configuration">Set Banner</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Deal Of The Day</th>
+                                        <td><a class="fw-bold" asp-action="DealOfTheDay" asp-controller="Configuration">Set Deal Of The Day</a></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts{
+<script src="~/others/js/app-configuration.js"></script>
+}

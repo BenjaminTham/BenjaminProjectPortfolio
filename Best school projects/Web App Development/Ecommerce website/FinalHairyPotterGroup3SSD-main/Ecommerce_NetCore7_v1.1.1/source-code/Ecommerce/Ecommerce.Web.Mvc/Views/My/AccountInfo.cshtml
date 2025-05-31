@@ -1,0 +1,186 @@
+﻿@model CustomerDto;
+@{
+    ViewData["Title"] = "Account Info";
+    Layout = LayoutPage.ShopLayout;
+}
+
+<div class="top-header bg-soft-ocean">
+    <div class="container">
+        <div class="page-title">
+            <span>Account</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="p-4 content-section customer-profile">
+        <div class="column">
+            <div class="col-md-4">
+                <partial name="_CustomerAccountTab" />
+            </div>
+
+            <div class="col-md-8">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade bg-white show active p-2">
+                        <h5 class="mb-3 text-uppercase fw-bold">Address</h5>
+                        <div>
+                            <div class="border my-2">
+                                <div class="p-2">
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <span class="d-block fw-700 text-sm-3">First Name</span>
+                                                <span class="d-block">
+                                                    @if (@Model?.UserFirstName != null)
+                                                    {
+                                                        <span>@Model?.UserFirstName</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-carrot text-lowercase">No First Name Found!</small>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <span class="d-block fw-700 text-sm-3">Last Name</span>
+                                                <span class="d-block">
+                                                    @if (@Model?.UserLastName != null)
+                                                    {
+                                                        <span>@Model?.UserLastName</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <small class="text-carrot text-lowercase">No Last Name Found!</small>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="d-block fw-700 text-sm-3">Email</span>
+                                        <span class="d-block">
+                                            @if (@Model?.UserEmail != null)
+                                            {
+                                                <span>@Model?.UserEmail</span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-carrot text-lowercase">No Email Found!</small>
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="d-block fw-700 text-sm-3">Phone Number</span>
+                                        <span class="d-block">
+                                            @if (@Model?.UserPhoneNumber != null)
+                                            {
+                                                <span>@Model?.UserPhoneNumber</span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-carrot text-lowercase">No Phones Found!</small>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="border-top p-2">
+                                    <small class="d-block"><a class="text-sky text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#accountInfoModal">Update Account Info <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="accountInfoModal" tabindex="-1" aria-labelledby="accountInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="accountInfoModalLabel">Update Account Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="My" asp-action="AccountInfo" method="post">
+                    <!-- First Name with pattern for only letters and space -->
+                    <div class="mb-3">
+                        <label asp-for="UserFirstName">First Name</label>
+                        <input class="form-control" asp-for="UserFirstName" pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="First name must contain only letters and single spaces between words." />
+                        <span asp-validation-for="UserFirstName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Last Name with pattern for only letters and space -->
+                    <div class="mb-3">
+                        <label asp-for="UserLastName">Last Name</label>
+                        <input class="form-control" asp-for="UserLastName" pattern="^[A-Za-z]+(?: [A-Za-z]+)*$" title="Last name must contain only letters and single spaces between words." />
+                        <span asp-validation-for="UserLastName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email with type="email" to validate email format -->
+                    <div class="mb-3">
+                        <label asp-for="UserEmail">Email</label>
+                        <input type="email" class="form-control" asp-for="UserEmail" />
+                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    </div>
+
+                    <!-- Phone Number with type="tel" and pattern to include international formats -->
+                    <div class="mb-3">
+                        <label asp-for="UserPhoneNumber">Phone Number</label>
+                        <input type="number" class="form-control" asp-for="UserPhoneNumber" />
+                        <span asp-validation-for="UserPhoneNumber" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="text-end d-grid gap-2 d-md-block my-4">
+                        <button type="submit" class="btn btn-grass-2 px-5">Update</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["AccountInfoError"] != null)
+{
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Address Update Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-danger">
+                    <strong><span>@TempData["AccountInfoError"]</span></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/others/js/customer-account.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            if ('@TempData["AccountInfoError"]' != '') {
+                $('#errorModal').modal('show');
+            }
+        });
+
+    </script>
+
+
+}

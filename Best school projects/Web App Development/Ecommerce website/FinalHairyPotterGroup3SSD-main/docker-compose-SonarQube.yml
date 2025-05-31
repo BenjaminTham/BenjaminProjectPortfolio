@@ -1,0 +1,13 @@
+services:
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    restart: always
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      dev_net:
+        ipv4_address: 172.50.51.10
+networks:
+  dev_net:
+    external: true

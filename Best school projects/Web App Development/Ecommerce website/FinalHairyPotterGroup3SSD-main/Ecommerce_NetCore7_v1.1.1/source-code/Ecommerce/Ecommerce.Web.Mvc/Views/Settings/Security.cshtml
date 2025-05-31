@@ -1,0 +1,115 @@
+﻿@model SecurityConfigurationDto
+@{
+    SecurityConfigurationDto conSec = K["SecurityConfiguration"] != null? JsonSerializer.Deserialize<SecurityConfigurationDto>(K["SecurityConfiguration"]) : new SecurityConfigurationDto();
+    ViewData["Title"] = "Security Settings";
+}
+
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Security Settings</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage security settings</div>
+    </div>
+    <div class="card-body">
+        <partial name="_SettingsTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-general">
+                <div class="mt-4">
+                    <div class="alert alert-danger" role="alert">
+                        Modifying this section may cause application restart. So careful about that!
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="general-label">
+                            <form asp-action="Security" method="post">
+                                <div class="mb-4">
+                                    <h5>Password complexity</h5>
+                                    <div class="mb-1 row">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsPasswordRequireDigit">
+                                                <input type="checkbox" asp-for="IsPasswordRequireDigit">
+                                                Require digit (ex. 0,1,2)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-1 row">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsPasswordRequireLowercase">
+                                                <input type="checkbox" asp-for="IsPasswordRequireLowercase">
+                                                Require lowercase (ex. a,b,c)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-1 row">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsPasswordRequireUppercase">
+                                                <input type="checkbox" asp-for="IsPasswordRequireUppercase">
+                                                Require uppercase (ex. A,B,C)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-1 row">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsPasswordRequireNonAlphanumeric">
+                                                <input type="checkbox" asp-for="IsPasswordRequireNonAlphanumeric">
+                                                Require non-alphanumeric (ex. &!^)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label asp-for="PasswordRequiredLength" class="control-label">Minimum Password Required Length</label>
+                                        <input type="number" asp-for="PasswordRequiredLength" class="form-control" style="max-width: 100px;"/>
+                                        <span asp-validation-for="PasswordRequiredLength" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>User lock-out</h5>
+                                    <div class="mb-2 row">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsUserLockoutEnabled">
+                                                <input type="checkbox" asp-for="IsUserLockoutEnabled">
+                                                Enable user account locking on failed login attempts
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label asp-for="MaxFailedAccessAttempts" class="control-label">Maximum number of failed login attempt count before locking the account</label>
+                                        <input type="number" asp-for="MaxFailedAccessAttempts" class="form-control" style="max-width: 100px;"/>
+                                        <span asp-validation-for="MaxFailedAccessAttempts" class="text-danger"></span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label asp-for="UserLockoutTime" class="control-label">Account locking duration (in minute)</label>
+                                        <input type="number" asp-for="UserLockoutTime" class="form-control" style="max-width: 100px;"/>
+                                        <span asp-validation-for="UserLockoutTime" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mt-3">
+                                    <div class="d-grid gap-2 d-sm-block">
+                                        <button type="submit" class="btn btn-blue py-2 px-5">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+<script src="~/others/js/app-settings.js"></script>
+
+}

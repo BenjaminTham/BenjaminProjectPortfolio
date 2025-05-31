@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Track Order";
+    Layout = LayoutPage.ShopLayout;
+    var customerReviews = ViewBag.OrderStatus as List<OrderStatusDto>;
+    var invoiceNo = ViewBag.InvoiceNo as string;
+    var currentOrderStatus = ViewBag.CurrentOrderStatus as string;
+
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span>Order Tracking</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="p-4 content-section">
+        <div class="column">
+            <div class="col-md-6">
+                <div class="right-side-content mb-4 px-3">
+                    <img src="/assets/images/location-tracking-green.svg" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="h-100 d-flex align-items-center">
+                    <div>
+                        <div>
+                            <span class="d-block"><span class="fw-bold">Order No: </span><span class="fw-700 text-carrot">@invoiceNo</span></span>
+                            <span class="d-block"><span class="fw-bold">Order Status: </span> <span class="badge bg-soft-banana fw-400 text-sm-2">@currentOrderStatus</span></span>
+                        </div>
+
+                        <div class="mt-3">
+                            @if (customerReviews?.Count() > 0)
+                            {
+                                @foreach (var item in customerReviews)
+                                {
+                                    <div class="order-track-step">
+                                        <div class="order-track-status">
+                                            <span class="order-track-status-dot order-track-status-dot-green"></span>
+                                            <span class="order-track-status-line order-track-status-line-green"></span>
+                                        </div>
+                                        <div class="order-track-text lh-sm">
+                                            <span class="order-track-status d-block">@item?.OrderStatusValue?.StatusValue</span>
+                                            <small class="order-track-date d-block text-sm-4">@DateTime.Parse(item?.LastModifiedDate?.ToString()).ToString("dd MMM yyyy")</small>
+                                            <small class="order-track-desc text-sm-3">@(item?.Description ?? item?.OrderStatusValue?.Description)</small>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

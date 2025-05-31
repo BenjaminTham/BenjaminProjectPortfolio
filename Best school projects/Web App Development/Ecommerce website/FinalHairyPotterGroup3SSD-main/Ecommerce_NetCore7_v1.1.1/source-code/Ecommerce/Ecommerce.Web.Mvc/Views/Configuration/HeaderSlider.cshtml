@@ -1,0 +1,230 @@
+﻿@model IEnumerable<HeaderSliderDto>
+@{
+    ViewData["Title"] = "Header Slider Configuration";
+}
+
+@section Styles{
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        .sortable .single-item {
+            transition: transform .4s;
+        }
+
+            .sortable .single-item:hover {
+                cursor: grab;
+                transform: scale(1.02);
+                z-index: 1;
+            }
+
+        img[su-media-preview] {
+            height: 250px;
+            max-height: 250px !important;
+            width: 100%;
+            object-fit: cover;
+            box-shadow: 0 0 3px #ccc;
+        }
+    </style>
+}
+
+    <div class="page-title-box">
+        <h4 class="page-title">Header Slider</h4>
+    </div>
+
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title">Manage Header Slider</div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <form asp-action="HeaderSlider" method="post" id="topHeaderSlider">
+                        <div class="sortable topHeaderSliderItems" style="margin-bottom: 50px; max-width: 800px">
+
+                        @foreach (var item in Model)
+                        {
+                            <div class="card mb-3 ui-sortable-handle single-item shadow-sm">
+                                <div class="card-body">
+                                    <div class="">
+                                        <div>
+                                            <div class="mb-3">
+                                                <div>
+                                                    <label>Image <small class="text-danger">(1920×630)</small></label>
+                                                </div>
+                                                <div su-media-section>
+                                                    <img class="img-fluid mb-1" su-media-preview src="@(item.ImagePreview != null? "/" + item.ImagePreview : "/media/images/no-image.png")" alt="Product picture">
+                                                    <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                        <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                        <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                                    </div>
+                                                    <input su-media-selected-input type="text" name="Image" value="@item.Image" hidden>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="HeaderTextLineOne">Header One</label>
+                                            <input type="text" class="form-control" value="@item.HeaderTextLineOne" name="HeaderTextLineOne">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="HeaderTextLineTwo">Header Two</label>
+                                            <input type="text" class="form-control" value="@item.HeaderTextLineTwo" name="HeaderTextLineTwo">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="SubText">Sub Text</label>
+                                            <input type="text" class="form-control" value="@item.SubText" name="SubText">
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="IsActive" @(item.IsActive == true ? "checked" : "")>
+                                                <label class="custom-control-label" for="IsActive"> Active</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer d-flex justify-content-between">
+
+                                            <div>
+                                                <i class="fas fa-arrows-alt"></i>
+                                            </div>
+                                            <button class="btn btn-soft-danger btn-sm item-remove" type="button"><i class="fa fa-trash-alt"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <div>
+                        <div class="d-grid gap-2 d-sm-block">
+                            <button type="button" class="btn btn-grass-2-outline" id="addNewSlider"><i class="fa fa-plus"></i> Add new Slider</button>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <input type="button" id="saveHeaderSlider" value="Update" class="btn btn-blue mt-2 py-2 px-5" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image select modal -->
+<vc:image></vc:image>
+
+
+<div class="slider-single-item" style="display: none">
+    <div class="card mb-3 ui-sortable-handle single-item">
+        <div class="card-body">
+            <div class="">
+                <div>
+                    <div class="mb-3">
+                        <div>
+                            <label>Image <small class="text-danger">(1920×630)</small></label>
+                        </div>
+                        <div su-media-section>
+                            <img class="img-fluid mb-1" su-media-preview src="/media/images/no-image.png" alt="picture">
+                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                            </div>
+                            <input su-media-selected-input type="text" name="Image" hidden>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="HeaderTextLineOne">Header One</label>
+                    <input type="text" class="form-control" name="HeaderTextLineOne">
+                </div>
+                <div class="mb-3">
+                    <label for="HeaderTextLineTwo">Header One</label>
+                    <input type="text" class="form-control" name="HeaderTextLineTwo">
+                </div>
+                <div class="mb-3">
+                    <label for="SubText">Header One</label>
+                    <input type="text" class="form-control" name="SubText">
+                </div>
+                <div class="mb-3">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="IsActive">
+                        <label class="custom-control-label" for="IsActive"> Active</label>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div>
+                        <i class="fas fa-arrows-alt"></i>
+                    </div>
+                    <button class="btn btn-soft-danger btn-sm item-remove" type="button"><i class="fa fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/media/js/media-select.js"></script>
+    <script>
+        $(document).on("click", "#addNewSlider", function () {
+            var singleItem = $('.slider-single-item').html();
+            $("#topHeaderSlider .topHeaderSliderItems").append(singleItem);
+        });
+
+        //Collect data
+        $("#saveHeaderSlider").click(function (e) {
+            e.preventDefault();
+
+            var headerSliders = [];
+            headerSliders.length = 0;
+
+            var order = 0;
+            $.each($("#topHeaderSlider .single-item"), function () {
+                order++;
+                headerSliders.push({
+                    Image: $(this).find('input[name=Image]').val(),
+                    HeaderTextLineOne: $(this).find('input[name=HeaderTextLineOne]').val(),
+                    HeaderTextLineTwo: $(this).find('input[name=HeaderTextLineTwo]').val(),
+                    SubText: $(this).find('input[name=SubText]').val(),
+                    IsActive: $(this).find("input[name='IsActive']").is(":checked"),
+                    Order: order
+                });
+            });
+
+
+            var data = JSON.stringify(headerSliders);
+
+            $.when(saveSlider(data)).then(function (response) {
+                //if success
+                notifier.open({ type: "success", message: "Slider Updated" });
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+        function saveSlider(data) {
+            console.log(data);
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Configuration/UpdateHeaderSlider",
+                type: 'POST',
+                data: { headerSliders: obj },
+                success: function (result) {
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+
+
+
+        $(function () {
+            $(".sortable").sortable();
+        });
+
+        $(document).on("click", ".item-remove", function () {
+            $(this).closest('.single-item').remove();
+        });
+
+
+    </script>
+}

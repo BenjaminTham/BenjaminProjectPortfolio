@@ -1,0 +1,112 @@
+﻿<!-- Image Modal -->
+<div class="modal fade" id="suMediaModal" aria-labelledby="suMediaModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 750px">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0">
+                <h5 class="modal-title" id="suMediaModalLabel">Add Media</h5>
+                <a href="javascript:void(0)" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xl fa-xmark text-blood"></i>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-link active" id="nav-gallery-tab" data-bs-toggle="tab" href="#nav-gallery" role="tab" aria-controls="nav-gallery" aria-selected="true">Gallery</a>
+                                <a class="nav-link" id="nav-upload-tab" data-bs-toggle="tab" href="#nav-upload" role="tab" aria-controls="nav-upload" aria-selected="false">Upload</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            @*Media library tab*@
+                            <div class="tab-pane fade show active" id="nav-gallery" role="tabpanel" aria-labelledby="nav-gallery-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-4 mb-md-2 media-container" style="width: 100%; min-height: 40vh; max-height: 50vh; overflow-y: auto; scroll-behavior: smooth; border: 2px solid #cccccc42; border-top: none;">
+                                            @*Media gallary*@
+                                            <div class="media-image"></div>
+                                            <div class="text-center mt-4 mb-5">
+                                                <div id="nomoredata" class="mb-1 text-danger" style="display: none">
+                                                    <span>no more images..</span>
+                                                </div>
+                                                <button class="load-more btn btn-carrot-outline">Load More</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-md-12" style="margin-top: 10px;">
+                                                    <form id="mediaUpdateForm" action="/updatemedia" method="post">
+                                                        <input su-media-id hidden name="Id" id="Id" />
+                                                        <input su-media-name hidden name="Name" id="Name" />
+
+                                                        <div class="mb-2 row">
+                                                            <label for="Title" class="col-md-3">Title</label>
+                                                            <div class="col-md-9">
+                                                                <input su-media-title type="text" class="form-control" placeholder="Media Title" id="Title" name="Title">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-2 row">
+                                                            <label for="Tags" class="col-md-3">Tags</label>
+                                                            <div class="col-md-9">
+                                                                <input su-media-tags type="text" class="form-control" placeholder="Tags separated by comma ','" id="Tags" name="Tags">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-9 offset-md-3 text-right">
+                                                                <div class="text-end">
+                                                                    <button type="submit" class="btn btn-grass-2-outline btn-sm px-4 d-inline-flex align-items-center">
+                                                                        <span id="mediasavebtn" class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>
+                                                                        <span>Save</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </form>
+                                                    <div class="float-end mt-5" id="selectMedia">
+                                                        @*<button type="button" id="selectMediaBtn" class="btn btn-sky px-5" data-bs-dismiss="modal">Select</button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            @*Add new*@
+                            <div class="tab-pane fade" id="nav-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
+                                <div id="dropzone">
+                                    <form action="/uploadmedia" method="post" enctype="multipart/form-data" id="mediaDropzone" class="dropzone needsclick dz-clickable dropzone-previews">
+                                        @Html.AntiForgeryToken()
+                                        <div></div>
+                                        <div class="dz-message needsclick">
+                                            <div><svg aria-hidden="true" width="5rem" focusable="false" data-prefix="fas" data-icon="cloud" class="svg-inline--fa fa-cloud fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#e7615c" d="M537.6 226.6c4.1-10.7 6.4-22.4 6.4-34.6 0-53-43-96-96-96-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32c-88.4 0-160 71.6-160 160 0 2.7.1 5.4.2 8.1C40.2 219.8 0 273.2 0 336c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-61.9-44-113.6-102.4-125.4z"></path></svg></div>
+                                            <button type="button" class="dz-button">Drop files here or click to upload.</button><br />
+                                        </div>
+                                        <span class="note needsclick">
+
+                                        </span>
+                                    </form>
+                                    <div class="text-center mt-3">
+                                        <button id="btnSubmit" class="btn btn-carrot-outline px-4">Upload</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #f3f3f3">
+                <button type="button" class="btn btn-blood-outline btn-sm" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+

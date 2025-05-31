@@ -1,0 +1,71 @@
+﻿@*@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+@section Styles{
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link href="~/dropd/jquery-stack-menu.css" rel="stylesheet" />
+    <style>
+    </style>
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+<div class="container">
+    <div class="menu">
+        <nav id="stack-menu">
+            <ul>
+                <li>
+                    <a href="#">All Category</a>
+                    <ul>
+                        <li><a href="#">Submenu 1.1</a></li>
+                        <li>
+                            <a href="#">Submenu 1.2</a>
+                            <ul>
+                                <li><a href="#">Submenu 1.2.1</a></li>
+                                <li><a href="#">Submenu 1.2.2</a></li>
+                                <li><a href="#">Submenu 1.2.3</a></li>
+                                <li><a href="#">Submenu 1.2.4</a></li>
+                                <li>
+                                    <ul>
+                                        <li><a href="#">Submenu 1.3</a></li>
+                                        <li><a href="#">Submenu 1.4</a></li>
+                                        <li><a href="#">Submenu 1.5</a></li>
+                                        <li><a href="#">Submenu 1.6</a></li>
+                                    </ul>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        <li><a href="#">Vitae</a></li>
+                        <li><a href="#">Ipsum</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+    <script src="~/dropd/jquery-stack-menu.js"></script>
+    <script>
+        $(function () {
+
+            $("#stack-menu").stackMenu({
+                all: false,
+            });
+
+        });
+
+
+    </script>
+
+}
+*@
+

@@ -1,0 +1,88 @@
+﻿@{
+    var action = ViewBag.PageSectionAction;
+}
+
+@*<div class="d-flex justify-content-between mt-3">
+    <div>
+        <span>@Model.StartCount - @Model.EndCount of @Model.TotalCount entries</span>
+    </div>
+    <div>
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+        <nav class="page-section">
+            <ul class="pagination pagination-sm">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" asp-action="@action" asp-route-page="@(Model.PageIndex - 1)"><i class="fa fa-angle-left"></i></a>
+                </li>
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="@action"
+                           asp-route-page="@(Model.PageIndex - 1)"
+                           asp-route-sortColumn="@Context.Request.Query["sortColumn"]"
+                           asp-route-sortOrder="@Context.Request.Query["sortOrder"]"
+                           asp-route-searchValue="@Context.Request.Query["searchValue"]">@(Model.PageIndex - 1)</a>
+                    </li>
+                }
+
+                <li class="page-item active"><a class="page-link" href="#!">@Model.PageIndex</a></li>
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="@action"
+                           asp-route-page="@(Model.PageIndex + 1)"
+                           asp-route-sortColumn="@Context.Request.Query["sortColumn"]"
+                           asp-route-sortOrder="@Context.Request.Query["sortOrder"]"
+                           asp-route-searchValue="@Context.Request.Query["searchValue"]">@(Model.PageIndex + 1)</a>
+                    </li>
+                }
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" asp-action="@action" asp-route-page="@(Model.PageIndex + 1)"><i class="fa fa-angle-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>*@
+
+
+<div class="d-flex justify-content-between mt-3">
+    <div>
+        <span>@Model.StartCount - @Model.EndCount of @Model.TotalCount entries</span>
+    </div>
+    <div>
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+        }
+        <nav class="page-section">
+            <ul class="pagination pagination-sm">
+                <li class="page-item @prevDisabled">
+                    <a href="javascript:void(0)" class="page-link" su-page="@(Model.PageIndex - 1)"><i class="fa fa-angle-left"></i></a>
+                </li>
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a href="javascript:void(0)" class="page-link" su-page="@(Model.PageIndex - 1)">@(Model.PageIndex - 1)</a>
+                    </li>
+                }
+
+                <li class="page-item active"><a class="page-link" href="#!">@Model.PageIndex</a></li>
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a href="javascript:void(0)" class="page-link" su-page="@(Model.PageIndex + 1)">@(Model.PageIndex + 1)</a>
+                    </li>
+                }
+                <li class="page-item @nextDisabled">
+                    <a href="javascript:void(0)" class="page-link" su-page="@(Model.PageIndex + 1)"><i class="fa fa-angle-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,129 @@
+﻿@*@model PaginatedList<ProductDto>*@
+
+@{
+    ViewData["Title"] = "Product";
+}
+
+@section Styles{
+    <style>
+        .table td {
+            vertical-align: top;
+        }
+
+        .product-table tr td img {
+            height: 60px;
+            width: 60px;
+            object-fit: cover;
+            border: 2px solid #fff;
+        }
+
+        #tblProduct td:last-child {
+            vertical-align: middle;
+        }
+
+    </style>
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Product</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Product_Create).Result.Succeeded)
+        {
+            <a asp-action="Create" class="btn btn-blue"><i class="fa-solid fa-plus"></i> Create New</a>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblProduct" class="table product-table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Name</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblProduct').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5 //number of pages to cache
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [1], "className": "py-1 ps-0" },
+                    { "targets": [2], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    {
+                        "data": null,
+                        "name": "Name",
+                        "render": function (data, type, row) {
+                            var myHtml = '';
+
+                            myHtml += `
+                            <div class="d-inline-block">
+                                <img class="me-1" src="`+ (row.imagePreview != null ? "/" + row.imagePreview : "/assets/images/no-image.png") + `" alt="image_not_found">
+                                <div class="d-inline-block lh-sm">
+                                    <span class="d-block" class="btn btn-link p-0 text-start fw-bold align-top">`+ row.name + `</span>
+                                    <span class="d-block"><strong>Category: </strong><i style="color:#8BC34A;">`+ row.categoryName +`</i></span>
+                                </div>
+                            </div>`;
+
+                            return myHtml;
+                        }
+                    },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Product_Create).Result.Succeeded)
+                                {
+                                        <text>
+                                            myHtml += '<a class="btn btn-sky-outline btn-sm btn-action" href="@Url.Content("Product/Details")/' + row.id + '"><i class="fa fa-pen"></i></a>';
+                                        </text>
+                                }
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Inventory_AddStock).Result.Succeeded)
+                                {
+                                        <text>
+                            myHtml += '<a class="btn btn-green-outline btn-sm btn-action" href="@Url.Content("Stock/Update")/' + row.id + '"><i class="fa-solid fa-boxes-stacked"></i></a>';
+                                        </text>
+                                }
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Product_Delete).Result.Succeeded)
+                                {
+                                        <text>
+                                            myHtml += '<a su-delete su-data-id="' + row.id + '" su-data-action="@Url.Action("Delete")"  href="javascript:void(0)" class="btn btn-carrot-outline btn-sm btn-action"><i class="fa fa-trash-alt"></i></a>';
+                                        </text>
+                                }
+                            }
+
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+    </script>
+}

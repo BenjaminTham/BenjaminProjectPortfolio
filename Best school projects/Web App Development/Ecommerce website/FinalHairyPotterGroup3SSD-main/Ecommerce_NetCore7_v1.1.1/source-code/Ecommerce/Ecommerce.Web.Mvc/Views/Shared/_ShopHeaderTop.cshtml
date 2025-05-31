@@ -1,0 +1,129 @@
+﻿@{
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    var roles = User.GetRoles();
+}
+
+
+
+<div class="navcategories_section">
+    <div class="container">
+        <div class="row d-flex align-items-center">
+
+
+            <div class="col-6">
+                <div class="text-start logo-area" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                    <a class="text-dark text-decoration-none fw-bolder" href="/">
+                        @if (conGen?.CompanyLogo != null)
+                        {
+                            <img class="img-fluid" style="height: 80%;" src="/@conGen?.CompanyLogo" alt="logo" />
+                        }
+                        else
+                        {
+                            <span class="fw-700 my-2">@conGen?.CompanyName</span>
+                        }
+                        <div style="font-size: 1.5em; font-weight: bold; color: #333;">HairyPotter</div>
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="col-6">
+                <div class="d-flex flex-wrap justify-content-end align-items-end" >
+
+                    <div class="me-3">
+                        <a aria-controls="offcanvasRight" class="nav-link cart_btn" data-bs-target="#offcanvasRight2" data-bs-toggle="offcanvas" href="javascript:void(0)">
+                            <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+                        </a>
+                    </div>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="me-3">
+                            <a class="nav-link" asp-action="WishList" asp-controller="My">
+                                <i class="fa-regular fa-heart fa-lg"></i>
+                            </a>
+                        </div>
+                    }
+
+                    <div class="cart-area me-3">
+                        <a aria-controls="offcanvasRight" class="nav-link cart_btn" data-bs-target="#offcanvasRight" data-bs-toggle="offcanvas" href="javascript:void(0)">
+                            <i class="fa-solid fa-bag-shopping fa-lg"></i>
+                        </a>
+                        <div class="total-cart-count"><vc:cart-count></vc:cart-count></div>
+                    </div>
+                </div>
+
+
+                <nav id="navbar_main" class="navbar navbar-expand-lg navbar-light main-navigation" style="margin-top: 10px;">
+                    <div class="container">
+                        <button class="navbar-toggler" type="button">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div class="overlay d-flex d-lg-none"></div>
+                        <div class="order-lg-2 d-lg-flex w-100 sidebar pb-3 pb-lg-0">
+                            <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link py-1 px-3 px-lg-2 active" aria-current="page" href="/">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link py-1 px-3 px-lg-2" asp-controller="Shop" asp-action="Index">Shop</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link py-1 px-3 px-lg-2" asp-controller="Cart" asp-action="Index">Cart</a>
+                                </li>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <li class="nav-item d-flex">
+                                        @if (User.IsInRole(DefaultApplicationRoles.Customer))
+                                        {
+                                            <a class="nav-link py-1 px-3 px-lg-2 text-blue" asp-controller="My" asp-action="Index">
+                                                <i class="far fa-user"></i>
+                                            </a>
+                                        }
+                                        @if (roles.Count() != 0 && (!User.IsInRole(DefaultApplicationRoles.Customer) || roles.Count() > 1))
+                                        {
+                                            <a class="nav-link py-1 px-3 px-lg-2 text-carrot" asp-controller="Dashboard" asp-action="Index">
+                                                <i class="fa-solid fa-layer-group"></i>
+                                            </a>
+                                        }
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link py-1 px-3 px-lg-2" asp-controller="Account" asp-action="Logout">Logout</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link py-1 px-3 px-lg-2" asp-controller="My" asp-action="Login">Register/Login</a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div aria-labelledby="offcanvasRightLabel" class="offcanvas offcanvas-end cart-summary border-0" id="offcanvasRight" tabindex="-1">
+    <vc:cart-summary></vc:cart-summary>
+</div>
+
+<div aria-labelledby="offcanvasRightLabel" class="offcanvas offcanvas-end main-search w-100 border-0" id="offcanvasRight2" tabindex="-1">
+
+    <div class="offcanvas-header">
+        <span class="offcanvas-title text-uppercase fw-bold" id="offcanvasRightLabel2">Search</span>
+        <a aria-label="Close" class="text-decoration-none" data-bs-dismiss="offcanvas" href="#"><i class="fa-solid fa-xmark fa-xl text-danger"></i></a>
+    </div>
+
+    <div class="offcanvas-body">
+        <vc:global-search></vc:global-search>
+    </div>
+
+</div>

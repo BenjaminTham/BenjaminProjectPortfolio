@@ -1,0 +1,457 @@
+﻿@model ProductForEditDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@section Styles {
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        .mw-50-c {
+            max-width: 60px;
+        }
+
+        .mw-100-c {
+            max-width: 100px;
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Product</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Product Details</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="ProductId" hidden />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="control-label">Name (max 100 char.)</label>
+                        <input asp-for="Name" maxlength="100" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Slug" class="control-label"></label>
+                        <div class="bg-light py-3 px-2">
+                            <input asp-for="Slug" class="form-control" />
+                            <div class="checkbox_item mt-1">
+                                <label class="d-flex align-items-center">
+                                    <input type="checkbox" checked="checked" id="autoGenSlug">
+                                    auto generate
+                                </label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Slug">Key Point</label>
+                        <input hidden />
+                        <div class="bg-light py-3 px-2 my-2 key-point-items">
+                            @if (Model?.KeySpecsList?.Count() > 0)
+                            {
+                                var last = Model.KeySpecsList.Last();
+                                @foreach (var item in Model.KeySpecsList)
+                                {
+                                    if (item.Equals(last))
+                                    {
+                                        <div class="input-group mb-2 key-point">
+                                            <input type="text" class="form-control me-2" maxlength="70" value="@item">
+                                            <button class="btn btn-sm btn-grass-2-outline add-key-point" type="button"><i class="fa-solid fa-plus"></i></button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group mb-2 key-point">
+                                            <input type="text" class="form-control me-2" maxlength="70" value="@item">
+                                            <button class="btn btn-sm btn-carrot-outline remove-key-point" type="button"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <div class="input-group mb-2 key-point">
+                                    <input type="text" class="form-control me-2">
+                                    <button class="btn btn-sm btn-grass-2-outline add-key-point" type="button"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShortDescription" class="control-label">Short Description (max 200 char.)</label>
+                        <textarea asp-for="ShortDescription" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="control-label">Category</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                            <option value="">------</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="VariableTheme" class="control-label">Variable Theme</label>
+                        <select asp-for="VariableTheme" class="form-select" asp-items="ViewBag.VariableTheme">
+                            <option value="">None</option>
+                        </select>
+                        <span asp-validation-for="VariableTheme" class="text-danger"></span>
+                    </div>
+                    <label class="control-label">Product Image</label>
+                    <div class="mb-3">
+                        <div su-media-section>
+                            <img class="img-fluid mb-1" su-media-preview src="@(Model.ProductImagePreview != null? "/" + Model.ProductImagePreview : "/media/images/no-image.png")" alt="Product picture">
+                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                            </div>
+                            <input su-media-selected-input type="text" asp-for="@Model.ProductImage" hidden>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Product Variable</div>
+    </div>
+    <div class="card-body">
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tblProductVariant">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Images</th>
+                                <th>Size</th>
+                                <th>Color</th>
+                                <th>Sku</th>
+                                <th class="mw-100-c">In-Stock</th>
+                                <th class="mw-100-c">Unit Price</th>
+                                <th class="mw-50-c"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model?.ProductVariant != null)
+                            {
+                                foreach (var item in Model.ProductVariant)
+                                {
+                                    <tr>
+                                        <td><input type="text" asp-for="@item.Title" name="Title" class="form-control" /></td>
+                                        <td>
+                                            <div su-media-section>
+                                                <img class="img-fluid mb-1" su-media-preview src="@(item?.VariantImagePreview != null? "/" + item?.VariantImagePreview : "/media/images/no-image.png")" alt="Product picture">
+                                                <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                    <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                    <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                                </div>
+                                                <input su-media-selected-input type="text" asp-for="@item.VariantImageId" name="VariantImageId" hidden>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <select asp-for="@item.SizeId" class="form-select" asp-items="ViewBag.SizeId" name="SizeId">
+                                                <option value="">------</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select asp-for="@item.ColorId" class="form-select" asp-items="ViewBag.ColorId" name="ColorId">
+                                                <option value="">------</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" asp-for="@item.Sku" name="Sku" class="form-control" /></td>
+                                        <td class="mw-100-c"><input type="number" asp-for="@item.Qty" name="Qty" class="form-control" disabled readonly /></td>
+                                        <td class="mw-100-c"><input type="text" asp-for="@item.Price" name="Price" class="form-control" /></td>
+                                        <td class="mw-100-c" hidden><input type="text" asp-for="@item.Id" name="Id" class="form-control" /></td>
+                                        <td class="mw-50-c"><a href="javascript:void(0)" class="btn btn-soft-secondary btn-sm remove"><i class="fa fa-trash-alt"></i></a></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><input type="text" asp-for="@Model.Name" name="Title" class="form-control" /></td>
+                                    <td>
+                                        <div su-media-section>
+                                            <img class="img-fluid mb-1" su-media-preview src="/media/images/no-image.png" alt="Product picture">
+                                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                            </div>
+                                            <input su-media-selected-input type="text" name="VariantImageId" hidden>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" asp-items="ViewBag.SizeId" name="SizeId">
+                                            <option value="">------</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" asp-items="ViewBag.ColorId" name="ColorId">
+                                            <option value="">------</option>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="Sku" class="form-control" /></td>
+                                    <td class="mw-100-c"><input value="0" min="0" type="number" name="Qty" class="form-control" /></td>
+                                    <td class="mw-100-c"><input type="text" name="Price" class="form-control" /></td>
+                                    <td class="mw-100-c" hidden><input type="text" name="Id" class="form-control" /></td>
+                                    <td class="mw-50-c"><a href="javascript:void(0)" class="btn btn-soft-secondary btn-sm remove"><i class="fa fa-trash-alt"></i></a></td>
+                                </tr>
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="8"><a href="javascript:void(0)" id="AddAnotherVariant" class="btn btn-green-outline"><i class="fa fa-plus"></i> Add new variant</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="d-grid gap-2 d-md-block">
+                    <button type="submit" class="btn btn-blue" id="saveVariant">Save Variable</button>
+                </div>
+                <div class="d-grid gap-2 d-md-block mt-3">
+                    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image select modal -->
+<vc:image></vc:image>
+
+@section Scripts {
+    <script src="~/media/js/media-select.js"></script>
+    <script>
+        $(document).on('click', '.add-key-point', function () {
+            var removeBtn = '<button class="btn btn-sm btn-carrot-outline remove-key-point" type="button"><i class="fa-solid fa-trash"></i></button>';
+            $('.key-point-items .key-point button').replaceWith(removeBtn);
+
+            var keyPoint = `<div class="input-group mb-2 key-point">
+                                        <input type="text" class="form-control maxlength="70" me-2">
+                                        <button class="btn btn-sm btn-grass-2-outline add-key-point" type="button"><i class="fa-solid fa-plus"></i></button>
+                                    </div>`;
+
+            $(".key-point-items").append(keyPoint);
+        });
+
+        $(document).on('click', '.remove-key-point', function (e) {
+            e.preventDefault();
+            swal({
+                title: "Delete Confirm?",
+                text: "Are you wanted to delete this section?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                reverseButtons: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $(this).closest('.key-point').remove();
+                } else {
+                    //swal("Your file is safe!");
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).on('change', '#autoGenSlug', function () {
+            if (this.checked) autoGenSlug();
+        });
+
+        $(document).on('change keyup input', 'input[name="Name"]', function () {
+            let autoGen = document.getElementById('autoGenSlug').checked;
+            if (autoGen) autoGenSlug();
+        });
+
+        function autoGenSlug() {
+            let text = $('input[name="Name"]').val();
+            text = text
+                .replace(/\s+/g, '-') //replace space with dash(-)
+                .replace('&', 'And').replace(',', '').replace('.', '').replace("'", '').toLowerCase();
+            $('input[name="Slug"]').val(text);
+        }
+    </script>
+    <script>
+        $(function () {
+            $('#Description').summernote();
+        });
+
+        $(document).on('click', '#AddAnotherVariant', function () {
+            var sizeOption = getSize();
+            var colorOption = getColor();
+            var addtr = `<tr>
+                                    <td><input type="text" name="Title" class="form-control" /></td>
+                                    <td>
+                                        <div su-media-section>
+                                            <img class="img-fluid mb-1" su-media-preview src="/media/images/no-image.png" alt="Product picture">
+                                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                            </div>
+                                            <input su-media-selected-input type="text" name="VariantImageId" hidden>
+                                        </div>
+                                    </td>
+                                    <td><select name="SizeId" class="form-select SizeId">${sizeOption}</select></td>
+                                    <td><select name="ColorId" class="form-select ColorId">${colorOption}</select></td>
+                                    <td><input type="text" name="Sku" class="form-control" /></td>
+                                    <td class="mw-100-c"><input type="number" value="0" min="0" name="Qty" class="form-control" /></td>
+                                    <td class="mw-100-c"><input type="text" name="Price" class="form-control" /></td>
+                                    <td class="mw-100-c" hidden><input type="text" name="Id" class="form-control" /></td>
+                                    <td class="mw-50-c"><a href="javascript:void(0)" class="btn btn-soft-secondary btn-sm remove"><i class="fa fa-trash-alt"></i></a></td>
+                                </tr>`;
+
+
+            $("#tblProductVariant tbody").append(addtr);
+        });
+
+
+        $('table').on('click', 'tr a.remove', function (e) {
+            e.preventDefault();
+            swal({
+                title: "Delete Confirm?",
+                text: "Are you wanted to delete this item?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                reverseButtons: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $(this).closest('tr').remove();
+                } else {
+                    //swal("Your file is safe!");
+                }
+            });
+        });
+
+        function getSize() {
+            var response;
+            $.ajax({
+                url: "/Product/GetSize",
+                type: 'GET',
+                async: false,
+                dataType: 'json', // added data type
+                success: function (result) {
+                    var options = '<option value="">------</option>';
+
+                    $.each(result,
+                        function () {
+                            options += '<option value="' + this.value + '">' + this.text + '</option>';
+                        });
+                    response = options;
+                },
+                error: function (e) {
+                    alert("Error!" + e);
+                }
+            });
+            return response;
+        }
+
+        function getColor() {
+            var response;
+            $.ajax({
+                url: "/Product/GetColor",
+                type: 'GET',
+                async: false,
+                dataType: 'json', // added data type
+                success: function (result) {
+                    var options = '<option value="">------</option>';
+
+                    $.each(result,
+                        function () {
+                            options += '<option value="' + this.value + '">' + this.text + '</option>';
+                        });
+                    response = options;
+                },
+                error: function (e) {
+                    alert("Error!" + e);
+                }
+            });
+            return response;
+        }
+
+        //Collect data
+        $("#saveVariant").click(function (e) {
+            e.preventDefault();
+
+            var proArr = [];
+            proArr.length = 0;
+
+            $.each($("#tblProductVariant tbody tr"),
+                function () {
+                    proArr.push({
+                        Title: $(this).find('td:eq(0)').find('input[name=Title]').val(),
+                        VariantImageId: $(this).find('td:eq(1)').find('input[name=VariantImageId]').val(),
+                        SizeId: $(this).find('td:eq(2)').find('select[name=SizeId]').val(),
+                        ColorId: $(this).find('td:eq(3)').find('select[name=ColorId]').val(),
+                        Sku: $(this).find('td:eq(4)').find('input[name=Sku]').val(),
+                        Qty: $(this).find('td:eq(5)').find('input[name=Qty]').val(),
+                        Price: $(this).find('td:eq(6)').find('input[name=Price]').val(),
+                        Id: $(this).find('td:eq(7)').find('input[name=Id]').val(),
+                    });
+                });
+
+            var keySpecs = $('.key-point-items .key-point input').map(function () {
+                return $(this).val();
+            }).get();
+
+            var data = JSON.stringify({
+                ProductId: $("#ProductId").val(),
+                Name: $("#Name").val(),
+                Slug: $("#Slug").val(),
+                KeySpecs: JSON.stringify(keySpecs),
+                ShortDescription: $("#ShortDescription").val(),
+                Description: $("#Description").val(),
+                VariableTheme: $("#VariableTheme").val(),
+                CategoryId: $("#CategoryId").val(),
+                ProductImage: $("#ProductImage").val(),
+                ProductVariant: proArr
+            });
+
+
+            $.when(saveVariant(data)).then(function (response) {
+                //if success
+                console.log(response);
+                notifier.open({ type: "success", message: "Product Updated" });
+                //alertify.message('Product Updated');
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+        function saveVariant(data) {
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Product/UpdateProduct",
+                type: 'POST',
+                data: obj,
+                success: function (result) {
+                    console.log(result);
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!")
+                }
+            });
+        }
+
+
+    </script>
+}

@@ -1,0 +1,173 @@
+﻿@model IEnumerable<BannerDto>
+@{
+    ViewData["Title"] = "Banner Configuration";
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Banner</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage Banner</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <form asp-action="Banner" method="post" id="banners">
+                    <div class="bannerItems" style="margin-bottom: 50px; max-width: 800px">
+
+                        @foreach (var item in Model)
+                        {
+                            <div class="card mb-3 ui-sortable-handle single-item">
+                                <div class="card-body">
+                                    <div class="">
+                                        <input name="BannerType" value="@BannerType.BannerOne" hidden/>
+                                        <div class="mb-3">
+                                            <label for="Title">Title</label>
+                                            <input type="text" class="form-control" value="@item.Title" name="Title">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="SubTitle">Sub Title</label>
+                                            <input type="text" class="form-control" value="@item.SubTitle" name="SubTitle">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="ColorHexCode">Text Color <small>(HexCode)</small></label>
+                                            <input type="text" class="form-control" value="@item.ColorHexCode" name="ColorHexCode">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="BackgroundColorHexCode">Banner Color <small>(HexCode)</small></label>
+                                            <input type="text" class="form-control" value="@item.BackgroundColorHexCode" name="BackgroundColorHexCode">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" name="IsActive" @(item.IsActive == true ? "checked" : "")>
+                                                <label class="custom-control-label" for="IsActive"> Active</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer d-flex justify-content-end">
+                                            <button class="btn btn-soft-danger btn-sm item-remove" type="button"><i class="fa fa-trash-alt"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                    <div>
+                        <div class="d-grid gap-2 d-sm-block">
+                            <button type="button" class="btn btn-grass-2-outline" id="addNewBanner"><i class="fa fa-plus"></i> Add new Slider</button>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <input type="button" id="saveHeaderBanner" value="Update" class="btn btn-blue mt-2 py-2 px-5" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="banner-single-item" style="display: none">
+    <div class="card mb-3 ui-sortable-handle single-item">
+        <div class="card-body">
+            <div class="">
+                <div class="mb-3">
+                    <label for="Title">Title</label>
+                    <input type="text" class="form-control" name="Title">
+                </div>
+                <div class="mb-3">
+                    <label for="SubTitle">Sub Title</label>
+                    <input type="text" class="form-control" name="SubTitle">
+                </div>
+                <div class="mb-3">
+                    <label for="ColorHexCode">Text Color <small>(HexCode)</small></label>
+                    <input type="text" class="form-control" name="ColorHexCode">
+                </div>
+                <div class="mb-3">
+                    <label for="BackgroundColorHexCode">Banner Color <small>(HexCode)</small></label>
+                    <input type="text" class="form-control" name="BackgroundColorHexCode">
+                </div>
+
+                <div class="mb-3">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="IsActive">
+                        <label class="custom-control-label" for="IsActive"> Active</label>
+                    </div>
+                </div>
+
+                <div class="card-footer d-flex justify-content-end">
+                    <button class="btn btn-soft-danger btn-sm item-remove" type="button"><i class="fa fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).on("click", "#addNewBanner", function () {
+            var singleItem = $('.banner-single-item').html();
+            $("#banners .bannerItems").append(singleItem);
+        });
+
+        //Collect data
+        $("#saveHeaderBanner").click(function (e) {
+            e.preventDefault();
+
+            var bannerList = [];
+            bannerList.length = 0;
+
+            var order = 0;
+            $.each($("#banners .single-item"), function () {
+                order++;
+                bannerList.push({
+                    Title: $(this).find('input[name=Title]').val(),
+                    SubTitle: $(this).find('input[name=SubTitle]').val(),
+                    ColorHexCode: $(this).find('input[name=ColorHexCode]').val(),
+                    BackgroundColorHexCode: $(this).find('input[name=BackgroundColorHexCode]').val(),
+                    IsActive: $(this).find("input[name='IsActive']").is(":checked")
+                });
+            });
+
+
+            var data = JSON.stringify(bannerList);
+
+            $.when(saveSlider(data)).then(function (response) {
+                //if success
+                notifier.open({ type: "success", message: "Slider Updated" });
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+        function saveSlider(data) {
+            console.log(data);
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Configuration/UpdateBanner",
+                type: 'POST',
+                data: { banners: obj },
+                success: function (result) {
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+
+
+        $(document).on("click", ".item-remove", function () {
+            $(this).closest('.single-item').remove();
+        });
+
+
+    </script>
+}

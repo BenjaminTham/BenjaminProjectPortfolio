@@ -1,0 +1,41 @@
+services:
+  webapp-1:
+    image: webapp_image
+    container_name: webapp_container_1
+    restart: always
+    env_file:
+      - /home/student11/env_ASPNET.list
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:9001
+    networks:
+      web_net:
+        ipv4_address: 172.23.0.11
+
+  webapp-2:
+    image: webapp_image
+    container_name: webapp_container_2
+    restart: always
+    env_file:
+      - /home/student11/env_ASPNET.list
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:9001
+    networks:
+      web_net:
+        ipv4_address: 172.23.0.12
+
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    restart: always
+    env_file:
+      - /home/student11/env_MSSQL.list
+    environment:
+      - ACCEPT_EULA=y
+    networks:
+      web_net:
+        ipv4_address: 172.23.0.10
+networks:
+  web_net:
+    external: true

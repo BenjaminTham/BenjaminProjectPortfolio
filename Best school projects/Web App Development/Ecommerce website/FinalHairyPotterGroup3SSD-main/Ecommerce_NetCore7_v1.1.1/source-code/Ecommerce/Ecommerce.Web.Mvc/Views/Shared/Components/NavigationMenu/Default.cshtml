@@ -1,0 +1,25 @@
+﻿@{
+    var menusList = ViewBag.NavigationMenu as IEnumerable<NavMenuRenderViewModel>;
+    var profilePic = @User.FindFirstValue("ProfilePic");
+}
+
+<style>
+    .navigation-menu-profile-img {
+        height: 40%;
+        width: 40%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #ff9448;
+    }
+</style>
+
+<div class="sb-sidenav-menu mb-5">
+    <div class="nav">
+        <div class="sb-sidenav-menu-heading">Main</div>
+        <a class="nav-link" asp-controller="Dashboard" asp-action="Index"> <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div> Dashboard</a>
+        <a class="nav-link" asp-controller="Home" asp-action="Index"> <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div> Home</a>
+
+        <div class="sb-sidenav-menu-heading">Interface</div>
+        @await Html.PartialAsync("_ChildMenuPartial", menusList)
+    </div>
+</div>

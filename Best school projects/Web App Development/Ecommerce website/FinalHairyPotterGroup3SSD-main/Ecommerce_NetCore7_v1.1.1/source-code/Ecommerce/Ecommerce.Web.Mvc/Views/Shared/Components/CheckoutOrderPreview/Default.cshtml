@@ -1,0 +1,54 @@
+﻿@model IEnumerable<CartDto>
+
+@{
+    decimal totalPrice = 0;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+<div id="checkOrderPreview">
+    @if (Model != null && Model.Count() != 0)
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        totalPrice += (item.Price * @item.Qty);
+                        <tr>
+                            <td hidden>@item.VariantId</td>
+                            <td class="lh-sm">
+                                <span class="d-block"><a class="text-decoration-none text-dark" href="product-details.html">@item.Title</a></span>
+                                <span class="d-block fw-bold">
+                                    <span>@item.Qty</span>
+                                    <span>x</span>
+                                    <span><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span>@item.Price</span></bdi></span>
+                                </span>
+                            </td>
+                            <td class="text-end"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span>@(item.Price * @item.Qty)</span></bdi></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot class="bg-white">
+                    <tr class="fw-bold border-light">
+                        <td class="pt-3">Sub Total</td>
+                        <td class="text-end pt-3"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="subtotal-value">@totalPrice</span></bdi></td>
+                    </tr>
+                    <tr class="border-light">
+                        <td>Delivery Charge <span>(+)</span></td>
+                        <td class="text-end"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="selected-delivery-charge">0</span></bdi></td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td class="py-2">Total</td>
+                        <td class="text-end py-2"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="total-value"></span></bdi></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+</div>

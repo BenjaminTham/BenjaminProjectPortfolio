@@ -1,0 +1,12 @@
+﻿@*@model Category
+
+
+
+@if (Model.ParentCategory != null)
+{
+    <a href="/shop/@Model.ParentCategory.Slug">@Model.ParentCategory.Name</a><i class="fa fa-angle-right mx-1"></i>
+    @if (Model.ParentCategory.ParentCategory != null)
+    {
+        @await Html.PartialAsync("_CategoryBreadcumb", Model.ParentCategory)
+    }
+}*@

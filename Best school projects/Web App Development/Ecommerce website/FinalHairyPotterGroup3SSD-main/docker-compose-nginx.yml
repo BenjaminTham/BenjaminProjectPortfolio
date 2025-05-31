@@ -1,0 +1,20 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:8888:8888"
+      - "0.0.0.0:8080:8080"
+      - "0.0.0.0:443:443"
+    volumes:
+      - /home/student11/HairyPotterGroup3SSD/nginx.conf:/etc/nginx/nginx.conf
+      - /home/student11/HairyPotterGroup3SSD/nginx-default.conf:/etc/nginx/conf.d/default.conf
+      - /home/student11/cert:/etc/ssl/certs:ro
+    networks:
+      - proxy_net
+
+networks:
+  proxy_net:
+    external: true

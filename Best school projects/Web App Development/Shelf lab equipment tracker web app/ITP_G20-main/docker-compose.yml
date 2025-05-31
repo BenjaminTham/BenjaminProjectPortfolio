@@ -1,0 +1,15 @@
+services:
+  ntp:
+    build: .
+    image: cturra/ntp:latest
+    container_name: ntp
+    restart: always
+    ports:
+      - 123:123/udp
+    environment:
+      - NTP_SERVERS=127.127.1.1
+      - LOG_LEVEL=0
+      - TZ=Singapore
+
+#      - NOCLIENTLOG=true
+#      - ENABLE_NTS=true

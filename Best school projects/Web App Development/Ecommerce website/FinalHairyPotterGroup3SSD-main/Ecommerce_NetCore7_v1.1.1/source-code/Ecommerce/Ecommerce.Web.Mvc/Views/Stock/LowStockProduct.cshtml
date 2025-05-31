@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "Low Stock Product";
+    Layout = LayoutPage.AdminLayout;
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Low Stock Product</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblOrder" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Product</th>
+                        <th>Category</th>
+                        <th>In Stock</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- create-modal start -->
+<div class="modal fade" id="add-stock-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Stock</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="AddStock" asp-controller="Stock" id="InvStockForm" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="VariantId" />
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="validationerror"></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="mb-2"><img src="/assets/images/no-image.png" class="img-fluid variant-img"/><br/></div>
+                            </div>
+                            <div class="d-block product-var-title text-sky">--</div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group mb-3">
+                                <label for="Qty">Qty</label>
+                                <input type="number" min="1" class="form-control" name="Qty" value="1" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Description">Description</label>
+                                <textarea name="Description" rows="3" class="form-control" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-carrot-outline" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <button type="submit" class="btn btn-blue" id="stockAddition">Add to stock</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- create-modal end -->
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblOrder').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderLowStockProduct")',
+                    pages: 5, //number of pages to cache
+                    method: 'POST' // Ajax HTTP method
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [4], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "variantId", "name": "VariantId" },
+                    { "data": "variantTitle", "name": "VariantTitle" },
+                    { "data": "category", "name": "Category" },
+                    { "data": "qty", "name": "Qty" },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Inventory_AddStock).Result.Succeeded)
+                                {
+                                        <text>
+                                            myHtml += '<a class="btn btn-sky-outline btn-sm me-1" href="javascript:void(0)" onclick="addStock(' + row.variantId + ')"><i class="fas fa-plus"></i></a>';
+                                        </text>
+                                }
+                            }
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+
+    function addStock(id) {
+        console.log(id);
+            $.ajax({
+                url: "/Product/ProductVariablesById/"+ id,
+                type: "get",
+                dataType: "json",
+                success: function (result) {
+                    var imgPreview = "/" + result.variantImagePreview;
+                    $(".variant-img").attr("src", imgPreview);
+                    console.log(result);
+                    $('input[name=VariantId]').val(result.id);
+                    $('.product-var-title').html(result.title);
+                    $('.product-var-title').html('<a href="/productdetails/'+result.slug+'" target="_blank">'+result.title+'</a>');
+                    //$('input[name=NewStockQty]').html(result);
+                }
+            });
+        $('#add-stock-modal').modal('show');
+    }
+
+    $(document).on('click', '#stockAddition', function (e) {
+        e.preventDefault();
+        var section = $('#InvStockForm');
+        var data = JSON.stringify({
+            VariantId: section.find('input[name=VariantId]').val(),
+            Qty: section.find('input[name=Qty]').val(),
+            Description: section.find('textarea[name=Description]').val()
+        });
+
+        console.log(data);
+
+        $.when(AddStock(data)).then(function (response) {
+            //if success
+            console.log(response);
+            if(response != 'false'){
+                suTable.clearPipeline().draw(false);
+                $('#add-stock-modal').modal('hide');
+                notifier.open({ type: "success", message: "Stock Updated" });
+            }
+        }).fail(function (err) {
+            console.log(err);
+            notifier.open({ type: "error", message: err });
+        });
+    });
+
+
+    function AddStock(data) {
+        console.log(data);
+        var obj = jQuery.parseJSON(data);
+        return $.ajax({
+            url: "/Stock/AddStock",
+            type: 'POST',
+            data: obj,
+            success: function (result) {
+                console.log(result);
+                //location.reload();
+            },
+            error: function () {
+                alert("Error!");
+            }
+        });
+    }
+
+
+    </script>
+}

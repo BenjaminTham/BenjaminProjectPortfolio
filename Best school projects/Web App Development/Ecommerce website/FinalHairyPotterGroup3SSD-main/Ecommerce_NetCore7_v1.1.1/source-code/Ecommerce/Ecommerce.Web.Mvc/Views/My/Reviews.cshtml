@@ -1,0 +1,269 @@
+﻿@using System.Text.Json.Serialization
+@model IEnumerable<CustomerOrderDto>
+
+@{
+    ViewData["Title"] = "Reviews";
+    Layout = LayoutPage.ShopLayout;
+    var customerReviews = ViewBag.CustomerReviews as List<ProductReviewDto>;
+    var reviewed = customerReviews?.Where(c => c.Rating is > 0).GroupBy(o => o.InvoiceNo).ToList();
+    var pendingReview = customerReviews?.Where(c => c.Rating is null or 0).GroupBy(o => o.InvoiceNo).ToList();
+
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+@section Styles{
+    <style>
+    </style>
+}
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span>Account</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="p-4 content-section customer-profile">
+        <div class="column">
+            <div class="col-md-4">
+                <partial name="_CustomerAccountTab" />
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade bg-white show active p-2">
+                        <h5 class="mb-3 text-uppercase fw-bold">Reviews</h5>
+                        <div>
+                            <nav>
+                                <div class="nav nav-pills nav-justified mb-5" id="pills-tab-checkoutProcess" role="tablist">
+                                    <button class="nav-link py-3 active" id="shipping-info-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="true">Reviewed</button>
+                                    <button class="nav-link py-3" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment" type="button" role="tab" aria-controls="payment" aria-selected="false">To Be Reviewed</button>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-checkoutProcess">
+                                <div class="tab-pane fade show active" id="shipping-info" role="tabpanel" aria-labelledby="shipping-info-tab" tabindex="0">
+
+                                    @if (reviewed?.Count() > 0)
+                                    {
+                                        @foreach (var group in reviewed)
+                                        {
+                                            <div class="shadow-sm p-2 my-2">
+                                                <div class="d-flex justify-content-start mt-2">
+                                                    <strong class="d-block"><span><i class="fa-solid fa-file-invoice me-1"></i></span><span class="text-sky">@group.Key</span></strong>
+                                                </div>
+
+                                                @foreach (var item in group)
+                                                {
+                                                    <div class="p-2 my-2 bg-light">
+                                                        <div class="d-flex">
+                                                            <img src="@(item?.ProductImage != null ? "/" + item?.ProductImage : "/assets/images/no-image.png")" alt="#" class="me-2 shadow-1" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #fff;" >
+                                                            <div class="lh-sm w-100">
+                                                                <a class="d-block text-decoration-none text-dark fw-600 text-sm-3" href="/productdetails/@item?.ProductSlug">@item?.ProductName</a>
+                                                                <div class="rating text-sm-4">
+                                                                    @for (int i = 0; i < 5; i++)
+                                                                    {
+                                                                        <i class="fa-solid fa-star fa-sm @((item?.Rating <= i) ? "" : "fill")"></i>
+                                                                    }
+                                                                </div>
+                                                                <div>
+                                                                    <span class="text-sm-4">@DateTime.Parse(item?.DateCommented?.ToString()).ToString("dd MMM yyyy HH:mm:ss tt")</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="lh-sm mt-2">
+                                                            <small class="d-block text-grass">Comment</small>
+                                                            <small class="d-block">@item?.Comment</small>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+
+                                </div>
+                                <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab" tabindex="0">
+                                    @if (pendingReview?.Count() > 0)
+                                    {
+                                        @foreach (var group in pendingReview)
+                                        {
+                                            <div class="shadow-sm my-2 p-2">
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <strong><span><i class="fa-solid fa-file-invoice me-1"></i></span><span class="text-sky">@group.Key</span></strong>
+                                                    <div class="text-end">
+                                                        <small><a href="javascript:void(0)" onclick="createReview(@JsonSerializer.Serialize(group.Select(c=>c).ToList()))" data-bs-toggle="modal" data-bs-target="#createReviewModal" class="btn btn-xs btn-yellow-1-outline text-sm-3"><i>Review</i></a></small>
+                                                    </div>
+                                                </div>
+
+                                                @foreach (var item in group)
+                                                {
+                                                    <div class="d-flex p-2 my-2 bg-light">
+                                                        <img src="@(item?.ProductImage != null ? "/" + item?.ProductImage : "/assets/images/no-image.png")" alt="#" class="me-2 shadow-1" style="width: 58px; height: 58px; object-fit: cover; border: 2px solid #fff;" >
+                                                        <div class="lh-sm w-100">
+                                                            <a class="d-block text-decoration-none text-dark fw-600 text-sm-3" href="/productdetails/@item?.ProductSlug">@item?.ProductName</a>
+                                                            <div class="d-block ">
+                                                                <span class="badge bg-soft-sky fw-500 badge-md">@item?.OrderStatusValue</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createReviewModal" tabindex="-1" aria-labelledby="createReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title d-block h-8 fw-bold" id="createReviewModalLabel">Order <span class="text-sky invoice-no">--</span></span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reviewItems">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error updating reviews</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script src="~/others/js/customer-account.js"></script>
+    <script>
+
+
+
+        function saveReview(data) {
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/My/CreateReview",
+                type: 'POST',
+                data: { data: obj },
+                success: function (result) {
+                    console.log(result); // See what the server actually returns
+
+                    if (result.success) {
+                        notifier.open({ type: "success", message: "Product Updated" });
+                        location.reload();
+                    } else {
+
+                        notifier.open({ type: "error", message: result.error });
+                        $('#errorMessage').text(result.error); // Correctly reference 'error' with lowercase
+                        $('#errorModal').modal('show');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error: ", xhr.responseText);
+                    $('#errorMessage').text("A technical error occurred. Please try again.");
+                    $('#errorModal').modal('show');
+                }
+            });
+        }
+
+        //Collect data
+        $(document).on('click',
+            '.save-review',
+            function (e) {
+                e.preventDefault();
+                var singleReview = $(this).closest('.single-review');
+
+                var prId = singleReview.find('input[name=ProductId]').val();
+                var data = JSON.stringify({
+                    ProductId: prId,
+                    CustomerId: singleReview.find('input[name=CustomerId]').val(),
+                    OrderId: singleReview.find('input[name=OrderId]').val(),
+                    Rating: singleReview.find(`input[name=Rating${prId}]:checked`).val(),
+                    Comment: singleReview.find('textarea[name=Comment]').val()
+                });
+
+                $.when(saveReview(data)).then(function (response) {
+                    //if success
+                    notifier.open({ type: "info", message: "Checking your review" });
+
+                }).fail(function (err) {
+
+                    notifier.open({ type: "error", message: err });
+                });
+            });
+
+
+        function createReview(groupElement) {
+            console.log(groupElement);
+
+            var html = "";
+            groupElement.forEach(function(item) {
+                html += `<div class="single-review mb-5">
+                            <div class="d-flex p-2 my-2 bg-light">
+                                <img src="${(item?.ProductImage != null ? "/" + item?.ProductImage : "/assets/images/no-image.png")}" alt="#" class="me-2 shadow-1" style="width: 58px; height: 58px; object-fit: cover; border: 2px solid #fff;" >
+                                <div class="lh-sm w-100">
+                                    <a class="d-block text-decoration-none text-dark fw-600 text-sm-3" href="/productdetails/${item.ProductSlug}">${item.ProductName}</a>
+                                </div>
+                            </div>
+                            <div>
+                                <input name="CustomerId" value="${item.CustomerId}" hidden />
+                                <input name="OrderId" value="${item.OrderId}" hidden />
+                                <input name="ProductId" value="${item.ProductId}" hidden />
+                            </div>
+                            <div class="reviews-counter">
+                                <div class="rate float-none pe-0">
+                                    <input type="radio" id="star5${item.ProductId}" name="Rating${item.ProductId}" value="5" checked />
+                                    <label for="star5${item.ProductId}" title="text">5 stars</label>
+                                    <input type="radio" id="star4${item.ProductId}" name="Rating${item.ProductId}" value="4" />
+                                    <label for="star4${item.ProductId}" title="text">4 stars</label>
+                                    <input type="radio" id="star3${item.ProductId}" name="Rating${item.ProductId}" value="3" />
+                                    <label for="star3${item.ProductId}" title="text">3 stars</label>
+                                    <input type="radio" id="star2${item.ProductId}" name="Rating${item.ProductId}" value="2" />
+                                    <label for="star2${item.ProductId}" title="text">2 stars</label>
+                                    <input type="radio" id="star1${item.ProductId}" name="Rating${item.ProductId}" value="1" />
+                                    <label for="star1${item.ProductId}" title="text">1 star</label>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label mb-1" for="Comment">Comments (max 500 char.)</label>
+                                <textarea class="form-control" rows="3" maxlength="500" name="Comment"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-sm btn-grass px-4 save-review">Submit</button>
+                            </div>
+                        </div>`;
+
+            });
+
+            $('#reviewItems').html(html);
+            $('.invoice-no').html(groupElement[0].InvoiceNo);
+
+
+        }
+
+        //$('input[name=rate]').change(function() {
+        //    var value = $('input[name=rate]:checked').val();
+
+        //});
+    </script>
+}

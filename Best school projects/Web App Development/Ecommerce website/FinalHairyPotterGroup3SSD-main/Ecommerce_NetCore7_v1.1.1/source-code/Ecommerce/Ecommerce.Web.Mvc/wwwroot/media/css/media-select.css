@@ -1,0 +1,162 @@
+﻿
+div[su-media-section] .set-selected-media {
+    position: relative;
+}
+
+div[su-media-section] {
+    width: fit-content;
+    display: inline-block;
+}
+
+.btn-xs {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.85rem;
+}
+
+
+.image-checkbox {
+    transition: transform .4s;
+    cursor: pointer;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border: 3px solid transparent;
+    box-shadow: 0 0 4px #ccc;
+    outline: 0;
+    border-radius: 10px;
+}
+
+    .image-checkbox:hover {
+        transform: scale(1.05);
+    }
+
+.image-checkbox-checked {
+    border-color: #2196f3;
+}
+
+.image-checkbox img {
+    border-radius: 7px;
+} 
+
+.image-checkbox i {
+    display: none;
+    color: #2196f3;
+}
+
+.image-checkbox-checked {
+    position: relative;
+}
+
+    .image-checkbox-checked i {
+        display: block;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+img[su-media-preview] {
+    transition: transform .4s;
+    border: 3px solid #ffffff00;
+    box-shadow: 0 0 4px #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    max-height: 100px !important;
+    max-width: -webkit-fill-available;
+}
+
+
+.nav-tabs .nav-link {
+    margin-bottom: -2px;
+    color: #141414;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #cccccc42;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #03a9f4;
+    background-color: #fff;
+    border: 2px solid;
+    border-color: #cccccc42 #cccccc42 #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.nav-tabs .nav-link:hover {
+    border: 2px solid;
+    border-color: #cccccc42 #cccccc42 #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.amsify-suggestags-input-area .amsify-select-tag.col-bg {
+    background: #efefef;
+    color: #2c2a2a;
+    border-radius: 5px;
+}
+
+.dropzone {
+    width: 100%;
+    margin: auto;
+    min-height: 300px;
+    border: 4px dashed #ddd;
+    /*background: #f6f6f6;*/
+    margin-top: 85px;
+}
+
+    .dropzone .dz-message button {
+        color: #bdbdbd;
+    }
+
+    .dropzone .dz-preview .dz-remove {
+        color: #de3f34;
+    }
+
+.btn-upload {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.media-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.media-container::-webkit-scrollbar-track {
+    background-color: #e4e4e4;
+    /*border-radius: 100px;*/
+}
+
+.media-container::-webkit-scrollbar-thumb {
+    background-color: #22c8e5;
+    border-radius: 100px;
+}
+
+.btn-group-xs > .btn, .btn-xs {
+    padding: 0.17rem 0.5rem;
+    font-size: .78rem;
+    border-radius: 0.2rem;
+}
+
+.btn-soft-primary {
+    background-color: rgba(11,81,183,.08) !important;
+    color: #0b51b7 !important;
+}
+    .btn-soft-primary:hover {
+        background-color: #0b51b7 !important;
+        color: #fff !important;
+    }
+
+.btn-soft-danger {
+    background-color: rgba(239,77,86,.08) !important;
+    color: #ef4d56 !important;
+}
+
+    .btn-soft-danger:hover {
+        background-color: #ef4d56 !important;
+        color: #fff !important;
+    }
+
+div[su-media-section] img[su-media-preview] {
+    display: block;
+}
+

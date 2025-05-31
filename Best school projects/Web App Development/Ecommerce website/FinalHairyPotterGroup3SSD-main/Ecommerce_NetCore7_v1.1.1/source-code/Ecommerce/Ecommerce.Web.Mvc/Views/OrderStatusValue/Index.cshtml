@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Order Status";
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Order Status</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_OrderStatus_Create).Result.Succeeded)
+        {
+            <a asp-action="Create" class="btn btn-blue"><i class="fa-solid fa-plus"></i> Create New</a>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblOrderStatus" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">StatusValue</th>
+                        <th>Description</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div>
+    <ul>
+        <li>Here <span class="badge badge-soft-primary badge-md ms-1">D</span> means default status, which can't be deleted, but you can edit <strong>Description</strong></li>
+    </ul>
+</div>
+
+
+@section Scripts{
+<script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblOrderStatus').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5 //number of pages to cache
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [3], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    {
+                        "data": null,
+                        "name": "StatusValue",
+                        "render": function (data, type, row) {
+                            var text = "";
+                            text += '<span class="">'+row.statusValue+'</span>';
+                            var defaultOrderStatusArray = @Json.Serialize(DefaultOrderStatusValue.GetDefaultStatus().Select(o => o.StatusValue).ToArray());
+                            var checkValue = $.inArray(row.statusValue, defaultOrderStatusArray) > -1;
+                            if(checkValue){
+                                text += '<span class="badge badge-soft-primary badge-md ms-1">D</span>';
+                            }
+                            return text;
+                        }
+                    },
+                    //{ "data": "statusValue", "name": "StatusValue" },
+                    { "data": "description", "name": "Description" },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+                            var defaultOrderStatusArray = @Json.Serialize(DefaultOrderStatusValue.GetDefaultStatus().Select(o => o.StatusValue).ToArray());
+                            var checkValue = $.inArray(row.statusValue, defaultOrderStatusArray) > -1;
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_OrderStatus_Edit).Result.Succeeded)
+                                {
+                                        <text>
+                                        myHtml += '<a class="btn btn-sky-outline btn-sm m-1" onclick="editClick(' + row.id + ')" href="@Url.Action("Edit")/' + row.id + '"><i class="fa fa-pen"></i></a>';
+                                        </text>
+                                }
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_OrderStatus_Delete).Result.Succeeded)
+                                {
+                                        <text>
+                                        if(!checkValue){
+                                        myHtml += '<a class="btn btn-carrot-outline btn-sm m-1" su-delete su-data-id="' + row.id + '" su-data-action="@Url.Action("Delete")"  href="javascript:void(0)"><i class="fa fa-trash-alt"></i></a>';
+                                        }
+                                        </text>
+                                }
+                            }
+
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+
+
+
+
+</script>
+}
+
+

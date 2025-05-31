@@ -1,0 +1,57 @@
+﻿@{
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    BasicSeoConfigurationDto conBSeo = JsonSerializer.Deserialize<BasicSeoConfigurationDto>(K["BasicSeoConfiguration"])!;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="@conBSeo.SeoDescription" />
+    <meta name="keywords" content="@conBSeo.SeoKeywords">
+    <link rel="icon" type="image/png" href="/@conGen.CompanyFavicon" />
+    <title>@(ViewData["SeoTitle"] == null ? $"{ViewData["Title"]} - {conGen.CompanyName} | {conGen.CompanySlogan}" : ViewData["SeoTitle"])</title>
+    <vc:styles></vc:styles>
+    <partial name="_ShopStyles" />
+
+
+
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+
+<body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/jquery.validate.unobtrusive.min.js"></script>
+
+    <div class="su-preloader">
+        <div class="spinner"></div>
+    </div>
+
+
+
+    <partial name="_ShopHeaderTop" />
+    <partial name="_ShopHeaderBottom" />
+    @RenderBody()
+    <partial name="_ShopFooter" />
+    <partial name="_ShopMobileMenu" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/jquery.validate.unobtrusive.min.js"></script>
+    <partial name="_ShopScripts" />
+    @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["notification"] != null)
+    {
+        @Html.Raw(TempData["notification"])
+        ;
+        @TempData.Remove("notification")
+        ;
+    }
+
+</body>
+</html>

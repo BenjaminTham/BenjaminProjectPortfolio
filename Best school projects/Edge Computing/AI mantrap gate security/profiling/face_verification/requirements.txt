@@ -1,0 +1,6 @@
+opencv-python
+tf-keras
+scipy
+mediapipe==0.10.9
+tensorflow
+psutil

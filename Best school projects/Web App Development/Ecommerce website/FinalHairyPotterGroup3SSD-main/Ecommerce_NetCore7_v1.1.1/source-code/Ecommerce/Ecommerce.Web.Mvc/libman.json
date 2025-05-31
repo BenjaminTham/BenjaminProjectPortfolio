@@ -1,0 +1,318 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.4",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap@5.2.3",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "js/bootstrap.min.js",
+        "js/bootstrap.bundle.min.js",
+        "css/bootstrap.min.css"
+      ]
+    },
+    {
+      "library": "sweetalert@2.1.2",
+      "destination": "wwwroot/lib/sweetalert/"
+    },
+    {
+      "library": "font-awesome@6.3.0",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "sprites/brands.svg",
+        "sprites/regular.svg",
+        "sprites/solid.svg",
+        "webfonts/fa-brands-400.ttf",
+        "webfonts/fa-brands-400.woff2",
+        "webfonts/fa-regular-400.ttf",
+        "webfonts/fa-regular-400.woff2",
+        "webfonts/fa-solid-900.ttf",
+        "webfonts/fa-solid-900.woff2",
+        "webfonts/fa-v4compatibility.ttf",
+        "webfonts/fa-v4compatibility.woff2"
+      ]
+    },
+    {
+      "library": "OwlCarousel2@2.3.4",
+      "destination": "wwwroot/lib/OwlCarousel2/",
+      "files": [
+        "owl.carousel.min.js",
+        "assets/owl.carousel.min.css",
+        "assets/owl.theme.default.min.css"
+      ]
+    },
+    {
+      "library": "popper.js@2.11.6",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "umd/popper.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validate@1.19.5",
+      "destination": "wwwroot/lib/jquery-validate/",
+      "files": [
+        "jquery.validate.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@4.0.0",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/",
+      "files": [
+        "jquery.validate.unobtrusive.min.js"
+      ]
+    },
+    {
+      "library": "dayjs@1.11.7",
+      "destination": "wwwroot/lib/dayjs/",
+      "files": [
+        "dayjs.min.js"
+      ]
+    },
+    {
+      "library": "jqueryui@1.13.2",
+      "destination": "wwwroot/lib/jqueryui/",
+      "files": [
+        "jquery-ui.min.js"
+      ]
+    },
+    {
+      "library": "datatables-responsive@2.4.1",
+      "destination": "wwwroot/lib/datatables.net/",
+      "files": [
+        "dataTables.responsive.min.js"
+      ]
+    },
+    {
+      "library": "datatables.net-responsive-bs5@2.4.1",
+      "destination": "wwwroot/lib/datatables.net/",
+      "files": [
+        "responsive.bootstrap5.min.js",
+        "responsive.bootstrap5.min.css"
+      ]
+    },
+    {
+      "library": "datatables.net-bs5@1.13.4",
+      "destination": "wwwroot/lib/datatables.net/",
+      "files": [
+        "dataTables.bootstrap5.min.js",
+        "dataTables.bootstrap5.min.css"
+      ]
+    },
+    {
+      "library": "datatables-buttons@2.3.6",
+      "destination": "wwwroot/lib/datatables-buttons/",
+      "files": [
+        "js/dataTables.buttons.min.js",
+        "js/buttons.html5.min.js",
+        "js/buttons.colVis.min.js",
+        "js/buttons.print.min.js"
+      ]
+    },
+    {
+      "library": "jquery-nice-select@1.1.0",
+      "destination": "wwwroot/lib/jquery-nice-select/",
+      "files": [
+        "js/jquery.nice-select.min.js",
+        "css/nice-select.min.css"
+      ]
+    },
+    {
+      "library": "datatables.net-buttons-bs5@2.3.6",
+      "destination": "wwwroot/lib/datatables-buttons/",
+      "files": [
+        "buttons.bootstrap5.min.js",
+        "buttons.bootstrap5.min.css"
+      ]
+    },
+    {
+      "library": "flatpickr@4.6.13",
+      "destination": "wwwroot/lib/flatpickr/",
+      "files": [
+        "flatpickr.min.js",
+        "flatpickr.min.css"
+      ]
+    },
+    {
+      "library": "summernote@0.8.20",
+      "destination": "wwwroot/lib/summernote/",
+      "files": [
+        "summernote.min.js",
+        "font/summernote.eot",
+        "font/summernote.ttf",
+        "font/summernote.woff",
+        "font/summernote.woff2",
+        "lang/summernote-ar-AR.js",
+        "lang/summernote-ar-AR.js.map",
+        "lang/summernote-ar-AR.min.js",
+        "lang/summernote-az-AZ.js",
+        "lang/summernote-az-AZ.js.map",
+        "lang/summernote-az-AZ.min.js",
+        "lang/summernote-bg-BG.js",
+        "lang/summernote-bg-BG.js.map",
+        "lang/summernote-bg-BG.min.js",
+        "lang/summernote-bn-BD.js",
+        "lang/summernote-bn-BD.js.map",
+        "lang/summernote-bn-BD.min.js",
+        "lang/summernote-ca-ES.js",
+        "lang/summernote-ca-ES.js.map",
+        "lang/summernote-ca-ES.min.js",
+        "lang/summernote-cs-CZ.js",
+        "lang/summernote-cs-CZ.js.map",
+        "lang/summernote-cs-CZ.min.js",
+        "lang/summernote-da-DK.js",
+        "lang/summernote-da-DK.js.map",
+        "lang/summernote-da-DK.min.js",
+        "lang/summernote-de-CH.js",
+        "lang/summernote-de-CH.js.map",
+        "lang/summernote-de-CH.min.js",
+        "lang/summernote-de-DE.js",
+        "lang/summernote-de-DE.js.map",
+        "lang/summernote-de-DE.min.js",
+        "lang/summernote-el-GR.js",
+        "lang/summernote-el-GR.js.map",
+        "lang/summernote-el-GR.min.js",
+        "lang/summernote-en-US.js",
+        "lang/summernote-en-US.js.map",
+        "lang/summernote-en-US.min.js",
+        "lang/summernote-es-ES.js",
+        "lang/summernote-es-ES.js.map",
+        "lang/summernote-es-ES.min.js",
+        "lang/summernote-es-EU.js",
+        "lang/summernote-es-EU.js.map",
+        "lang/summernote-es-EU.min.js",
+        "lang/summernote-fa-IR.js",
+        "lang/summernote-fa-IR.js.map",
+        "lang/summernote-fa-IR.min.js",
+        "lang/summernote-fi-FI.js",
+        "lang/summernote-fi-FI.js.map",
+        "lang/summernote-fi-FI.min.js",
+        "lang/summernote-fr-FR.js",
+        "lang/summernote-fr-FR.js.map",
+        "lang/summernote-fr-FR.min.js",
+        "lang/summernote-gl-ES.js",
+        "lang/summernote-gl-ES.js.map",
+        "lang/summernote-gl-ES.min.js",
+        "lang/summernote-he-IL.js",
+        "lang/summernote-he-IL.js.map",
+        "lang/summernote-he-IL.min.js",
+        "lang/summernote-hr-HR.js",
+        "lang/summernote-hr-HR.js.map",
+        "lang/summernote-hr-HR.min.js",
+        "lang/summernote-hu-HU.js",
+        "lang/summernote-hu-HU.js.map",
+        "lang/summernote-hu-HU.min.js",
+        "lang/summernote-id-ID.js",
+        "lang/summernote-id-ID.js.map",
+        "lang/summernote-id-ID.min.js",
+        "lang/summernote-it-IT.js",
+        "lang/summernote-it-IT.js.map",
+        "lang/summernote-it-IT.min.js",
+        "lang/summernote-ja-JP.js",
+        "lang/summernote-ja-JP.js.map",
+        "lang/summernote-ja-JP.min.js",
+        "lang/summernote-ko-KR.js",
+        "lang/summernote-ko-KR.js.map",
+        "lang/summernote-ko-KR.min.js",
+        "lang/summernote-lt-LT.js",
+        "lang/summernote-lt-LT.js.map",
+        "lang/summernote-lt-LT.min.js",
+        "lang/summernote-lt-LV.js",
+        "lang/summernote-lt-LV.js.map",
+        "lang/summernote-lt-LV.min.js",
+        "lang/summernote-mn-MN.js",
+        "lang/summernote-mn-MN.js.map",
+        "lang/summernote-mn-MN.min.js",
+        "lang/summernote-nb-NO.js",
+        "lang/summernote-nb-NO.js.map",
+        "lang/summernote-nb-NO.min.js",
+        "lang/summernote-nl-NL.js",
+        "lang/summernote-nl-NL.js.map",
+        "lang/summernote-nl-NL.min.js",
+        "lang/summernote-pl-PL.js",
+        "lang/summernote-pl-PL.js.map",
+        "lang/summernote-pl-PL.min.js",
+        "lang/summernote-pt-BR.js",
+        "lang/summernote-pt-BR.js.map",
+        "lang/summernote-pt-BR.min.js",
+        "lang/summernote-pt-PT.js",
+        "lang/summernote-pt-PT.js.map",
+        "lang/summernote-pt-PT.min.js",
+        "lang/summernote-ro-RO.js",
+        "lang/summernote-ro-RO.js.map",
+        "lang/summernote-ro-RO.min.js",
+        "lang/summernote-ru-RU.js",
+        "lang/summernote-ru-RU.js.map",
+        "lang/summernote-ru-RU.min.js",
+        "lang/summernote-sk-SK.js",
+        "lang/summernote-sk-SK.js.map",
+        "lang/summernote-sk-SK.min.js",
+        "lang/summernote-sl-SI.js",
+        "lang/summernote-sl-SI.js.map",
+        "lang/summernote-sl-SI.min.js",
+        "lang/summernote-sr-RS-Latin.js",
+        "lang/summernote-sr-RS-Latin.js.map",
+        "lang/summernote-sr-RS-Latin.min.js",
+        "lang/summernote-sr-RS.js",
+        "lang/summernote-sr-RS.js.map",
+        "lang/summernote-sr-RS.min.js",
+        "lang/summernote-sv-SE.js",
+        "lang/summernote-sv-SE.js.map",
+        "lang/summernote-sv-SE.min.js",
+        "lang/summernote-ta-IN.js",
+        "lang/summernote-ta-IN.js.map",
+        "lang/summernote-ta-IN.min.js",
+        "lang/summernote-th-TH.js",
+        "lang/summernote-th-TH.js.map",
+        "lang/summernote-th-TH.min.js",
+        "lang/summernote-tr-TR.js",
+        "lang/summernote-tr-TR.js.map",
+        "lang/summernote-tr-TR.min.js",
+        "lang/summernote-uk-UA.js",
+        "lang/summernote-uk-UA.js.map",
+        "lang/summernote-uk-UA.min.js",
+        "lang/summernote-uz-UZ.js",
+        "lang/summernote-uz-UZ.js.map",
+        "lang/summernote-uz-UZ.min.js",
+        "lang/summernote-vi-VN.js",
+        "lang/summernote-vi-VN.js.map",
+        "lang/summernote-vi-VN.min.js",
+        "lang/summernote-zh-CN.js",
+        "lang/summernote-zh-CN.js.map",
+        "lang/summernote-zh-CN.min.js",
+        "lang/summernote-zh-TW.js",
+        "lang/summernote-zh-TW.js.map",
+        "lang/summernote-zh-TW.min.js",
+        "plugin/databasic/summernote-ext-databasic.css",
+        "plugin/databasic/summernote-ext-databasic.js",
+        "plugin/databasic/summernote-ext-databasic.min.css",
+        "plugin/databasic/summernote-ext-databasic.min.js",
+        "plugin/hello/summernote-ext-hello.js",
+        "plugin/hello/summernote-ext-hello.min.js",
+        "plugin/specialchars/summernote-ext-specialchars.js",
+        "plugin/specialchars/summernote-ext-specialchars.min.js",
+        "summernote.min.css",
+        "summernote-lite.min.css",
+        "summernote-lite.min.js",
+        "summernote-bs5.min.css",
+        "summernote-bs5.min.js"
+      ]
+    },
+    {
+      "library": "Chart.js@4.2.1",
+      "destination": "wwwroot/lib/Chart.js/",
+      "files": [
+        "chart.min.js",
+        "chart.umd.min.js"
+      ]
+    }
+  ]
+}

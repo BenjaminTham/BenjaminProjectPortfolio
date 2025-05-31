@@ -1,0 +1,158 @@
+﻿/*    sort-item*/
+.sort-section .item-sort {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit
+}
+    .sort-section .item-sort:hover {
+        color: #0094ff;
+    }
+
+.sort-section .item-sort.active {
+    color: #0094ff;
+}
+
+.sort-section .item-sort .item-sort-icon {
+    margin-left: 5px;
+}
+
+
+/*    page-size*/
+.page-size-section .page-size-value {
+    border: 1px solid #eeeeee;
+    background: #fff;
+    position: relative;
+    min-width: 60px;
+    text-align: center;
+    height: 30px;
+    padding: 4px 20px 4px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 5px
+}
+
+.selectBox__value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 0.8rem;
+}
+
+.page-size-section .page-size-value:after {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    transition: all 0.2s ease-in-out;
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8.001' height='8.165' viewBox='0 0 14.001 8.165'%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23212121;%7D%3C/style%3E%3C/defs%3E%3Cpath class='a' d='M13.861,60.224l-.7-.7a.441.441,0,0,0-.645,0L7,65.036,1.487,59.522a.441.441,0,0,0-.645,0l-.7.7a.441.441,0,0,0,0,.645l6.537,6.538a.441.441,0,0,0,.645,0l6.538-6.538a.442.442,0,0,0,0-.645Z' transform='translate(0 -59.382)'/%3E%3C/svg%3E");
+}
+
+.page-size-section .page-size-value .dropdown-menu {
+    transition: all 0.5s ease-in-out;
+    opacity: 0;
+    display: block;
+    width: 100%;
+    max-height: 250px;
+    z-index: -1;
+    overflow-y: auto;
+    transform: translateY(-15%);
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    background-color: #fff;
+    left: 0;
+    border: none;
+    margin-top: 5px;
+    padding: 12px 0;
+    border-radius: 0;
+    min-width: 100%;
+    -webkit-box-shadow: 0 20px 60px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 60px 0px rgba(0, 0, 0, 0.15);
+}
+
+.page-size-section .page-size-value.show {
+    background-color: #fff;
+}
+
+    .page-size-section .page-size-value.show:after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
+    .page-size-section .page-size-value.show .dropdown-menu {
+        transition: all 0.3s ease-in-out;
+        visibility: visible;
+        opacity: 1;
+        z-index: 1;
+        transform: translateY(0);
+    }
+
+.page-size-section .page-size-value .dropdown-item.active, .page-size-section .page-size-value .dropdown-item:active {
+    color: #e23e1d;
+    text-decoration: none;
+    background-color: rgba(199, 161, 122, 0.04);
+}
+
+.page-size-section .page-size-value .dropdown-item {
+    font-size: 0.8rem;
+}
+
+    .page-size-section .page-size-value .dropdown-item:focus, .page-size-section .page-size-value .dropdown-item:hover {
+        color: #e23e1d;
+        background-color: rgba(199, 161, 122, 0.04);
+    }
+
+
+/*    page-section*/
+
+.page-section .page-item .page-link {
+    display: block;
+    color: #0b51b7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #eaf0f9;
+    -webkit-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+}
+.page-section .page-item .page-link:hover {
+    z-index: 2;
+    color: #094192;
+    background-color: #f1f5fa;
+    border-color: #eaf0f9;
+}
+.page-section .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #37474f;
+    border-color: #37474f;
+}
+.page-section .page-item.disabled .page-link {
+    color: #b3b5b7;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #eaf0f9;
+}
+
+
+/*    search-section*/
+
+.search-section .input-group-sm > .btn, .search-section .input-group-sm > .form-control, .search-section .input-group-sm > .form-select, .search-section .input-group-sm > .input-group-text {
+    padding: 0.25rem 0.5rem;
+    font-size: .86rem;
+    border-radius: 0.2rem;
+}
+
+.search-section .btn-light {
+    color: #000;
+    background-color: #f9f9f9;
+    border-color: #e8ebf3;
+}
+.search-section .btn-light:hover {
+    color: #000;
+    background-color: #e9ecef;
+    border-color: #e8eaeb;
+}
+

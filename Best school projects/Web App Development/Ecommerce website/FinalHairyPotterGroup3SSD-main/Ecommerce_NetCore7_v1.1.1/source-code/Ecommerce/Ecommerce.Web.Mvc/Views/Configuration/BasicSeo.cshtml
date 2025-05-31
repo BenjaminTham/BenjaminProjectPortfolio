@@ -1,0 +1,149 @@
+﻿@model BasicSeoConfigurationDto
+
+@{
+    ViewData["Title"] = "Seo Configuration";
+    var request = context.HttpContext.Request;
+    var _baseURL = $"{request.Scheme}://{request.Host}"; // http://localhost:5000
+}
+
+@section Styles{
+    @*<link href="~/view-resources/areas/configuration/appsetting.css" rel="stylesheet" />*@
+    }
+
+    <div class="page-title-box">
+        <h4 class="page-title">Basic Seo Configuration</h4>
+    </div>
+
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title">Manage Basic Seo Config.</div>
+        </div>
+        <div class="card-body">
+            <partial name="_ConfigurationTab" />
+            <div class="tab-content" id="nav-tabContent">
+                <div id="nav-shop">
+                    <div class="mt-4">
+                        <div class="">
+                            <div class="general-label">
+                                <!-- Basic tab start -->
+                                <div style="font-size: 14px; max-width: 620px; box-shadow: 0 0 6px #ccc; padding: 15px 10px; margin-bottom: 20px; border-radius: 5px; color: #4d5156; font-family: arial,sans-serif !important">
+                                    <div style="color: #202124; margin-bottom: 5px;">
+                                        <span>@_baseURL</span>
+                                    </div>
+                                    <span style="color: #1a0dab; font-size: 20px; display: block; overflow: hidden !important; text-overflow: ellipsis; white-space: nowrap;" id="previewTitle"></span>
+                                    <div>
+                                        <span style="font-size: 14px;" id="previewDescription"></span>
+                                    </div>
+                                </div>
+                                <form id="editBasicSeo" asp-action="BasicSeo" enctype="multipart/form-data" method="post">
+                                    <div class="mt-3">
+                                        <label for="SeoTitle">Seo Title</label>
+                                        <input type="text" class="form-control" name="SeoTitle" id="SeoTitle" value="@Model.SeoTitle">
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="SeoDescription">Seo Description <small>(155–160 characters)</small></label>
+                                        <textarea rows="3" class="form-control" name="SeoDescription" id="SeoDescription">@Model.SeoDescription</textarea>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label class="control-label">Seo Keywords <small>(Separated with comma ",")</small></label>
+                                        <textarea rows="4" class="form-control" name="SeoKeywords">@Model.SeoKeywords</textarea>
+                                    </div>
+
+                                    <div class="mt-3 float-right">
+                                        <div class="d-grid gap-2 d-sm-block">
+                                            <button type="submit" class="btn btn-blue py-2 px-5">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Basic tab end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @section Scripts{
+    <script src="~/others/js/app-configuration.js"></script>
+
+    <script>
+        function add3Dots(string, limit) {
+            var dots = "...";
+            if (string.length > limit) {
+                // you can also use substr instead of substring
+                string = string.substring(0, limit) + dots;
+            }
+            return string;
+        }
+
+        updateExcerpt();
+        function updateExcerpt() {
+            document.getElementById('previewDescription').innerHTML = add3Dots(document.getElementById('SeoDescription').value, 155);
+            document.getElementById('previewTitle').innerHTML = document.getElementById('SeoTitle').value;
+
+            document.getElementById('SeoDescription').addEventListener('keyup', getDescription, false);
+            document.getElementById('SeoTitle').addEventListener('keyup', getTitle, false);
+        }
+
+
+        function getDescription() {
+            var previewDescription = document.getElementById('previewDescription');
+            var textArea = document.getElementById('SeoDescription').value;
+
+            previewDescription.innerHTML = add3Dots(textArea, 155);
+        }
+
+        function getTitle() {
+            var previewTitle = document.getElementById('previewTitle');
+            var title = document.getElementById('SeoTitle').value;
+
+            previewTitle.innerHTML = title;
+        }
+    </script>
+
+
+    <script>
+
+        $("#editBasicSeo").submit(function (event) {
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            if ($f.valid()) { // check if form is valid
+                SuLoader.start();
+
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    var data = new FormData(this); // prepare the FORM data to POST
+
+                    $.ajax({
+                        url: url,
+                        method: "POST",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (response, status, xhr) {
+                            notifier.open({ type: "success", message: "Info Updated" });
+                            SuLoader.done();
+                            //location.reload();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                            notifier.open({ type: "error", message: errorMessage });
+                            SuLoader.done();
+                        }
+                    });
+                }
+            }
+        });
+
+    </script>
+
+
+}

@@ -1,0 +1,142 @@
+/* General Styles */
+body {
+    font-family: roboto;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #022B3A;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .search-bar,
+  .dropdown,
+  .date-picker {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Post Styles */
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .post {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .topic-tags {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .tag {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+  
+  .post-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .post-link {
+    color: #007bff;
+    text-decoration: underline;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .post-date {
+    font-size: 12px;
+    color: #6c757d;
+  }
+  
+  /* Badge Styles */
+  .badges {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  
+  .badge {
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+  
+  .badge-purple {
+    background-color: #6f42c1;
+  }
+  
+  .badge-red {
+    background-color: #dc3545;
+  }
+  
+  .badge-blue {
+    background-color: #007bff;
+  }
+  
+  .badge-orange {
+    background-color: #fd7e14;
+  }
+  
+  /* User Tags */
+  .user-tags {
+    margin-top: 10px;
+  }
+  
+  .user-tags-list {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  
+  .user-tag {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+  
+  .notes {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 10px;
+  }
+  

@@ -1,0 +1,82 @@
+﻿@model Ecommerce.Application.Handlers.Categories.Commands.UpdateCategoryCommand
+
+@{
+    ViewData["Title"] = "Update Category";
+    Layout = LayoutPage.AdminLayout;
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Update Category</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Update Category</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Slug" class="control-label"></label>
+                        <div class="bg-light py-3 px-2">
+                            <input asp-for="Slug" class="form-control" />
+                            <div class="checkbox_item mt-1">
+                                <label class="d-flex align-items-center">
+                                    <input type="checkbox" checked="checked" id="autoGenSlug">
+                                    auto generate
+                                </label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ParentCategoryId" class="control-label">Parent Category</label>
+                        <select asp-for="ParentCategoryId" class="form-select" asp-items="ViewBag.ParentCategoryId">
+                            <option value="">None</option>
+                        </select>
+                        <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button type="submit" class="btn btn-blue">Save</button>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 d-md-block mt-3">
+                    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/others/js/hierarchy-select.min.js"></script>
+    <script>
+
+        $(document).on('change', '#autoGenSlug', function () {
+            if (this.checked) autoGenSlug();
+        });
+
+        $(document).on('change keyup input', 'input[name="Name"]', function () {
+            let autoGen = document.getElementById('autoGenSlug').checked;
+            if (autoGen) autoGenSlug();
+        });
+
+        function autoGenSlug() {
+            let text = $('input[name="Name"]').val();
+            text = text
+                .replace(/\s+/g, '-') //replace space with dash(-)
+                .replace('&', 'And').replace(',', '').replace('.', '').replace("'", '').toLowerCase();
+            $('input[name="Slug"]').val(text);
+        }
+    </script>
+}

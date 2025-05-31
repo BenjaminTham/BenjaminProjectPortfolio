@@ -1,0 +1,10 @@
+﻿#profilesetting .list-group-item {
+    color: #000000 !important;
+}
+
+#profilesetting .list-group-item.active {
+    color: #ffffff !important;
+    background-color: #22c8e5 !important;
+    border: #22c8e5;
+}
+

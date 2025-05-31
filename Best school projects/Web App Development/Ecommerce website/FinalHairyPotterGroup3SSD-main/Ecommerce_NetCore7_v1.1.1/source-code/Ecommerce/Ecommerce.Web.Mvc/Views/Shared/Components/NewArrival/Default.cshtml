@@ -1,0 +1,58 @@
+﻿@model IEnumerable<NewProductShocaseDto>
+@{
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+@if (Model != null && Model.Any())
+{
+    var latestThreeProducts = Model.OrderByDescending(item => item.ProductId).Take(3).ToList();
+
+    <div class="container my-5">
+        <div>
+            <span class="h-5 fw-700 d-block mb-2">New Arrivals</span>
+        </div>
+        <div class="row">
+            @for (int i = 0; i < latestThreeProducts.Count; i++)
+            {
+                <div class="col @(i == 1 ? "col-md-6" : "col-md-3") custom-col">
+                    <div class="mb-4 product @(i == 1 ? "highlight" : "")">
+                        <a href="/productdetails/@latestThreeProducts[i].Slug" class="text-decoration-none text-dark shadow-sm text-center">
+                            <div style="height: 280px; width: auto;">
+                                <img alt="product" class="img-fluid border-radius-0" style="width: 100%; height: 100%; object-fit: cover;" src="@(latestThreeProducts[i].ProductImage != null ? "/" + latestThreeProducts[i].ProductImage : "/assets/images/no-image.png")">
+                            </div>
+                            <div class="pt-2">
+                                <div class="height-40">
+                                    <span class="text-ellipsis--2 d-block lh-1" style="font-size: 1.1em;">@latestThreeProducts[i].Name</span>
+                                </div>
+                                <div class="fw-700 h-7">
+                                    <span class="price">
+                                        <bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")">
+                                            <span>@conGen.CurrencySymbol</span><span>@latestThreeProducts[i].Price</span>
+                                        </bdi>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+<style>
+    .custom-col {
+        padding: 10px;
+    }
+
+    .product {
+        transform: scale(1); /* Ensure it starts at normal size */
+        transition: transform 0.3s ease-in-out; /* Smooth transition for scaling */
+    }
+
+        /* Apply the hover effect to all products */
+        .product:hover {
+            transform: scale(1.1); /* Scale up the product on hover */
+        }
+</style>

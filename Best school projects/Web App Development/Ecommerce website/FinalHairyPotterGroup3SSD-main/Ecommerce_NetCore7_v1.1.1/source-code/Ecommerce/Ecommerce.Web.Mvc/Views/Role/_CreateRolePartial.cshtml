@@ -1,0 +1,38 @@
+﻿@model AddEditRoleDto
+<!-- create-modal start -->
+<div class="modal fade" id="create-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Role</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="createForm" asp-action="CreateRole" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="validationerror"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Name" su-reset-input>Role Name</label>
+                            <input type="text" class="form-control" asp-for="Name">
+                            <span asp-validation-for="Name"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-soft-danger" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <button type="button" class="btn btn-soft-primary" su-reset-form>Clean</button>
+                        <button type="submit" class="btn btn-soft-success" id="createItem">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- create-modal end -->
+

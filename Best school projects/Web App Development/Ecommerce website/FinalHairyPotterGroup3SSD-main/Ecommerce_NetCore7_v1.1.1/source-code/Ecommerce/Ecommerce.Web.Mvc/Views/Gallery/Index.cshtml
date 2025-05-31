@@ -1,0 +1,475 @@
+﻿
+@{
+    ViewData["Title"] = "Gallery";
+}
+
+@section Styles{
+
+    <style>
+        .image-selected {
+            border: 3px solid #03a9f4 !important;
+        }
+
+        .nav-tabs .nav-link {
+            margin-bottom: -2px;
+            color: #141414;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #cccccc42;
+        }
+
+            .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+                color: #03a9f4;
+                background-color: #fff;
+                border: 2px solid;
+                border-color: #cccccc42 #cccccc42 #fff;
+                border-radius: 10px 10px 0 0;
+            }
+
+            .nav-tabs .nav-link:hover {
+                border: 2px solid;
+                border-color: #cccccc42 #cccccc42 #fff;
+                border-radius: 10px 10px 0 0;
+            }
+
+        .amsify-suggestags-input-area .amsify-select-tag.col-bg {
+            background: #efefef;
+            color: #2c2a2a;
+            border-radius: 5px;
+        }
+
+        .dropzone {
+            width: 100%;
+            margin: auto;
+            min-height: 300px;
+            border: 3px dashed #ddd;
+            margin-top: 85px;
+            border-radius: 20px;
+        }
+
+            .dropzone .dz-message button {
+                color: #bdbdbd;
+            }
+
+            .dropzone .dz-preview .dz-remove {
+                color: #de3f34;
+            }
+
+        .btn-upload {
+            color: #fff;
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .media-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .media-container::-webkit-scrollbar-track {
+            background-color: #e4e4e4;
+            /*border-radius: 100px;*/
+        }
+
+        .media-container::-webkit-scrollbar-thumb {
+            background-color: #22c8e5;
+            border-radius: 100px;
+        }
+
+        #loadingmedia {
+            transition: .5s ease;
+            /*opacity: 0;*/
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+
+        .media-image img {
+            transition: transform .4s;
+            border: 3px solid #ffffff00;
+            box-shadow: 0 0 4px #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            max-height: 100px !important;
+            max-width: -webkit-fill-available;
+        }
+
+        .media-image img:hover {
+            transform: scale(1.05);
+        }
+
+        @@media (max-width: 1200px) {
+            .media-image img {
+                max-height: 160px !important;
+                max-width: -webkit-fill-available;
+            }
+
+            .image-preview {
+                height: 250px;
+            }
+        }
+
+        @@media (max-width: 992px) {
+            .image-preview {
+                height: 200px;
+            }
+
+            .media-image img {
+                max-height: 130px !important;
+                max-width: -webkit-fill-available;
+            }
+        }
+
+        @@media (max-width: 768px) {
+        }
+
+        @@media (max-width: 575.98px) {
+            .media-image img {
+                max-height: 100px !important;
+                max-width: -webkit-fill-available;
+            }
+
+            .image-preview {
+                height: 250px;
+            }
+        }
+
+    </style>
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Media Gallery</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Media Gallery</div>
+    </div>
+    <div class="card-body pb-5">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link me-1 active" id="nav-gallery-tab" data-bs-toggle="tab" href="#nav-gallery" type="button" role="tab" aria-controls="nav-gallery" aria-selected="true">Gallery</button>
+                <button class="nav-link" id="nav-upload-tab" data-bs-toggle="tab" href="#nav-upload" type="button" role="tab" aria-controls="nav-upload" aria-selected="false">Upload</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            @*Media library tab*@
+            <div class="tab-pane fade show active" id="nav-gallery" role="tabpanel" aria-labelledby="nav-gallery-tab">
+                <div class="row">
+                    <div class="col-md-7 col-sm-7 col-lg-8 col-xl-9">
+                        <div class="mb-4 mb-md-2 media-container" style="width: 100%; min-height: 50vh; max-height: 60vh; overflow-y: auto; scroll-behavior: smooth; border: 2px solid #cccccc42; border-top: none;">
+                            @*Media gallary*@
+                            <div class="media-image"></div>
+                            <div class="text-center mt-4 mb-5">
+                                <div id="nomoredata" class="mb-1 text-danger" style="display: none">
+                                    <span>no more images..</span>
+                                </div>
+                                <button class="load-more btn btn-carrot-outline">Load More</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-lg-4 col-xl-3">
+                        <div style="margin-top: 10px;">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div>
+                                        <div class="image-container" style="border: 2px solid #cccccc42; background: #fff; text-align: center; ">
+                                            <img su-media-path class="image-preview img-fluid" src="/media/images/no-image.png" style="" />
+                                        </div>
+                                    </div>
+                                    <span su-media-name class="image-name mt-2 d-block">Please select a image</span>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="mediaUpdateForm" asp-action="UpdateMediaInfo" method="post">
+                                        <input su-media-id hidden name="Id" id="Id" />
+                                        <input su-media-name hidden name="Name" id="Name" />
+                                        <div class="mb-2 row">
+                                            <label for="Title" class="col-md-3">Title</label>
+                                            <div class="col-md-9">
+                                                <input su-media-title type="text" class="form-control" placeholder="Media Title" id="Title" name="Title">
+                                            </div>
+                                        </div>
+                                        <div class="mb-2 row">
+                                            <label for="Tags" class="col-md-3">Tags</label>
+                                            <div class="col-md-9">
+                                                <input su-media-tags type="text" class="form-control" placeholder="Tags separated by comma ','" id="Tags" name="Tags">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-9 offset-md-3 text-right">
+                                                <button type="button" id="deletemedia" class="btn btn-blood-outline btn-sm"><i class="fa fa-trash"></i></button>
+                                                <button type="submit" class="btn btn-sky btn-sm px-4 d-inline-flex align-items-center">
+                                                    <span id="mediasavebtn" class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>
+                                                    <span>Save</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            @*Add new*@
+            <div class="tab-pane fade" id="nav-upload" role="tabpanel" aria-labelledby="nav-upload-tab">
+                <div id="dropzone">
+                    <form action="/uploadmedia" method="post" enctype="multipart/form-data" id="mediaDropzone" class="dropzone needsclick dz-clickable dropzone-previews">
+                        @Html.AntiForgeryToken()
+                        <div></div>
+                        <div class="dz-message needsclick">
+                            <div><svg aria-hidden="true" width="5rem" focusable="false" data-prefix="fas" data-icon="cloud" class="svg-inline--fa fa-cloud fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="#e7615c" d="M537.6 226.6c4.1-10.7 6.4-22.4 6.4-34.6 0-53-43-96-96-96-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32c-88.4 0-160 71.6-160 160 0 2.7.1 5.4.2 8.1C40.2 219.8 0 273.2 0 336c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-61.9-44-113.6-102.4-125.4z"></path></svg></div>
+                            <button type="button" class="dz-button">Drop files here or click to upload.</button><br />
+                        </div>
+                        <span class="note needsclick">
+
+                        </span>
+                    </form>
+                    <div>
+                        <div class="form-group">
+                            <div class="validationerror"></div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button id="btnSubmit" class="btn btn-carrot-outline px-4">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        var pageSize = 20;
+        var pageIndex = 0;
+        var selectedMedia;
+
+        function resetMedia() {
+            $(".media-image").empty();
+            $('img[su-media-path]').attr("src", "/media/images/no-image.png");
+            pageIndex = 0;
+            GetData();
+        };
+
+        $(document).ready(function () {
+            GetData();
+            $(document).on('click', '.load-more', function () {
+                GetData();
+            });
+        });
+
+        function GetData() {
+            $.ajax({
+                type: 'GET',
+                url: '/getpagedmedia',
+                data: { "pageindex": pageIndex, "pagesize": pageSize },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if (data.length != 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('<img class="img-fluid m-2" su-media-id="' + data[i].id + '" src="/' + data[i].name + '" alt="image">').hide().appendTo(".media-image").fadeIn(1000);
+                        }
+                        pageIndex++;
+                    } else {
+                        $("#nomoredata").show();
+                    }
+                },
+                beforeSend: function () {
+                    $(".load-more").text("Loading...");
+                },
+                complete: function () {
+                    $(".load-more").text("Load More");
+                },
+                error: function () {
+                    alert("Error while retrieving data!");
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function workaroundDropzone() {
+            return "files";
+        }
+        Dropzone.autoDiscover = false;
+        var mediaDropzone = new Dropzone("#mediaDropzone", {
+            paramName: workaroundDropzone,
+            autoProcessQueue: false,
+            acceptedFiles: "image/*,application/pdf",
+            parallelUploads: 30, // Number of files process at a time (default 2)
+            maxFilesize: 1, // MB
+            maxFiles: 30,
+            uploadMultiple: true,
+            dictRemoveFile: 'Remove',
+            //dictFileTooBig: 'Image is larger than 1MB',
+            addRemoveLinks: true,
+            error: function (file, errorMessage) {
+                errors = true;
+                console.log(errorMessage);
+                var err = [];
+                err.push(errorMessage);
+                renderValidationError(err);
+            },
+            //success: function (file, response) {
+            //    alert(JSON.stringify(response));
+            //},
+
+        });
+
+
+
+        mediaDropzone.on("success", function (file) {
+            setTimeout(function () { mediaDropzone.removeFile(file); }, 1000);
+            $('[href="#nav-gallery"]').tab('show');
+        });
+
+        mediaDropzone.on("queuecomplete", function (file) {
+            resetMedia();
+        });
+
+        $('#btnSubmit').click(function () {
+            mediaDropzone.processQueue();
+        });
+    </script>
+
+    <script>
+        function copyToClipboard(text, type) {
+            navigator.clipboard.writeText(text);
+            var notification = type == null ? "Item copied to clipboard!" : type + " copied to clipboard!"
+            notifier.open({ type: "info", message: notification })
+        }
+
+        function copyText() {
+            var copyText = document.querySelector(".image-link");
+            copyToClipboard(copyText.innerText, "Text");
+        }
+
+        function copyLink() {
+            var copyText = document.querySelector(".image-link");
+            var pathurl = window.location.origin;
+            copyToClipboard(pathurl + '/' + copyText.getAttribute("href"), "Link");
+        }
+
+
+    </script>
+
+    <script>
+
+        $(document).on('click', '[su-media-id]', function () {
+            var id = $(this).attr("su-media-id");
+            console.log(id);
+            $('.media-image').find('.image-selected').removeClass('image-selected');
+            $('img[su-media-id=' + id + ']').addClass('image-selected');
+            getById(id);
+        });
+
+        function getById(id) {
+            $.ajax('/getmediabyid/' + id, {
+                type: 'GET',
+                success: function (response, status, xhr) {
+                    var pathurl = window.location.origin;
+                    var imglink = '/' + response.name;
+                    $('input[su-media-id]').val(response.id);
+                    $('input[su-media-name]').val(response.name);
+                    $('[su-media-name]').html('<a href="' + imglink + '" target="_blank" class="image-link">' + imglink + '</a><a href="javascript:void(0)" class="image-copy btn btn-sm btn-sky-outline ms-2" onclick="copyLink()"><i class="fas fa-link"></i></a><a href="javascript:void(0)" class="image-copy btn btn-sm btn-green-outline ms-2" onclick="copyText()"><i class="far fa-clipboard"></i></a>');
+                    $('input[su-media-title]').val(response.title);
+                    $('input[su-media-tags]').val(response.tags);
+                    $('img[su-media-path]').attr("src", "/" + response.name);
+                    $('input[su-media-tags]').amsifySuggestags();
+                    selectedMedia = response;
+
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+        }
+
+        $(document).on('click', '#deletemedia', function () {
+            swal({
+                title: "Delete Confirm?",
+                text: "Are you wanted to delete this Media?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                reverseButtons: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    deleteMedia(selectedMedia.id);
+                }
+            });
+        });
+
+        function deleteMedia(id) {
+            $.ajax('/deletemedia/', {
+                type: 'POST',
+                data: { id: id },
+                success: function (response, status, xhr) {
+                    console.log(response);
+                    response == "success" ?
+                        notifier.open({ type: "success", message: "Media removed!" }) :
+                        notifier.open({ type: "error", message: "Occurred a problem!" });
+                    resetMedia();
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                    notifier.open({ type: "error", message: "Occurred a problem!" });
+                }
+            });
+        }
+
+        $("#mediaUpdateForm").submit(function (event) {
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+            // check if form is valid
+            var url = $f.attr("action");
+            var data = new FormData(this);
+            $.ajax({
+                url: url,
+                method: "POST",
+                cache: false,
+                data: data,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                success: function (response, status, xhr) {
+                    console.log(response);
+                    notifier.open({ type: "success", message: "Media updated!" });
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                },
+                beforeSend: function () {
+                    $("#mediasavebtn").show();
+                },
+                complete: function (jqXHR, status) {
+                    $("#mediasavebtn").hide();
+                    if (status == "error") { notifier.open({ type: "error", message: jqXHR.statusText }); }
+                }
+            });
+        });
+
+    </script>
+}

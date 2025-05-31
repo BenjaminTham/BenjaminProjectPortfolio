@@ -1,0 +1,46 @@
+﻿@model Ecommerce.Application.Handlers.Sizes.Commands.UpdateSizeCommand
+
+@{
+    ViewData["Title"] = "Update Size";
+    Layout = LayoutPage.AdminLayout;
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Size</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Update Size</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="checkbox_item">
+                            <label class="d-flex align-items-center" asp-for="IsActive">
+                                <input type="checkbox" asp-for="IsActive">
+                                Is Active
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button type="submit" class="btn btn-blue">Update</button>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 d-md-block mt-3">
+                    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+numpy
+scipy
+librosa
+pyaudio
+python_speech_features
+scikit-learn
+pickle-mixin
+wave
+SpeechRecognition
+scipy

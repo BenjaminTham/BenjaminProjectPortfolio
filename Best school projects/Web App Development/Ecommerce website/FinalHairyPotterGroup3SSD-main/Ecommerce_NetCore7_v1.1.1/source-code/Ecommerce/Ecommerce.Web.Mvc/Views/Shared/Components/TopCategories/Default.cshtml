@@ -1,0 +1,80 @@
+﻿@{
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    var topCategories = ViewBag.TopCategories as IEnumerable<TopCategoriesConfigurationDto>;
+    var bannerList = ViewBag.BannerList as List<BannerDto>;
+}
+
+<div class="container my-4">
+
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <h2 class="fw-700 my-4">Featured Category</h2>
+        </div>
+    </div>
+
+    @for (int i = 0; i < bannerList.Count; i++)
+    {
+        <div class="row align-items-stretch">
+            @if (i % 2 == 0) // Even rows: Banner left, Category right
+            {
+                <div class="col-md-6">
+                    <div class="card border-radius-0 my-2 border-0 shadow-1" style="background-color: @bannerList[i].BackgroundColorHexCode; color: @bannerList[i].ColorHexCode">
+                        <div class="card-body height-200 p-3 p-md-5 lh-sm">
+                            <span class="d-block fw-700 h-3">@bannerList[i]?.Title</span>
+                            <div>
+                                <span class="d-block fw-600 h-7">@bannerList[i]?.SubTitle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    @if (i < topCategories.Count())
+                    {
+                        var item = topCategories.ElementAt(i);
+                        <a href="shop/@item.Slug" class="border-radius-0 card-bg-3 my-2 height-200 featured-category-item">
+                            <img alt="@item?.Title" src="@(item?.Image != null ? "/" + item.Image : "/assets/images/no-image.png")" class="featured-category-img">
+                            <div class="featured-category-content" style="background: #fea86b4f">
+                                <div class="p-2 lh-1">
+                                    <span class="d-block fw-700 h-6">@item?.Title</span>
+                                    <div>
+                                        <span class="d-block">Get All New Items</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else // Odd rows: Category left, Banner right
+            {
+                <div class="col-md-6">
+                    @if (i < topCategories.Count())
+                    {
+                        var item = topCategories.ElementAt(i);
+                        <a href="shop/@item.Slug" class="border-radius-0 card-bg-3 my-2 height-200 featured-category-item">
+                            <img alt="@item?.Title" src="@(item?.Image != null ? "/" + item.Image : "/assets/images/no-image.png")" class="featured-category-img">
+                            <div class="featured-category-content" style="background: #fea86b4f">
+                                <div class="p-2 lh-1">
+                                    <span class="d-block fw-700 h-6">@item?.Title</span>
+                                    <div>
+                                        <span class="d-block">Get All New Items</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-radius-0 my-2 border-0 shadow-1" style="background-color: @bannerList[i].BackgroundColorHexCode; color: @bannerList[i].ColorHexCode">
+                        <div class="card-body height-200 p-3 p-md-5 lh-sm">
+                            <span class="d-block fw-700 h-3">@bannerList[i]?.Title</span>
+                            <div>
+                                <span class="d-block fw-600 h-7">@bannerList[i]?.SubTitle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

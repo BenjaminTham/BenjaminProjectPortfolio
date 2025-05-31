@@ -1,0 +1,22 @@
+﻿
+@{
+    Layout = LayoutPage.CleanLayout;
+    ViewBag.Title = "Not Found";
+}
+
+<div>
+    <div style="min-height: 100vh" class="px-4 d-flex align-items-center justify-content-center">
+        <div style="max-width: 600px; max-height: 70vh" class="position-relative">
+            <div>
+                <img src="/assets/svg/error-page.svg" />
+                <span class="headline" style="font-size: 4.5rem; font-weight: bold; position: absolute; top: 20%; right: 15%; color: #172c59">@ViewBag.ErrorCode</span>
+            </div>
+            <div class="mt-3 text-center">
+                <h3 class="mb-1 font-weight-bold" style="color: #172c59">@ViewBag.ErrorMessageTitle</h3>
+                <p>@ViewBag.ErrorMessage</p>
+                <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+

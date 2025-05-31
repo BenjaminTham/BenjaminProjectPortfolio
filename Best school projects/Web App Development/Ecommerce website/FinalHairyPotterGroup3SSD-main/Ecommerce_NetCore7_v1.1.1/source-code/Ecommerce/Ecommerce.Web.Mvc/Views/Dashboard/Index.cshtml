@@ -1,0 +1,315 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    var dashboardItems = ViewBag.DashboardItems as DashboardDto;
+}
+
+@section Styles {
+    <style>
+        .link-to-details {
+            color: #0d089b;
+        }
+
+        .today-sale-val {
+            color: #33d9aa;
+            font-weight: bold;
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #fff !important;
+            }
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Dashboard</h4>
+</div>
+
+
+<div class="row">
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card" style="background-color: #f0e9e1;">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <div class="font-36 fw-bold">@dashboardItems?.PendingOrderCount</div>
+                        <div class="lh-sm">
+                            <span class="d-block text-dark mb-0 fw-semibold">Pending Orders</span>
+                            <small class="d-block"><a class="link-to-details text-decoration-none" asp-controller="Order" asp-action="Pending">View and manage <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card" style="background-color: #e2eee5;">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <div class="font-36 fw-bold">@dashboardItems?.TodaySalesSummary?.TotalSales</div>
+                        <div class="lh-sm">
+                            <span class="d-block text-dark mb-0 fw-semibold">New Orders</span>
+                            <small class="d-block"><a class="link-to-details text-decoration-none" asp-controller="Order" asp-action="Index">Total in last 24 hour <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card" style="background-color: #e4eaee;">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <div class="font-36 fw-bold"><span>@dashboardItems?.CustomerInfo?.TotalCustomer</span><span class="font-12 text-dark ms-1 fw-normal">(<span class="fw-bold font-15">@dashboardItems?.CustomerInfo?.TotalCustomerToday</span> last 24 hour)</span></div>
+                        <div class="lh-sm">
+                            <span class="d-block text-dark mb-0 fw-semibold">Customer</span>
+                            <small class="d-block"><a class="link-to-details text-decoration-none" asp-controller="Customer" asp-action="Index">View and manage <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card" style="background-color: #f0e3e1;">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <div class="font-36 fw-bold">@dashboardItems?.LowStockItemCount</div>
+                        <div class="lh-sm">
+                            <span class="d-block text-dark mb-0 fw-semibold">Stock Low</span>
+                            <small class="d-block"><a class="link-to-details text-decoration-none" asp-controller="Stock" asp-action="LowStockProduct">View and restock <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+</div>
+
+<div class="row">
+
+    <div class="col-12">
+        <div class="fw-bold mb-2">
+            <span>Weekly's Sales Summary</span>
+            <small class="text-sm-4">(@DateTime.Now.ToString("dd MMM yyyy"))</small>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card" style="border: 1px dashed #d5ce6c;">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-title"> <small class="text-uppercase text-carrot">Total Quantity of products sold</small></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="weeklySalesChart" style="max-height: 400px; width: 100%"></canvas>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+    <div class="col-md-6">
+        <div class="card" style="border: 1px dashed #d5ce6c;">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-title"> <small class="text-uppercase text-carrot">Total Amount Earned</small></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    <canvas id="weeklySalesAmountChart" style="max-height: 400px; width: 100%"></canvas>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        $(function () {
+            updateWeeklySalesItemChart();
+            updateWeeklySalesAmountChart();
+        });
+
+        var labels5 = [];
+        var dataset5 = [];
+        var productCount = [];
+
+        var data5 = {
+            labels: labels5,
+            datasets: [
+                {
+                    label: 'Quantity Sold',
+                    data: dataset5,
+                    backgroundColor: ['#76d69140'],
+                    borderColor: ['#76d691'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'No. of different Products',
+                    data: productCount,
+                    //maxBarThickness: 30,
+                    backgroundColor: ['#22c8e540'],
+                    borderColor: ['#22c8e5'],
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        var config5 = {
+            type: 'bar',
+            data: data5,
+            responsive: true,
+            maintainAspectRatio: false,
+            options: {
+                categoryPercentage: 0.8, // notice here
+                barPercentage: 0.95,  // notice here
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#eceff5'
+                        }
+                    }
+                }
+            },
+        };
+
+        var weeklySalesChart = new Chart(
+            document.getElementById('weeklySalesChart'),
+            config5
+        );
+
+        function updateWeeklySalesItemChart() {
+
+            $.ajax('@Url.Action("WeeklySalesCountChart")', {
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (response, status, xhr) {
+                    labels5 = [];
+                    dataset5 = [];
+                    productCount = [];
+
+                    for (i = 0; i < response.length; i++) {
+                        labels5.push(response[i].nameOfDay);
+                        dataset5.push(response[i].itemCount);
+                        productCount.push(response[i].productCount);
+                    }
+
+                    weeklySalesChart.data.datasets[0].data = dataset5;
+                    weeklySalesChart.data.datasets[1].data = productCount;
+                    weeklySalesChart.data.labels = labels5;
+
+                    weeklySalesChart.update();
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+
+        }
+
+
+
+
+        var labels6 = [];
+        var dataset6 = [];
+        var deliveryCharge = [];
+
+        const data6 = {
+            labels: labels6,
+            datasets: [{
+                label: 'Total Profit for the Day',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                fill: true,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.4
+            }]
+        };
+
+        const config6 = {
+            type: 'line',
+            data: data6,
+            responsive: true,
+            maintainAspectRatio: false,
+            options: {
+                scales: {
+                    x: {
+                        grid: {
+                            color: '#eceff5'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            },
+        };
+
+
+        const weeklySalesAmountChart = new Chart(
+            document.getElementById('weeklySalesAmountChart'),
+            config6
+        );
+
+        function updateWeeklySalesAmountChart() {
+            $.ajax('@Url.Action("GetWeeklyItemSalesAmount")', {
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (response, status, xhr) {
+                    labels6 = [];
+                    dataset6 = [];
+
+                    for (i = 0; i < response.length; i++) {
+                        labels6.push(response[i].nameOfDay);
+                        dataset6.push(response[i].orderAmount);
+                    }
+
+                    weeklySalesAmountChart.data.datasets[0].data = dataset6;
+                    weeklySalesAmountChart.data.labels = labels6;
+
+                    weeklySalesAmountChart.update();
+                },
+                error: function (jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+        }
+
+    </script>
+}

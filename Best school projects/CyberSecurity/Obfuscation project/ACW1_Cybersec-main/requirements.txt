@@ -1,0 +1,7 @@
+ffmpeg_python==0.2.0
+numpy==1.26.4
+opencv_python==4.9.0.80
+Pillow==10.3.0
+PyQt5==5.15.10
+PyQt5_sip==12.13.0
+python_magic==0.4.27

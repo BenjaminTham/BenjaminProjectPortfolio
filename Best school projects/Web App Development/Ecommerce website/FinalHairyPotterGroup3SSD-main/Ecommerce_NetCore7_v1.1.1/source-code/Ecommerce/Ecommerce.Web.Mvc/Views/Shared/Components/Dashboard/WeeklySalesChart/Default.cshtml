@@ -1,0 +1,58 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@*<canvas id="weeklySalesChart" style="max-height: 400px; width: 100%"></canvas>*@
+
+
+@*<script>
+    $(function(){
+        const labels5 = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+        const data5 = {
+          labels: labels5,
+          datasets: [{
+            label: 'My First Dataset',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            maxBarThickness: 50,
+            backgroundColor: [
+              'rgba(75, 192, 192)',
+            ],
+            borderColor: [
+              'rgb(75, 192, 192)',
+            ],
+            borderWidth: 0
+          }]
+        };
+
+        const config5 = {
+          type: 'bar',
+          data: data,
+          responsive:true,
+          maintainAspectRatio: false,
+          options: {
+            scales: {
+              x: {
+                grid: {
+                  display: false
+                }
+              },
+              y: {
+                beginAtZero: true,
+                //grid: {
+                //  display: false
+                //}
+              }
+            }
+          },
+        };
+
+        const barChart = new Chart(
+            document.getElementById('weeklySalesChart'),
+            config5
+        );
+
+
+    })
+</script>*@

@@ -1,0 +1,534 @@
+﻿@{
+    ViewData["Title"] = "User";
+}
+
+@section Styles{
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        .dropdown-sm .dropdown-menu {
+            min-width: inherit;
+        }
+
+        .dropdown-sm .dropdown-item {
+            padding: 0.1rem 1rem;
+            font-size: 0.87em;
+        }
+
+        .permission-group {
+            margin-bottom: 20px;
+        }
+
+        .permission-group-title {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .permission-item {
+            margin-bottom: 8px;
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">User</h4>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_User_Create).Result.Succeeded)
+        {
+            <a su-data-createitem class="btn btn-blue" data-bs-toggle="modal" data-bs-target='#create-modal' href="javascript:void(0)"><i class="fa-solid fa-plus"></i> Create New</a>
+        }
+    </div>
+    <div class="card-body">
+        <div>
+            <table id="UserTable" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Username</th>
+                        <th>Full Name</th>
+                        <th>Date of Birth</th>
+                        <th>Age</th>
+                        <th>Email Confirmed</th>
+                        <th>Active</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div>
+    <ul>
+        <li>Here <span class="badge badge-sm bg-soft-blue"><i class="fa-solid fa-person"></i></span> means a customer was exist against this <strong>User.</strong></li>
+    </ul>
+</div>
+
+
+<partial name="_CreateUserPartial" /> @*Create User Modal*@
+<partial name="_EditUserPartial" /> @*Edit User Modal*@
+<partial name="_ManageUserRolePartial" /> @*Manage User Role*@
+<partial name="_ManageUserPermissionPartial" /> @*Manage User Permission*@
+<vc:image></vc:image>
+
+
+
+@section Scripts{
+    <script src="~/media/js/media-select.js"></script>
+    <script>
+
+        function createCustomer(id, name) {
+            swal({
+                title: "Generate Customer?",
+                text: "Want to generate customer for this User [" + name +"]?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                reverseButtons: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax('/Customer/CreateByUser',
+                        {
+                            type: 'POST',
+                            data: { userId: id },
+                            success: function(response, status, xhr) {
+                                location.reload();
+                            },
+                            error: function(jqXhr, textStatus, errorMessage) {
+                                console.log(errorMessage);
+                            }
+                        });
+                } else {
+                    //swal("Your file is safe!");
+                }
+            });
+        }
+
+        $(document).on('click',
+            '[su-permission]',
+            function() {
+                var id = $(this).attr("su-data-id");
+                editPermission(id);
+            });
+
+        function editPermission(id) {
+            $.ajax('@Url.Action("GetPermissionsByUser")/' + id,
+                {
+                    type: 'GET', // http method
+                    success: function(response, status, xhr) {
+                        const grouped = {};
+                        for (let item of response.managePermissionsDto) {
+                            const parts = item.value.split(".");
+                            const groupName = parts[1];
+                            if (!grouped[groupName]) {
+                                grouped[groupName] = [];
+                            }
+                            grouped[groupName].push(item);
+                        }
+                        console.log(response);
+                        $('.selected-user-permission').html(response.fullName);
+                        var html = '';
+                        html += '<span hidden id="PermissionsUserId">' + response.userId + '</span>';
+                        html += '<span hidden id="PermissionsUserName">' + response.userName + '</span>';
+                        for (let groupName in grouped) {
+                            const groupItems = grouped[groupName];
+
+                            html += '<div class="permission-group">';
+                            html += '<span class="permission-group-title">' + groupName?.replace(/([a-z])([A-Z])/g, '$1 $2') + '</span>';
+                            for (i = 0; i < groupItems.length; i++) {
+                                var id = groupItems[i].value.replace(/\./g, "").toString();
+                                const segments = groupItems[i].value.split(".");
+                                const permissionName = segments[2]?.replace(/([a-z])([A-Z])/g, '$1 $2');
+                                var isChecked = groupItems[i].checked == true ? "checked" : "";
+
+                                html += `<div class="form-check permission-item">
+                                            <span hidden id="claimType${id}">${groupItems[i].type}</span>
+                                            <span hidden id="claimValue${id}">${groupItems[i].value}</span>
+                                            <div class="toggle-2 toggle">
+                                                <input type="checkbox" name="${id}" class="form-check-input" id="checked${id}" onchange="permissionChanged('${id}')" ${isChecked}/>
+                                                <label for="checked${id}">${permissionName}</label>
+                                            </div>
+                                        </div>`;
+                            }
+                            html += '</div>';
+                        }
+
+                        $('#permissionGroup').html(html);
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
+                    }
+                });
+        }
+
+        function permissionChanged(i) {
+            var userId = document.getElementById("PermissionsUserId").innerHTML.trim();
+            var userName = document.getElementById("PermissionsUserName").innerHTML.trim();
+            var type = document.getElementById("claimType" + i).innerHTML.trim();
+            var value = document.getElementById("claimValue" + i).innerHTML.trim();
+            var checked = document.getElementById("checked" + i).checked;
+            console.log(userId, userName, type, value, checked);
+
+            var data = {
+                UserId: userId,
+                UserName: userName,
+                Type: type,
+                Value: value,
+                Checked: checked
+            }
+
+            $.ajax({
+                url: '@Url.Action("UpdateUserPermission")',
+                method: "POST",
+                data: data,
+                success: function(response, status, xhr) {
+                    console.log(response);
+                    if (response.success == true) {
+                        notifier.open({ type: "success", message: "Action Successfully!" });
+                    } else {
+                        notifier.open({ type: "error", message: "Occurred a Problem!" });
+                    }
+                },
+                error: function(jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+        }
+    </script>
+    @*<script>
+            function filterPermission() {
+                var input, filter, permissionGroup, permissionItem, label, i, txtValue;
+                input = document.getElementById("filterPermission");
+                filter = input.value.toUpperCase();
+                permissionGroup = document.getElementById("permissionGroup");
+                permissionItem = permissionGroup.getElementsByClassName("permission-item");
+                for (i = 0; i < permissionItem.length; i++) {
+                    label = permissionItem[i].getElementsByTagName("label")[0];
+                    txtValue = label.textContent || label.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        permissionItem[i].style.display = "";
+                    } else {
+                        permissionItem[i].style.display = "none";
+                    }
+                }
+            }
+        </script>*@
+
+    <script>
+        $(document).on('click',
+            '[su-roles]',
+            function() {
+                var id = $(this).attr("su-data-id");
+                rolesByUserId(id);
+            });
+
+        function rolesByUserId(id) {
+            $.ajax('@Url.Action("GetUserRolesById")/' + id,
+                {
+                    type: 'GET', // http method
+                    success: function(response, status, xhr) {
+                        console.log(response);
+
+                        $('.selected-user-role').html(response.userName);
+                        var html = '';
+                        html += '<span hidden id="RoleUserId">' + response.userId + '</span>';
+                        html += '<span hidden id="RoleUserName">' + response.userName + '</span>';
+                        for (i = 0; i < response.manageRolesDto.length; i++) {
+                            var isChecked = response.manageRolesDto[i].checked == true ? "checked" : "";
+                            html += `<div class="mb-2">
+                                        <div class="checkbox_item role-item">
+                                            <label class="d-flex align-items-center" role-name="${response.manageRolesDto[i].name}" for="roleName${i}">
+                                                <input type="checkbox" name="${i}" value="${response.manageRolesDto[i].name}" id="roleName${i}" onchange="roleChanged('${i}')" ${isChecked}>
+                                                ${response.manageRolesDto[i].name}
+                                            </label>
+                                        </div>
+                                    </div>`;
+                        }
+                        $('#roleGroup').html(html);
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
+                    }
+                });
+        }
+
+
+        function roleChanged(i) {
+            var userId = document.getElementById("RoleUserId").innerHTML.trim();
+            var userName = document.getElementById("RoleUserName").innerHTML.trim();
+            //var roleName = document.getElementById("roleName" + i).innerHTML.trim();
+            var roleName = document.getElementById("roleName" + i).closest('.role-item > label').getAttribute('role-name');
+            var checked = document.getElementById("roleName" + i).checked;
+            console.log(userId, userName, roleName, checked);
+
+            var data = {
+                UserId: userId,
+                UserName: userName,
+                RoleName: roleName,
+                Checked: checked
+            }
+
+            $.ajax({
+                url: '@Url.Action("ManageUserRoles")',
+                method: "POST",
+                data: data,
+                success: function(response, status, xhr) {
+                    console.log(response);
+                    if (response.success == true) {
+                        notifier.open({ type: "success", message: "Action Successfully!" });
+                    } else {
+                        notifier.open({ type: "error", message: "Occurred a Problem!" });
+                    }
+                },
+                error: function(jqXhr, textStatus, errorMessage) {
+                    console.log(errorMessage);
+                }
+            });
+        }
+    </script>
+    <script>
+
+        $(".defaultpassword_checkbox").click(function() {
+            if (this.checked) {
+                $("#CustomPasssword").hide();
+                $("input[type=password]").val("");
+            } else {
+                $("#CustomPasssword").show();
+            }
+        });
+
+    </script>
+
+    <script>
+
+        $(document).on('click',
+            '[su-data-createitem]',
+            function() {
+                $('[su-media-preview]').attr('src', '/media/images/no-image.png');
+                $('#create-modal [su-media-selected-input]').val('');
+            });
+
+        $(document).on('click',
+            '[su-edit]',
+            function() {
+                var id = $(this).attr("su-data-id");
+                editClick(id);
+            });
+
+
+        function editClick(id) {
+            $.ajax('@Url.Action("GetUserById")/' + id,
+                {
+                    type: 'GET', // http method
+                    success: function(response, status, xhr) {
+                        console.log(response);
+                        $(".validationerror").empty();
+                        $('#editForm').trigger("reset").setFormData(response.data);
+                        $('#editForm').find('input[name=DateOfBirth]').val(dayjs(response.data.dateOfBirth).format('YYYY-MM-DD'));
+                        response.data.profilePicturePreview != null ? $('.user-image-edit-preview').attr('src', response.data.profilePicturePreview) : $('.user-image-edit-preview').attr('src', '/media/images/no-image.png');
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
+                    }
+                });
+        }
+
+        $("#editForm").submit(function(event) {
+            //debugger;
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            if ($f.valid()) { // check if form is valid
+                SuLoader.start();
+
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    var data = new FormData(this); // prepare the FORM data to POST
+                    data.dateOfBirth = dayjs(data.dateOfBirth).format('YYYY-MM-DD');
+                    $.ajax({ // ajax POST
+                        url: url,
+                        method: "POST",
+                        cache: false,
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        success: function(response, status, xhr) {
+                            console.log(response);
+                            suTable.clearPipeline().draw(false);
+
+                            response.Success == false ? (notifier.open({ type: "error", message: "Occurred a problem!" }), renderValidationError(response.Error)) : (notifier.open({ type: "success", message: "User updated successfully!" }), $("#edit-modal").modal('hide'), $f.trigger('reset'));
+                        },
+                        error: function(jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                        },
+                        complete: function(jqXHR, status) {
+                            SuLoader.done();
+                        }
+                    });
+                }
+            }
+        });
+
+    </script>
+
+    <script>
+
+        $(function() {
+
+            suTable = $('#UserTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("GetUsers")',
+                    pages: 5, //number of pages to cache
+                    method: 'POST'
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false, "orderable": false, "className": "text-nowrap" },
+                    { "targets": [7], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    {
+                        "data": "userName",
+                        "name": "UserName",
+                        "render": function(data, type, row) {
+                            var html = '';
+                            html += `<span class="me-1">${row.userName}</span>`;
+                            if (row.customer != null) {
+                                html += `<span class="badge badge-sm bg-soft-blue"><i class="fa-solid fa-person"></i></span>`;
+                            }
+                            return html;
+                        }
+                    },
+                    //{ "data": "userName", "name": "UserName" },
+                    { "data": "fullName", "name": "FullName" },
+                    {
+                        "data": "dateOfBirth",
+                        "name": "DateOfBirth",
+                        "render": function(data, type, row) {
+                            return row.dateOfBirth != null ? '<span>' + dayjs(row.dateOfBirth).format('YYYY-MM-DD') + '</span>' : '';
+                        }
+                    },
+                    { "data": "age", "name": "Age" },
+                    {
+                        "data": null,
+                        "name": "EmailConfirmed",
+                        "render": function(data, type, row) {
+                            return row.emailConfirmed == true ? '<span class="badge badge-soft-success badge-sm">Yes</span>' : '<span class="badge badge-soft-danger badge-sm">No</span>';
+                        }
+                    },
+                    {
+                        "data": null,
+                        "name": "IsActive",
+                        "render": function(data, type, row) {
+                            return row.isActive == true ? '<span class="badge badge-soft-success badge-sm">Yes</span>' : '<span class="badge badge-soft-danger badge-sm">No</span>';
+                        }
+                    },
+                    {
+                        'data': null,
+                        'render': function(data, type, row) {
+                            return createDropdownHtml(row);
+                        }
+                    }
+                ]
+            });
+        });
+
+        function createDropdownHtml(row) {
+            var html = '';
+            html += '<div class="dropdown dropdown-sm">';
+            html += '<a href="javascript:void(0)" class="btn btn-sky-outline btn-sm" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+            html += '<i class="fa-solid fa-ellipsis-vertical"></i>';
+            html += '</a>';
+            html += '<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"">';
+
+            @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_UserPermission_Edit).Result.Succeeded)
+            {
+                <text>html += '<li><a class="dropdown-item" su-permission su-data-id="' + row.id + '" data-bs-toggle="modal" data-bs-target="#permission-modal"href="javascript:void(0)">Permission</a></li>';</text>
+            }
+
+            @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_UserRole_Edit).Result.Succeeded)
+            {
+                <text>html += '<li><a class="dropdown-item" su-roles su-data-id="' + row.id + '" data-bs-toggle="modal" data-bs-target="#role-modal" href="javascript:void(0)">Role</a></li>';</text>
+            }
+
+            @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_User_Edit).Result.Succeeded)
+            {
+                <text>html += '<li><a class="dropdown-item" su-edit su-data-id="' + row.id + '" data-bs-toggle="modal" data-bs-target="#edit-modal" href="javascript:void(0)">Edit</a></li>';</text>
+            }
+
+            @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_User_Delete).Result.Succeeded)
+            {
+                <text>html += '<li><a class="dropdown-item" su-dttable-delete su-data-id="' + row.id + '" su-data-action="@Url.Action("DeleteUser")"  href="javascript:void(0)">Delete</a></li>';</text>
+            }
+
+            if (row.customer == null) {
+                html += `<li><a class="dropdown-item" href="javascript:void(0)" onclick="createCustomer('${row.id}', '${row.fullName}')"><i class="fa-solid fa-person-circle-plus text-blue"></i> <small>Add Customer</small></a></li>`;
+            }
+
+            html += '</div>';
+            html += '</div>';
+            return html;
+        }
+
+
+    </script>
+
+    <script>
+
+        $("#createForm").submit(function(event) {
+            //debugger;
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            if ($f.valid()) { // check if form is valid
+                SuLoader.start();
+
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    var data = new FormData(this); // prepare the FORM data to POST
+
+                    $.ajax({ // ajax POST
+                        url: url,
+                        method: "POST",
+                        cache: false,
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        success: function(response, status, xhr) {
+                            console.log(response);
+                            suTable.clearPipeline().draw(false);
+
+                            response.success == false ? (notifier.open({ type: "error", message: "Occurred a problem!" }), renderValidationError(response.error)) : (notifier.open({ type: "success", message: "User created successfully!" }), $("#create-modal").modal('hide'), $f.trigger('reset'));
+                        },
+                        error: function(jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                        },
+                        complete: function(jqXHR, status) {
+                            SuLoader.done();
+                        }
+                    });
+                }
+            }
+        });
+
+
+    </script>
+
+
+}

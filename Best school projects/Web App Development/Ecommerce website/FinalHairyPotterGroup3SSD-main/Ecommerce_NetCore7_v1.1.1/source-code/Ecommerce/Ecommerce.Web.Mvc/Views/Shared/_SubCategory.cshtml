@@ -1,0 +1,21 @@
+﻿@model IEnumerable<NavCategoryVM>
+
+
+
+@foreach (var item in Model)
+{
+    if (item.Children.Count() == 0)
+    {
+        <li><a href="/shop/@item.Slug">@item.Name</a></li>
+    }
+    if (item.Children.Count() != 0)
+    {
+        <li>
+            <a href="/shop/@item.Slug" id="navbarDropdown@(item.Name)">@item.Name</a>
+            <ul>
+                @await Html.PartialAsync("_SubCategory", item.Children)
+            </ul>
+        </li>
+    }
+}
+

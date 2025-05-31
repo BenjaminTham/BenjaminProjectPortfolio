@@ -1,0 +1,141 @@
+﻿@model CustomerDto;
+@{
+    ViewData["Title"] = "Address";
+    Layout = LayoutPage.ShopLayout;
+}
+
+
+@if (TempData["AddressError"] != null)
+{
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Address Update Error</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-danger">
+                    <strong><span>@TempData["AddressError"]</span></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div class="top-header bg-soft-ocean">
+    <div class="container">
+        <div class="page-title">
+            <span>Account</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="p-4 content-section customer-profile">
+        <div class="column">
+            <div class="col-md-4">
+                <partial name="_CustomerAccountTab" />
+            </div>
+            <div class="col-md-8">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade bg-white show active p-2">
+                        <h5 class="mb-3 text-uppercase fw-bold">Address</h5>
+                        <div>
+                            <div class="border my-2">
+                                <div class="p-2">
+                                    <div class="mb-3">
+                                        <span class="d-block fw-700 text-sm-3">Billing Address</span>
+                                        <span class="d-block">
+                                            @if (@Model?.BillingAddress != null)
+                                            {
+                                                <span>@Model?.BillingAddress</span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-carrot text-lowercase">No Billing Address Found!</small>
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="d-block fw-700 text-sm-3">Shipping Address</span>
+                                        <span class="d-block">
+                                            @if (@Model?.ShippingAddress != null)
+                                            {
+                                                <span>@Model.ShippingAddress</span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-carrot text-lowercase">No Shipping Address Found!</small>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="border-top p-2">
+                                    <small class="d-block"><a class="text-sky text-decoration-none" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addressModal">Update Address <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="addressModalLabel">Update</div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form asp-controller="My" asp-action="Address" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="BillingAddress">Billing Address</label>
+                        <textarea class="form-control" asp-for="BillingAddress" rows="2" pattern="^[a-zA-Z0-9\s,.'#-]{3,}$" title="Billing address must only contain alphanumeric characters, spaces, #, and common punctuation."></textarea>
+                        <span asp-validation-for="BillingAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress">Shipping Address</label>
+                        <textarea class="form-control" asp-for="ShippingAddress" rows="2" pattern="^[a-zA-Z0-9\s,.'#-]{3,}$" title="Shipping address must only contain alphanumeric characters, spaces, #, and common punctuation."></textarea>
+                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-end d-grid gap-2 d-md-block ">
+                        <button type="submit" class="btn btn-grass-2 px-5">Update</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+
+    <script src="~/others/js/customer-account.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Check if there is an error message in the modal body
+            if ($('.modal-body span').length > 0) {
+                // Show the modal if there is an error message
+                $('#errorModal').modal('show');
+            }
+        });
+    </script>
+
+
+}

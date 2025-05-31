@@ -1,0 +1,121 @@
+﻿@model AddEditUserDto
+<!-- edit-modal start -->
+<div class="modal fade" id="edit-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editForm" asp-action="UpdateUser" enctype="multipart/form-data" method="post">
+                <div class="modal-body">
+                    <div class="card-body">
+                        <input asp-for="Id" hidden />
+                        <div class="form-group">
+                            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+                            <div class="validationerror"></div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Image select modal -->
+                            <div class="col-md-3 text-center">
+                                <div su-media-section>
+                                    <img class="img-fluid mb-1 user-image-edit-preview" su-media-preview src="@((Model != null &&  Model.ProfilePicturePreview != null)? "/" + Model.ProfilePicturePreview : "/media/images/no-image.png")" alt="Product picture">
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                        <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                        <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                    </div>
+                                    <input su-media-selected-input type="text" asp-for="@Model.ProfilePicture" hidden>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="mb-3">
+                                    <label for="UserName" su-reset-input>Username</label>
+                                    <input type="text" class="form-control" asp-for="UserName" autocomplete="off">
+                                    <span asp-validation-for="UserName"></span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="FullName" su-reset-input>First Name</label>
+                                            <input type="text" class="form-control" asp-for="FirstName">
+                                            <span asp-validation-for="FirstName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="FullName" su-reset-input>Last Name</label>
+                                            <input type="text" class="form-control" asp-for="LastName">
+                                            <span asp-validation-for="LastName"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="PhoneNumber" su-reset-input>Phone</label>
+                            <input type="text" class="form-control" asp-for="PhoneNumber">
+                            <span asp-validation-for="PhoneNumber"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="EmailAddress" su-reset-input>Email</label>
+                            <input type="email" class="form-control" asp-for="Email">
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="EmailAddress" su-reset-input>Date of Birth</label>
+                                    <input class="form-control" asp-for="DateOfBirth">
+                                    <span asp-validation-for="DateOfBirth"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Gender" class="control-label"></label>
+                                    <select asp-for="Gender" class="form-select" asp-items="Html.GetEnumSelectList<Gender>()">
+                                        <option value="">None</option>
+                                    </select>
+                                    <span asp-validation-for="Gender"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mt-5">
+                            <div class="mb-2">
+                                <div class="checkbox_item">
+                                    <label class="d-flex align-items-center" asp-for="IsActive">
+                                        <input type="checkbox" asp-for="IsActive" checked>
+                                        Active status
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mb-2">
+                                <div class="checkbox_item">
+                                    <label class="d-flex align-items-center" asp-for="EmailConfirmed">
+                                        <input type="checkbox" asp-for="EmailConfirmed">
+                                        Confirm email
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-soft-danger" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <button type="button" class="btn btn-soft-primary" su-reset-form>Clean</button>
+                        <button type="submit" class="btn btn-soft-success" id="createItem">Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- edit-modal end -->

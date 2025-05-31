@@ -1,0 +1,35 @@
+﻿.bs-canvas-overlay {
+    opacity: 0.85;
+    z-index: 1100;
+}
+
+.bs-canvas {
+    top: 0;
+    z-index: 1110;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 330px;
+    transition: margin .4s ease-out;
+    -webkit-transition: margin .4s ease-out;
+    -moz-transition: margin .4s ease-out;
+    -ms-transition: margin .4s ease-out;
+}
+
+.bs-canvas-left {
+    left: 0;
+    margin-left: -330px;
+}
+
+.bs-canvas-right {
+    right: 0;
+    margin-right: -330px;
+}
+
+.icrement-decrement-btn {
+    width: 30px;
+    height: 20px;
+    line-height: 0;
+    padding: 10px;
+    border-radius: 50px;
+    border: 1px solid #ccc;
+}

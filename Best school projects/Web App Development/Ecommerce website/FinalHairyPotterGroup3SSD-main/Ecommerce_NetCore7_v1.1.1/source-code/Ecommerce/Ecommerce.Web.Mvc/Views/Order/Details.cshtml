@@ -1,0 +1,525 @@
+﻿@model OrderInfoDetailsDto
+
+@{
+    ViewData["Title"] = "Order Details";
+    decimal totalPrice = 0;
+}
+
+@section Styles{
+    <link href="~/others/css/order-track.css" rel="stylesheet" />
+    <style>
+        .order-tems table tr td img {
+            height: 60px;
+            width: 60px;
+            object-fit: cover;
+        }
+    </style>
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Order</h4>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <p class="text-dark mb-0 fw-semibold">Invoice No.</p>
+                        <h3 class="mt-2 mb-0 font-20 fw-bold text-yellow">@Model?.UpdateOrderStatus?.InvoiceNo</h3>
+                        <small class="d-block">@Model?.Order?.CreatedDate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <p class="text-dark mb-0 fw-semibold">Current Status</p>
+                        <h3 class="mt-2 mb-0 font-20 fw-bold text-sky">@Model?.UpdateOrderStatus?.CurrentOrderStatus</h3>
+                        <small class="d-block">@Model?.UpdateOrderStatus?.CurrentOrderStatusTime</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+    <div class="col-md-6 col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row d-flex justify-content-center">
+                    <div class="col">
+                        <p class="text-dark mb-0 fw-semibold">Order By</p>
+                        <h3 class="mt-2 mb-0 font-20 fw-bold text-carrot">@Model?.CustomerInfo?.UserFullName</h3>
+                        <small class="d-block"><a class="text-primary text-decoration-none" href="@Url.Action("Details", "Customer")/@Model.CustomerInfo?.Id">Customer Info <i class="fa-solid fa-arrow-up-right-from-square"></i></a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!--end col-->
+
+</div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title">Order Details</div>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Invoice No.</span>
+                        <span>@Model?.Order?.InvoiceNo</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Order Date</span>
+                        <span>@Model?.Order?.CreatedDate</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Order Status</span>
+                        <span class="badge rounded-pill badge-soft-primary" style="font-size: 1em;">@Model?.UpdateOrderStatus?.CurrentOrderStatus</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Order Amount</span>
+                        <span>@Model?.Order?.OrderAmount</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Delivery Charge</span>
+                        <span>@Model?.Order?.DeliveryCharge</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Delivery Method</span>
+                        <span>@Model?.Order?.DeliveryMethod.Name</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Payment Method</span>
+                        <span class="badge rounded-pill badge-outline-success" style="font-size: 1em;">@Model?.Order?.PaymentMethod</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div> <!--end col-->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Payment Details</span>
+                    @if (Model?.Order?.PaymentStatus == PaymentStatus.Paid.ToString())
+                    {
+                        <span class="badge rounded-pill bg-success" style="font-size: 1em;">@Model?.Order?.PaymentStatus</span>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill badge-outline-primary" style="font-size: 1em;">@Model?.Order?.PaymentStatus</span>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model?.Order?.OrderPayments != null)
+                {
+                    <div>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Payment Type</span>
+                                <span>@Model?.Order?.OrderPayments?.PaymentType</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Paid Amount</span>
+                                <span>@Model?.Order?.OrderPayments?.Amount</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Update On</span>
+                                <span>@Model?.Order?.OrderPayments?.LastModifiedDate</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>REF.</span>
+                                <span>@Model?.Order?.OrderPayments?.Reference</span>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center">
+                        <div>
+                            <strong>Manual Payment Update</strong>
+                            <p>For Cash On Delivery add payment Amount.</p>
+                            <button class="btn btn-soft-danger my-3" data-bs-toggle="modal" data-bs-target='#add-payment-modal'>Add payment</button>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div> <!--end col-->
+</div>
+
+
+
+<div class="card mb-4 order-tems">
+    <div class="card-header">
+        <div class="card-title">Order Items</div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Items</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model?.OrderItemDetails)
+                    {
+                        totalPrice += (item.ItemUnitPrice * item.ItemQty);
+                        <tr>
+                            <td hidden>@item.ProductVariantId</td>
+                            <td>
+                                <div class="d-inline-block">
+                                    <img src="@(item.OrderItemImage != null? "/" + item.OrderItemImage:"/assets/images/no-image.png")" alt="image_not_found">
+                                </div>
+                                <div class="d-inline-block lh-sm">
+                                    <span class="d-block"><a class="text-primary text-decoration-none" href="/productdetails/@item?.ProductSlug" target="_blank">@item.OrderItemTitle</a></span>
+                                    <div>
+                                        <span>@item.ItemUnitPrice</span> <span>x</span> <span>@item.ItemQty</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end">@(item.ItemUnitPrice * @item.ItemQty)</td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr class="fw-bold">
+                        <td class="pb-1">Subtotal</td>
+                        <td class="pb-1 subtotal-value text-end">@totalPrice</td>
+                    </tr>
+                    <tr>
+                        <td class="border-0">Delivery Charge</td>
+                        <td class="border-0 deliverycharge-value text-end">@Model?.Order?.DeliveryCharge</td>
+                    </tr>
+                    <tr style="font-size: 1.2em;">
+                        <td class="fw-bolder">Total</td>
+                        <td class="total-value text-end fw-bolder" style="color: #d63384;">@(totalPrice + Model?.Order?.DeliveryCharge)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Shipping Details</div>
+    </div>
+    <div class="card-body">
+        <form asp-action="UpdateShippingInfo" id="updateShippingInfoForm" method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UpdateOrderStatus.OrderId" name="OrderId" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="CustomerName">Customer Name</label>
+                        <input type="text" value="@Model?.Order?.CustomerName" name="CustomerName" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="CustomerMobile">Customer Mobile</label>
+                        <input type="text" value="@Model?.Order?.CustomerMobile" name="CustomerMobile" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="CustomerEmail">Customer Email</label>
+                        <input type="text" value="@Model?.Order?.CustomerEmail" name="CustomerEmail" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ShippingAddress">Shipping Address</label>
+                        <textarea class="form-control" rows="5" name="ShippingAddress">@Model?.Order?.ShippingAddress</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="CustomerComment">Customer Comment</label>
+                        <textarea class="form-control" rows="5" name="CustomerComment">@Model?.Order?.CustomerComment</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-end">
+                    <div class="d-grid gap-2 d-sm-block">
+                        <button type="submit" class="btn btn-sky-outline">Update Shipping Info</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title">Order Status <span class="badge rounded-pill badge-soft-primary" style="font-size: 1em;">@Model?.UpdateOrderStatus?.CurrentOrderStatus</span></div>
+            </div>
+            <div class="card-body">
+                @if (Model?.OrderStatus?.Count() > 0)
+                {
+                    <div class="order-track">
+                        @foreach (var item in Model.OrderStatus)
+                        {
+                            <div class="order-track-step">
+                                <div class="order-track-status">
+                                    @*<span class="order-track-status-dot" style="@(item.Equals(Model.Last())?"background: #1da91b;":"")"></span>*@
+                                    <span class="order-track-status-dot"></span>
+                                    <span class="order-track-status-line"></span>
+                                </div>
+                                <div class="order-track-text">
+                                    <span class="order-track-status d-block">@item.OrderStatusValue?.StatusValue</span>
+                                    <small class="order-track-date d-block">@DateTime.Parse(item.LastModifiedDate.ToString()).ToString("dd MMM yyyy")</small>
+                                    <small class="order-track-desc">@(item?.Description ?? item?.OrderStatusValue?.Description)</small>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title">Update Order Status</div>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateOrderStatus" id="updateOrderStatusForm" method="POST">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="UpdateOrderStatus.OrderId" name="OrderId" />
+                    <div class="mb-3">
+                        <label asp-for="UpdateOrderStatus.NewOrderStatus" class="control-label">Order Status</label>
+                        <select asp-for="UpdateOrderStatus.NewOrderStatus" name="NewOrderStatus" class="form-select" asp-items="ViewBag.OrderStatusId">
+                        </select>
+                        <span asp-validation-for="UpdateOrderStatus.NewOrderStatus" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="UpdateOrderStatus.Description" class="control-label"></label>
+                        <textarea asp-for="UpdateOrderStatus.Description" name="Description" rows="4" class="form-control"></textarea>
+                        <span asp-validation-for="UpdateOrderStatus.Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-grid gap-2 d-sm-block">
+                            <input type="submit" value="Update Status" id="updateOrderStatus" class="btn btn-sky-outline" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-grid gap-2 d-md-block mt-3 mb-3">
+    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+</div>
+
+
+
+<!-- payment-modal start -->
+<div class="modal fade" id="add-payment-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add payment</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="AddCODPayment" id="cODPaymentForm" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="UpdateOrderStatus.OrderId" name="OrderId" />
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="validationerror"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="text-center">
+                                    <div class="mb-4">
+                                        <strong>Amount to Pay</strong>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <span class="text-blood" style="line-height: 0.8em;font-size: 2.4em;font-weight: bolder; display: block"><i class="fas fa-coins"></i> @(Model?.Order?.OrderAmount + Model?.Order?.DeliveryCharge)</span>
+                                        <small>(Total)</small>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span style="line-height: 0.7em;font-size: 1.4em;font-weight: bold; display: block;">@Model?.Order?.OrderAmount + @Model?.Order?.DeliveryCharge</span>
+                                        <small>(Order + Delivery Charge)</small>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Amount">Amount</label>
+                                    <input type="number" min="0" class="form-control" name="Amount" value="@(Model?.Order?.OrderAmount + Model?.Order?.DeliveryCharge)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Reference">Reference</label>
+                                    <textarea name="Reference" rows="4" class="form-control" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-carrot-outline" data-bs-dismiss="modal">Close</button>
+                    <div>
+                        <button type="submit" class="btn btn-grass-2" id="createItem">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- payment-modal end -->
+
+
+
+
+@section Scripts{
+
+    <script>
+        //Update Order Status
+        $("#updateOrderStatusForm").submit(function (event) {
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            // check if form is valid
+            if ($f.valid()) {
+
+                // fetch the action and method
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    // prepare the FORM data to POST
+                    var data = new FormData(this);
+
+                    // ajax POST
+                    $.ajax({
+                        url: url,
+                        method: "POST",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (response, status, xhr) {
+                            response == "success" ?
+                                notifier.open({ type: "success", message: "Order status updated." }) :
+                                notifier.open({ type: "error", message: "Occurred a problem!" });
+                            location.reload();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                            notifier.open({ type: "error", message: "Occurred a problem!" });
+                        }
+                    });
+                }
+            }
+        });
+
+        //Update Shipping Info
+        $("#updateShippingInfoForm").submit(function (event) {
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            // check if form is valid
+            if ($f.valid()) {
+
+                // fetch the action and method
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    // prepare the FORM data to POST
+                    var data = new FormData(this);
+
+                    // ajax POST
+                    $.ajax({
+                        url: url,
+                        method: "POST",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (response, status, xhr) {
+                            response == "success" ?
+                                notifier.open({ type: "success", message: "Order status updated." }) :
+                                notifier.open({ type: "error", message: "Occurred a problem!" });
+                            location.reload();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                            notifier.open({ type: "error", message: "Occurred a problem!" });
+                        }
+                    });
+                }
+            }
+        });
+
+        //Update Shipping Info
+        $("#cODPaymentForm").submit(function (event) {
+            event.preventDefault();
+            $f = $(event.currentTarget); // fetch the form object
+
+            // check if form is valid
+            if ($f.valid()) {
+
+                // fetch the action and method
+                var url = $f.attr("action");
+                var method = $f.attr("method");
+
+                if (method.toUpperCase() === "POST") {
+                    // prepare the FORM data to POST
+                    var data = new FormData(this);
+
+                    // ajax POST
+                    $.ajax({
+                        url: url,
+                        method: "POST",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function (response, status, xhr) {
+                            console.log(response);
+                            response == "success" ?
+                                notifier.open({ type: "success", message: "Order status updated." }) :
+                                notifier.open({ type: "error", message: "Occurred a problem!" });
+                            location.reload();
+                        },
+                        error: function (jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                            notifier.open({ type: "error", message: "Occurred a problem!" });
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

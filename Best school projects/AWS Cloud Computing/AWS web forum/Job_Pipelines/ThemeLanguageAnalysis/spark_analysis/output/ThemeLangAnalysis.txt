@@ -1,0 +1,32 @@
+Top 3 Languages Across All Themes:
+- English
+- Portuguese
+- Spanish
+
+Top 3 Themes:
+- People
+- Entertainment
+- Environment
+
+Top 3 themes with the highest percentage of the Top 3 languages:
+
+Theme: Investing
+  Language: English, Percentage: 66.67%
+  Language: Portuguese, Percentage: 10.71%
+  Language: Spanish, Percentage: 4.18%
+
+Theme: Business
+  Language: English, Percentage: 68.80%
+  Language: Portuguese, Percentage: 6.12%
+  Language: Spanish, Percentage: 4.97%
+
+Theme: Law
+  Language: English, Percentage: 55.33%
+  Language: Spanish, Percentage: 12.77%
+  Language: Portuguese, Percentage: 11.59%
+
+Theme(s) with the Most Number of Languages:
+Theme: Entertainment, with 99 Languages!
+
+Theme(s) with the Least Number of Languages:
+Theme: Investing, with 35 Languages.

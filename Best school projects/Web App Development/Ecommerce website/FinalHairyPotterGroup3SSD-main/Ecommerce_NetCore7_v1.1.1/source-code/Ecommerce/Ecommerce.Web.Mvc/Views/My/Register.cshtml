@@ -1,0 +1,101 @@
+﻿@model CustomerRegisterDto
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = LayoutPage.CleanLayout;
+}
+
+
+<div class="top-header">
+    <div class="container-fluid ">
+        <div class="d-flex justify-content-between">
+            <button onclick="history.back()" class="btn btn-light btn-sm rounded-2 bg-soft-blood"><i class="fa-solid fa-arrow-left"></i></button>
+            <a href="/" class="btn btn-light btn-sm rounded-2 bg-soft-blood"><i class="fas fa-home"></i></a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="page-title">
+            <span>Sign Up</span>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="p-4 content-section">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <div class="right-side-content">
+                    <img src="/assets/images/signup.svg" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <div class="py-4 px-3 mw-400">
+                        <form asp-controller="My" asp-action="Register" method="post">
+                            <div class="row g-2 mt-1">
+                                <div class="col-md-6">
+                                    <div class="input-field">
+                                        <label asp-for="FirstName">First Name</label>
+                                        <input type="text" class="form-control" asp-for="FirstName">
+                                        <span asp-validation-for="FirstName"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-field">
+                                        <label asp-for="LastName">Last Name</label>
+                                        <input type="text" class="form-control" asp-for="LastName">
+                                        <span asp-validation-for="LastName"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <div class="input-field">
+                                        <label asp-for="UserName">Username</label>
+                                        <input type="text" class="form-control" asp-for="UserName">
+                                        <span asp-validation-for="UserName"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <div class="input-field">
+                                        <label asp-for="Email">Email</label>
+                                        <input type="email" class="form-control" asp-for="Email">
+                                        <span asp-validation-for="Email"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-12">
+                                    <label asp-for="Password">Password</label>
+                                    <input type="password" class="form-control" asp-for="Password" autocomplete="new-password">
+                                    <span asp-validation-for="Password"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-12">
+                                    <div class="input-field">
+                                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                                        <input type="password" class="form-control" asp-for="ConfirmPassword">
+                                        <span asp-validation-for="ConfirmPassword"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <button class="btn btn-carrot w-100 signup-button" type="submit">Sign Up</button>
+                                </div>
+                            </div>
+                            <div class="member mt-1"><span>Already a member?</span> <a class="text-decoration-none" asp-controller="My" asp-action="Login">Sign In</a></div>
+                            <div>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

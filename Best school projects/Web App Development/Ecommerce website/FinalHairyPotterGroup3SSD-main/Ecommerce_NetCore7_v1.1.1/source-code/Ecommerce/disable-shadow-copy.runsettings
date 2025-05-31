@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <DisableAppDomain>true</DisableAppDomain>
+    <DisableParallelization>true</DisableParallelization>
+    <ShadowCopyFiles>false</ShadowCopyFiles>
+  </RunConfiguration>
+</RunSettings>

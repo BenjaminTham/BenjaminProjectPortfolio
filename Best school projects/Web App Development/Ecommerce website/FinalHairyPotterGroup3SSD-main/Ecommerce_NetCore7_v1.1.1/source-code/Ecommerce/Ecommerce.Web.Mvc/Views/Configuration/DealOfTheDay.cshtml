@@ -1,0 +1,224 @@
+﻿@model DealOfTheDayDto
+@{
+    ViewData["Title"] = "Deal Of The Day";
+}
+
+@section Styles{
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        [su-media-section] img {
+            height: 300px;
+            max-height: 300px;
+            width: 100%;
+            object-fit: cover;
+            box-shadow: 0 0 3px #ccc;
+            border-radius: 3px;
+        }
+    </style>
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Deal Of The Day</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Config. Deal Of The Day</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <form asp-action="DealOfTheDay" method="post" id="topHeaderSlider">
+                    <div style="margin-bottom: 50px; max-width: 800px">
+                        <div class="">
+                            <div class="mb-3">
+                                <div class="bg-light px-2 py-4">
+                                    <label class="control-label">Search by Product</label>
+                                    <input class="form-control py-2" id="productSearch" />
+                                    <div class="">
+                                        <ul class="list-group mt-2 sortable" id="productSearchResult"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="ProductId" class="control-label">Product</label>
+                                <div id="selectedProduct" class="bg-light py-3 px-2">
+                                    @if (Model?.ProductId > 0)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img class="f-img" src="@(Model.ProductImagePreview !=null ? "/" +Model.ProductImagePreview:  "/media/images/no-image.png")" style="height: 50px; width: 50px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;">
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <input hidden="" class="f-pid" asp-for="ProductId">
+                                                <strong class="d-block f-name">@Model.ProductName</strong>
+                                                <span>Category: </span><span class="f-category">@Model.Category</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>No product Selected!</span>
+                                    }
+
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="mb-3">
+                                    <div>
+                                        <label>Image</label>
+                                    </div>
+                                    <div su-media-section>
+                                        <img class="img-fluid mb-1" su-media-preview src="@(Model.ImagePreview !=null ? "/" +Model.ImagePreview:  "/media/images/no-image.png")" alt="Product picture">
+                                        <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                            <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                            <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                        </div>
+                                        <input su-media-selected-input type="text" asp-for="@Model.Image" hidden>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Title">Title</label>
+                                <input class="form-control" type="text" asp-for="Title">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="ActualPrice">Actual Price</label>
+                                        <input class="form-control" asp-for="ActualPrice">
+                                        <span asp-validation-for="ActualPrice"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="OfferPrice">Offer Price</label>
+                                        <input class="form-control" asp-for="OfferPrice">
+                                        <span asp-validation-for="OfferPrice"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="StartTime" su-reset-input>Star Time</label>
+                                        <input class="form-control" asp-for="StartTime">
+                                        <span asp-validation-for="StartTime"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="EndTime" su-reset-input>End Time</label>
+                                        <input class="form-control" asp-for="EndTime">
+                                        <span asp-validation-for="EndTime"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Description">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div class="checkbox_item mt-1">
+                                    <label asp-for="IsActive" class="d-flex align-items-center">
+                                        <input type="checkbox" checked="checked" asp-for="IsActive">
+                                        Is Active?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <button type="submit" class="btn btn-success mt-2 py-2 px-5">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image select modal -->
+<vc:image></vc:image>
+
+
+
+@section Scripts{
+    <script src="~/media/js/media-select.js"></script>
+
+    <script>
+        $("#productSearch").keyup(function () {
+            var search = $(this).val() == '' ? null : $(this).val();
+            if (search != null && search.length > 2) {
+                var result = LiveSearch(search);
+                $('#productSearchResult').html(result);
+            } else {
+                $('#productSearchResult').html('');
+            }
+        });
+
+        function LiveSearch(searchValue) {
+            var response;
+            $.ajax({
+                url: "/Product/ProductSearch/" + searchValue,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    if (result != null) {
+                        var li = '';
+                        $.each(result, function () {
+                            li += `<li class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img  class="f-img" src="/`+ this.imagePreview + `" style="height: 40px; width: 40px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;" />
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <input hidden class="f-pid" value="` + this.productId + `" />
+                                                <strong class="d-block  f-name">`+ this.productName + `</strong>
+                                                <span>Category: </span><span class="f-category">`+ this.productCategory + `</span>
+                                            </div>
+                                            <div class="d-inline-block">
+                                                <button type="button" class="btn btn-soft-primary btn-sm item-select">Select</button>
+                                            </div>
+                                        </div>
+                                    </li>`;
+                        });
+                        response = li;
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+            return response;
+        }
+
+        $(document).on("click", ".item-select", function () {
+            var selectedProduct = $(this).closest('li');
+            var pImg = selectedProduct.find('.f-img').attr('src');
+            var pId = selectedProduct.find('.f-pid').val();
+            var pCategory = selectedProduct.find('.f-category').html();
+            var pName = selectedProduct.find('.f-name').html();
+
+            var html = `<div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img class="f-img" src="`+ pImg + `" style="height: 50px; width: 50px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;">
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <input hidden="" class="f-pid" id="ProductId" name="ProductId" value="`+ pId + `">
+                                <strong class="d-block f-name">`+ pName + `</strong>
+                                <span>Category: </span><span class="f-category">`+ pCategory + `</span>
+                            </div>
+                            <div class="d-inline-block">
+                                <button type="button" class="btn btn-soft-danger btn-sm item-remove"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </div>`;
+
+
+            $("#selectedProduct").html(html);
+            $('#productSearchResult').html('');
+        });
+    </script>
+}

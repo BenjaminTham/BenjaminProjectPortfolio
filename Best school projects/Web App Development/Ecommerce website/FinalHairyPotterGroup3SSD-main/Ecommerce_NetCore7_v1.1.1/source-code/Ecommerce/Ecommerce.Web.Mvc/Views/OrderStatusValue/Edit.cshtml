@@ -1,0 +1,58 @@
+﻿@model Ecommerce.Application.Handlers.OrderStatusValues.Commands.UpdateOrderStatusValueCommand
+
+@{
+    ViewData["Title"] = "Update Order Status";
+}
+
+
+
+<h3 class="mt-4">Update Order Status</h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Update Order Status</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    @if (DefaultOrderStatusValue.GetDefaultStatus().Any(o => o.StatusValue.Contains(Model.StatusValue)))
+                    {
+                        <div class="mb-3">
+                            <p class="text-danger">This is default Order Status. You can only modify <strong>Description</strong>.</p>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="StatusValue" class="control-label"></label>
+                            <input asp-for="StatusValue" class="form-control input-disabled" disabled readonly />
+                            <span asp-validation-for="StatusValue" class="text-danger"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label asp-for="StatusValue" class="control-label"></label>
+                            <input asp-for="StatusValue" class="form-control" />
+                            <span asp-validation-for="StatusValue" class="text-danger"></span>
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="d-grid gap-2 d-md-block">
+                        <button type="submit" class="btn btn-blue">Update</button>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 d-md-block mt-3">
+                    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

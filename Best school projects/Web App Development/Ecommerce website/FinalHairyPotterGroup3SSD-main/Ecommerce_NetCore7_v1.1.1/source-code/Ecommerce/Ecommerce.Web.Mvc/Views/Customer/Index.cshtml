@@ -1,0 +1,1807 @@
+﻿@{
+    ViewData["Title"] = "Customer";
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer</h4>
+</div>
+
+
+<div class="card mb-4">
+    @*<div class="card-header">
+    </div>*@
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblSize" class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Full Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>ShippingAddress</th>
+                        <th>BillingAddress</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+@{
+    ViewData["Title"] = "Customer Info";
+    Layout = LayoutPage.AdminLayout;
+    var customer = ViewData["CustomerInfo"] as CustomerProfileDto;
+}
+
+@section Styles{
+    <style>
+        .customer-card {
+            /*background-image: url(/assets/images/address.svg);*/
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #dee2e6 !important;
+            }
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer Info</h4>
+</div>
+
+
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}@{
+    ViewData["Title"] = "Customer Info";
+    Layout = LayoutPage.AdminLayout;
+    var customer = ViewData["CustomerInfo"] as CustomerProfileDto;
+}
+
+@section Styles{
+    <style>
+        .customer-card {
+            /*background-image: url(/assets/images/address.svg);*/
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #dee2e6 !important;
+            }
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer Info</h4>
+</div>
+
+
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}@{
+    ViewData["Title"] = "Customer Info";
+    Layout = LayoutPage.AdminLayout;
+    var customer = ViewData["CustomerInfo"] as CustomerProfileDto;
+}
+
+@section Styles{
+    <style>
+        .customer-card {
+            /*background-image: url(/assets/images/address.svg);*/
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #dee2e6 !important;
+            }
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer Info</h4>
+</div>
+
+
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}@{
+    ViewData["Title"] = "Customer Info";
+    Layout = LayoutPage.AdminLayout;
+    var customer = ViewData["CustomerInfo"] as CustomerProfileDto;
+}
+
+@section Styles{
+    <style>
+        .customer-card {
+            /*background-image: url(/assets/images/address.svg);*/
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #dee2e6 !important;
+            }
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer Info</h4>
+</div>
+
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+
+<div class="card mb-4 customer-card">
+    <div class="card-header bg-soft-grey">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <h3 class="mb-3">@customer?.CustomerInfo?.UserFullName</h3>
+                    <div>
+                        <i class="fas fa-phone"></i> @customer?.CustomerInfo?.UserPhoneNumber<br />
+                        <i class="fas fa-envelope"></i> @customer?.CustomerInfo?.UserEmail
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-2 float-end">
+                    @*<img style="width: 100px" src="@(customer?.CustomerInfo?.UserProfilePicture != null ? "/" + customer?.CustomerInfo?.UserProfilePicture : "/assets/images/no-image.png")" />*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <strong>Billing Address: </strong>@customer?.CustomerInfo?.BillingAddress<br />
+                        <strong>Shipping Address: </strong>@customer?.CustomerInfo?.ShippingAddress
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-grass-2">@customer?.TotalOrder</h3>
+                                <span class="d-block">Total Order</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3 class="text-blue">@customer?.TotalOrderAmount</h3>
+                                <span class="d-block">Total Order Amount</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center border-col-media lh-sm">
+                                <h3>@customer?.TotalDeliveryCharge</h3>
+                                <span class="d-block">Total Del. Charge</span>
+                            </div>
+                            <div class="col-md-3 my-2 text-center lh-sm">
+                                <h3 class="text-carrot">@customer?.TotalAmount</h3>
+                                <span class="d-block">Total Amount</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <h5>Order Info</h5>
+                <div class="table-responsive">
+                    <table class="table" id="order">
+                        <thead>
+                            <tr>
+                                <th class="all">Invoice No.</th>
+                                <th>Current Status</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Charge</th>
+                                <th>Total</th>
+                                <th class="all"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (customer?.Orders?.Count() > 0)
+                            {
+                                @foreach (var item in customer.Orders)
+                                {
+                                    <tr>
+                                        <td>@item.InvoiceNo</td>
+                                        <td><span class="badge badge-soft-primary badge-md">@item.CurrentOrderStatus</span></td>
+                                        <td>@item.OrderAmount</td>
+                                        <td>@item.DeliveryCharge</td>
+                                        <td>@(item.OrderAmount + item.DeliveryCharge ?? 0)</td>
+                                        <td>
+                                            <a class="btn btn-sky-outline btn-sm" href="@Url.Action("Details", "Order")/@item.Id"><i class="fa-solid fa-angles-right"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-block my-3">
+                <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#order').DataTable();
+        });
+    </script>
+}
+
+
+@section Scripts{
+<script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblSize').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5 //number of pages to cache
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [6], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "userFullName", "name": "UserFullName" },
+                    { "data": "userPhoneNumber", "name": "UserPhoneNumberNumber" },
+                    { "data": "userEmail", "name": "UserEmail" },
+                    { "data": "shippingAddress", "name": "ShippingAddress" },
+                    { "data": "billingAddress", "name": "BillingAddress" },
+                    
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Order_Edit).Result.Succeeded)
+                                {
+
+                                    <text>
+                                        myHtml += '<a class="btn btn-grass-outline btn-sm m-1" href="@Url.Action("Details")/' + row.id + '"><i class="fa fa-search"></i></a>';
+                                    </text>
+                                }
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Customer_Edit).Result.Succeeded)
+                                {
+                                        <text>
+                                        myHtml += '<a class="btn btn-sky-outline btn-sm m-1" onclick="editClick(' + row.id + ')" href="@Url.Action("Edit")/' + row.id + '"><i class="fa fa-pen"></i></a>';
+                                        </text>
+                                }
+                            }
+
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+</script>
+}

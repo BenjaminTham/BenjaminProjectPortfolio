@@ -1,0 +1,160 @@
+﻿@model GeneralConfigurationDto
+@{
+    ViewData["Title"] = "Site Configuration";
+}
+
+@section Styles{
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        .form-control, .form-select {
+            max-width: 600px;
+        }
+
+        div[su-media-section] img[su-media-preview] {
+            max-height: 80px !important;
+            width: -webkit-fill-available;
+            box-shadow: 0 0 1px 1px #22c8e555;
+            border-radius: 4px;
+            padding: 6px;
+            /*border: 1px solid #e8ebf3;*/
+        }
+    </style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Site Configuration</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage your site configuration</div>
+    </div>
+    <div class="card-body">
+        <partial name="_ConfigurationTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-general">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="general-label">
+                            <form asp-action="Index" method="post">
+                                <div class="mb-3 row">
+                                    <label asp-for="CompanyName" class="col-sm-2">Company Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" asp-for="CompanyName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="CompanySlogan" class="col-sm-2">Slogan</label>
+                                    <div class="col-sm-10">
+                                        <textarea asp-for="CompanySlogan" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label class="col-sm-2">Company Logo</label>
+                                    <div class="col-sm-10">
+                                        <div su-media-section>
+                                            <img class="img-fluid mb-1" su-media-preview src="@(Model.CompanyLogoPreview != null ? "/" + Model.CompanyLogoPreview : "/assets/images/no-image.png")" alt="logo">
+                                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                            </div>
+                                            <input su-media-selected-input type="text" name="CompanyLogo" value="@Model.CompanyLogo" hidden>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label class="col-sm-2">Favicon</label>
+                                    <div class="col-sm-10">
+                                        <div su-media-section>
+                                            <img class="img-fluid mb-1" su-media-preview src="@(Model.CompanyFaviconPreview != null ? "/" + Model.CompanyFaviconPreview : "/assets/images/no-image.png")" alt="favicon">
+                                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                            </div>
+                                            <input su-media-selected-input type="text" name="CompanyFavicon" value="@Model.CompanyFavicon" hidden>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="CompanyContact" class="col-sm-2">Company Contact</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" asp-for="CompanyContact" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="CompanyEmail" class="col-sm-2">Company Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" asp-for="CompanyEmail" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label asp-for="CompanyLocation" class="col-sm-2">Company Location</label>
+                                    <div class="col-sm-10">
+                                        <textarea asp-for="CompanyLocation" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label asp-for="CurrencySymbol" class="col-sm-2">Currency Symbol</label>
+                                    <div class="col-sm-10">
+                                        <span class="d-block">Common Symbol: <i class="text-carrot">$ £ € ₹ ¥ ৳</i></span>
+                                        <input type="text" asp-for="CurrencySymbol" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="CurrencyPosition" class="col-sm-2">Currency Position</label>
+                                    <div class="col-sm-10">
+                                        <select type="text" asp-for="CurrencyPosition" asp-items="Html.GetEnumSelectList<CurrencyPosition>()" class="form-select"></select>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="IsPaypalEnabled" class="col-sm-2" style="color: #2196f3;font-weight: bold;"><img alt="Paypal" src="~/assets/images/payment/paypal-1.svg" height="40" /></label>
+                                    <div class="col-sm-10">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsPaypalEnabled">
+                                                <input type="checkbox" asp-for="IsPaypalEnabled">
+                                                Enable Paypal Payment
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label asp-for="IsStripeEnabled" class="col-sm-2" style="color: #dc143c;font-weight: bold;"><img alt="Stripe" src="~/assets/images/payment/stripe_4.svg" height="40" /></label>
+                                    <div class="col-sm-10">
+                                        <div class="checkbox_item">
+                                            <label class="d-flex align-items-center" asp-for="IsStripeEnabled">
+                                                <input type="checkbox" asp-for="IsStripeEnabled">
+                                                Enable Stripe Payment (for card payment)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-5">
+                                    <div class="col-sm-10 ms-auto">
+                                        <div class="d-grid gap-2 d-sm-block">
+                                            <button type="submit" class="btn btn-blue py-2 px-5">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image select modal -->
+<vc:image></vc:image>
+
+
+@section Scripts{
+    <script src="~/others/js/app-configuration.js"></script>
+    <script src="~/media/js/media-select.js"></script>
+}

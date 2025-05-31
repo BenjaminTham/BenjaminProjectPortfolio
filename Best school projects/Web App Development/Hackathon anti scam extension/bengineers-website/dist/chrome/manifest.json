@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "version": "0.0.1",
+  "name": "bengineers",
+  "description": "An Extension.js example.",
+  "icons": {
+    "48": "icons/extension_48.png"
+  },
+  "background": {
+    "service_worker": "background/service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.facebook.com/*"
+      ],
+      "js": [
+        "content_scripts/content-0.js"
+      ],
+      "css": []
+    }
+  ],
+  "author": "Your Name",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "permissions": [
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "/*.json",
+        "/*.js",
+        "/*.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    },
+    {
+      "resources": [
+        "content_scripts/content-0.css"
+      ],
+      "matches": [
+        "https://www.facebook.com/*"
+      ]
+    }
+  ]
+}

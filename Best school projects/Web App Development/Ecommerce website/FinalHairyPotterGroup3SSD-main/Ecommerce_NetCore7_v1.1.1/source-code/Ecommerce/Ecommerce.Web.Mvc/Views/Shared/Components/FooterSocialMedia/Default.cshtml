@@ -1,0 +1,15 @@
+﻿@{
+    SocialProfileDto conSocial = JsonSerializer.Deserialize<SocialProfileDto>(K["SocialProfile"])??new SocialProfileDto();
+}
+
+
+@if(conSocial != null)
+{
+    <div class="social-link mb-3">
+        <a href="@(conSocial.Facebook != null? conSocial.Facebook:"javascript:void(0)")" target="_blank"><i class="fa-brands fa-facebook-f facebook"></i></a>
+        <a href="@(conSocial.Twitter != null? conSocial.Twitter:"javascript:void(0)")" target="_blank"><i class="fa-brands fa-twitter twitter"></i></a>
+        <a href="@(conSocial.Instagram != null? conSocial.Instagram:"javascript:void(0)")" target="_blank"><i class="fa-brands fa-instagram instagram"></i></a>
+        <a href="@(conSocial.Youtube != null? conSocial.Youtube:"javascript:void(0)")" target="_blank"><i class="fa-brands fa-youtube youtube"></i></a>
+        <a href="@(conSocial.Pinterest != null? conSocial.Pinterest:"javascript:void(0)")" target="_blank"><i class="fa-brands fa-pinterest pinterest"></i></a>
+    </div>
+}

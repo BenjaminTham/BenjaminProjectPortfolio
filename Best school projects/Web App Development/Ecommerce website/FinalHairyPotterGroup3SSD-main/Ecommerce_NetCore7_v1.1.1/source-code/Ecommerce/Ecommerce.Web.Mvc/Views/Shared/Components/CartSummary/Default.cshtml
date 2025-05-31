@@ -1,0 +1,81 @@
+﻿@model IEnumerable<CartDto>
+
+@{
+    decimal totalPrice = 0;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+<div class="offcanvas-header">
+    <span class="offcanvas-title text-uppercase fw-bold" id="offcanvasRightLabel">Cart</span>
+    <a aria-label="Close" class="text-decoration-none" data-bs-dismiss="offcanvas" href="#"><i class="fa-solid fa-xmark fa-l text-danger"></i></a>
+</div>
+@if (Model.Any())
+{
+    <div class="offcanvas-body">
+        <div>
+            <div class="mb-3">
+                <table>
+                    @foreach (var item in Model)
+                    {
+                        totalPrice += (item.Price * @item.Qty);
+                        <tr class="cart-item text-sm-3">
+                            <td class="cart-img"><img alt="#" class="me-2" src="@(item.Image != null? "/" + item.Image:"/assets/images/no-image.png")" ></td>
+                            <td class="cart-details">
+                                <div class="lh-sm">
+                                    <span class="d-block">@item.Title</span>
+                                    <span class="cart-price">
+                                        <bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap": "")"> <span>@conGen.CurrencySymbol</span><span>@item.Price</span></bdi>
+                                    </span>
+                                </div>
+                                <div class="btn-section mt-1">
+                                    <div class="quantity_adjust">
+                                        <span class="cart-btn qty_decrement" onclick="ItemDecrement('@item.VariantId')">-</span>
+                                        <span>@item.Qty</span>
+                                        <span class="cart-btn qty_increment" onclick="ItemIncrement('@item.VariantId')">+</span>
+                                    </div>
+                                    <div>
+                                        <span class="cart-btn cart-empty" onclick="CartItemRemove('@item.VariantId')"><i class="fa-solid fa-trash fa-xs"></i></span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div>
+                <table class="table table-sm">
+                    <tr class="fw-bold border-light text-sm-3">
+                        <td>Sub Total</td>
+                        <td class="text-end"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="subtotal-value">@totalPrice</span></bdi></td>
+                    </tr>
+                    <tr class="border-light text-sm-3">
+                        <td>Delivery Charge <span>(+)</span></td>
+                        <td class="text-end"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="selected-delivery-charge">0</span></bdi></td>
+                    </tr>
+                    <tr class="grand-total fw-bold">
+                        <td class="py-2">Total</td>
+                        <td class="text-end py-2"><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span class="total-value">@totalPrice</span></bdi></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="text-center my-5">
+                <a class="btn btn-yellow-outline rounded-0 mb-2 min-w-200" asp-controller="Shop" asp-action="Index">Continue Shopping</a><br/>
+                <a class="btn btn-grass-2 rounded-0 min-w-200" asp-controller="Order" asp-action="Checkout">Checkout</a>
+            </div>
+        </div>
+    </div>
+    @*<div class="offcanvas-bottom">
+        <div class="d-grid gap-2">
+            <a class="btn btn-primary btn-carrot rounded-0" asp-controller="Order" asp-action="Checkout">Checkout</a>
+        </div>
+    </div>*@
+}
+else
+{
+    <div class="text-center">
+        <span>No items in the cart.</span>
+    </div>
+}
+
+

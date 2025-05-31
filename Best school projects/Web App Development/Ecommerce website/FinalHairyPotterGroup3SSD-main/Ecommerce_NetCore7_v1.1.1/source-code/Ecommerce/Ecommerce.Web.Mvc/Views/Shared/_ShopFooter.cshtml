@@ -1,0 +1,78 @@
+﻿@{
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+<div class="footer-section bg-soft-grey">
+    <footer>
+        <div class="container">
+            <div class="row">
+
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold h-7"></h5>
+                    <div style="max-width: 250px;">
+
+                        <div class="logo-area mb-4 h-6" style="display: flex; align-items: center;">
+                            <a class="text-dark text-decoration-none fw-bolder" href="/" style="display: flex; align-items: center;">
+                                @if (conGen?.CompanyLogo != null)
+                                {
+                                    <img src="/@conGen?.CompanyLogo" alt="logo" style="height: auto; width: auto; max-height: 50px;" />
+                                }
+                                else
+                                {
+                                    <span class="fw-700">@conGen?.CompanyName</span>
+                                }
+                                <div style="font-size: 1.5em; font-weight: bold; color: #333; margin-left: 10px;">HairyPotter</div>
+                            </a>
+                        </div>
+                        <div>@conGen?.CompanySlogan</div>
+
+                        <div>
+                            <span class="d-block" style="margin-top: 10px; margin-bottom: 10px;"><span class="fw-900 me-2"><i class="fa-solid fa-headset"></i></span>@conGen?.CompanyContact</span>
+                            <span class="d-block" style="margin-top: 10px; margin-bottom: 10px;"><span class="fw-900 me-2"><i class="fa-regular fa-envelope"></i></span>@conGen?.CompanyEmail</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-2 mb-3">
+                    <h5 class="fw-bold h-7"></h5>
+                    <ul class="nav flex-column">
+                    </ul>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <h5 class="fw-bold h-7">Navigation</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" href="/">Home</a></li>
+                        <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-action="Send" asp-controller="ContactQuery">Contact Us</a></li>
+                        <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-action="Index" asp-controller="Shop">Shop</a></li>
+                        <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-action="Index" asp-controller="Cart">Cart</a></li>
+                        @if (User.IsInRole(DefaultApplicationRoles.Customer))
+                        {
+                            <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-controller="My" asp-action="Index">My Account</a></li>
+                        }
+                        @if (User!.Identity!.IsAuthenticated)
+                        {
+                            <li><a href="/logout" class="text-carrot">Logout</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-controller="My" asp-action="Login">Login</a></li>
+                            <li class="nav-item mb-2"><a class="nav-link p-0 text-muted" asp-controller="My" asp-action="Register">Register</a></li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold h-7">Follow Us</h5>
+                    <vc:footer-social-media></vc:footer-social-media>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+</div>
+
+
+

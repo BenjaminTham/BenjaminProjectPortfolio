@@ -1,0 +1,49 @@
+﻿@model PaginatedList<ColorDto>
+
+
+<div class="table-responsive">
+    <table class="table">
+        <thead class="thead-light">
+            <tr class="sort-section">
+                <th><vc:item-sort action="Index" sort-column="Name" display-name="Name" /></th>
+                <th><vc:item-sort action="Index" sort-column="HexCode" display-name="HexCode" /></th>
+                <th>Preview</th>
+                <th><vc:item-sort action="Index" sort-column="IsActive" display-name="IsActive" /></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HexCode)
+                    </td>
+                    <td>
+                        <div style="background: @item.HexCode; height: 20px; width: 20px; box-shadow: 0 2px 4px #808080; border-radius: 50%;"></div>
+                    </td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span class="badge badge-soft-success">Yes</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-soft-danger">No</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-soft-primary btn-sm"><i class="fa fa-pen"></i></a>
+                        <a su-delete su-data-action="@Url.Action("Delete")" su-data-id="@item.Id" href="javascript:void(0)" class="btn btn-soft-danger btn-sm"><i class="fa fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <vc:page-section action="Index" />
+</div>

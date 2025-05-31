@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "Contact Us";
+    Layout = LayoutPage.ShopLayout;
+}
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span><i class="fa-regular fa-envelope"></i> Contact Us</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="p-4 content-section">
+        <div class="text-center mt-4">
+            <div>
+                <img src="/assets/images/contact-us.svg" class="img-fluid" style="max-height: 300px" />
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="alert alert-success" role="alert">
+                <i class="fas fa-check"></i> <span>Thank you for your order. please download your order invoice by clicking button below.</span>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <form action="#">
+            <div class="form_item">
+                <input id="contact-form-name" type="text" name="name" placeholder="Your Name">
+            </div>
+            <div class="row">
+                <div class="col col-md-6 col-sm-6">
+                    <div class="form_item">
+                        <input id="contact-form-email" type="email" name="email" placeholder="Your Email">
+                    </div>
+                </div>
+                <div class="col col-md-6 col-sm-6">
+                    <div class="form_item">
+                        <input type="text" name="subject" placeholder="Your Subject">
+                    </div>
+                </div>
+            </div>
+            <div class="form_item">
+                <textarea id="contact-form-message" name="message" placeholder="Message"></textarea>
+            </div>
+            <div id="form-msg"></div>
+            <div class="text-center">
+                <button id="contact-form-submit" type="submit" class="btn btn_dark">Send Message</button>
+            </div>
+        </form>
+    </div>
+</div>
+

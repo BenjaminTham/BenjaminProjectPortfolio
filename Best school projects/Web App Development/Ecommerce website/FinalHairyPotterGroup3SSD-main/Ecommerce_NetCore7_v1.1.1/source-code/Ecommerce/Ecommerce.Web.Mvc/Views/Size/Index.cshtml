@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Size";
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Size</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        @if (AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Size_Create).Result.Succeeded)
+        {
+            <a asp-action="Create" class="btn btn-blue"><i class="fa-solid fa-plus"></i> Create New</a>
+        }
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblSize" class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Name</th>
+                        <th>IsActive</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+<script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblSize').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5 //number of pages to cache
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [3], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "name", "name": "Name" },
+                    {
+                        "data": null,
+                        "name": "IsActive",
+                        "render": function (data, type, row) {
+                            return row.isActive == true ? '<span class="badge badge-soft-success">Yes</span>' : '<span class="badge badge-soft-danger">No</span>';
+                        }
+                    },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Size_Edit).Result.Succeeded)
+                                {
+                                        <text>
+                                        myHtml += '<a class="btn btn-sky-outline btn-sm m-1" onclick="editClick(' + row.id + ')" href="@Url.Action("Edit")/' + row.id + '"><i class="fa fa-pen"></i></a>';
+                                        </text>
+                                }
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Size_Delete).Result.Succeeded)
+                                {
+                                        <text>
+                                        myHtml += '<a class="btn btn-carrot-outline btn-sm m-1" su-delete su-data-id="' + row.id + '" su-data-action="@Url.Action("Delete")"  href="javascript:void(0)"><i class="fa fa-trash-alt"></i></a>';
+                                        </text>
+                                }
+                            }
+
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+</script>
+}

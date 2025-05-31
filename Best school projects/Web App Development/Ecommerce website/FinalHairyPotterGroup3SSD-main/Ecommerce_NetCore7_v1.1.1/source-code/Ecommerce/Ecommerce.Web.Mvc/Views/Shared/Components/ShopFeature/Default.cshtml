@@ -1,0 +1,74 @@
+﻿<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="d-flex align-items-center store-feature">
+                <div class="store-feature-icon">
+                    <i class="fa-solid fa-truck-fast fa-lg"></i>
+                </div>
+                <div class="ms-3">
+                    <span class="h6 fw-700">Free Delivery</span>
+                    <span class="d-block">Free shipping for all deliveries!</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex align-items-center store-feature">
+                <div class="store-feature-icon">
+                    <i class="fa-solid fa-certificate fa-lg"></i>
+                </div>
+                <div class="ms-3">
+                    <span class="h6 fw-700">Authentic Products</span>
+                    <span class="d-block">Guaranteed high quality</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex align-items-center store-feature">
+                <div class="store-feature-icon">
+                    <i class="fa-solid fa-headset fa-lg"></i>
+                </div>
+                <div class="ms-3">
+                    <span class="h6 fw-700">Online Support 24/7</span>
+                    <span class="d-block">Contact us anytime</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .store-feature-icon {
+        width: 100px !important;
+        height: 100px !important;
+        background-color: red !important; /* Ensure the background is red */
+        border-radius: 50% !important; /* Make the icon circular */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: transform 0.3s ease !important; /* Smooth transformation on hover */
+        color: white !important; /* Icon color set to white */
+    }
+
+        .store-feature-icon i {
+            font-size: 2.2em !important; /* Default icon size */
+            transition: font-size 0.3s ease !important; /* Animate font-size change */
+        }
+
+    .store-feature {
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }
+
+        .store-feature:hover .store-feature-icon i {
+            font-size: 2.5em !important; /* Enlarge icon font size by 20% on hover */
+        }
+
+    h6.fw-700 {
+        margin-bottom: 0 !important;
+    }
+
+    /* Adding some padding and margin to align items nicely */
+    .store-feature > div {
+        padding: 10px !important;
+    }
+</style>

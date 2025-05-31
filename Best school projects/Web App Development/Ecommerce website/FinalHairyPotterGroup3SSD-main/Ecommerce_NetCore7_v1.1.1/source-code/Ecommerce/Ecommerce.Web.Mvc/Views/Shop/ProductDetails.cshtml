@@ -1,0 +1,463 @@
+﻿@model ShopDetailsDto
+
+@{
+    ViewData["Title"] = Model.ProductDetails.ProductName;
+    Layout = LayoutPage.ShopLayout;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    StockConfigurationDto conStock = JsonSerializer.Deserialize<StockConfigurationDto>(K["StockConfiguration"])!;
+    var isOutOfStockNotificationEnabled = conStock?.IsOutOfStockNotificationEnabled.ToString().ToLower();
+    var isLowStockNotificationEnabled = conStock?.IsLowStockNotificationEnabled.ToString().ToLower();
+    var productReviews = ViewBag.ProductReviews as List<ProductReviewDto>;
+
+
+    var keySpecs = Model.ProductDetails.KeySpecsList
+        ?.Where(s => !string.IsNullOrWhiteSpace(s)).ToList() ?? new List<string>();
+}
+
+@section Styles{
+
+}
+
+
+<div class="container mt-5 product-details">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="product-details-image">
+                <img src="@(Model.ProductDetails.ProductImage != null? "/" + Model.ProductDetails.ProductImage:"/assets/images/no-image.png")">
+            </div>
+            <div class="product-details-image-thumb my-2">
+                <div class="owl-carousel">
+                    @if (Model.ProductDetails.ProductImage != null)
+                    {
+                        <img class="owl-lazy" data-src="@("/" + @Model.ProductDetails.ProductImage)" />
+                    }
+                    @if (Model.AvailableImages.Any())
+                    {
+                        @foreach (var item in Model.AvailableImages)
+                        {
+                            <img class="owl-lazy" data-src="@("/" + item.Url)" />
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="lh-sm mb-2">
+                <span class="product-title">@Model.ProductDetails.ProductName</span>
+                <Span class="product-summary">@Model.ProductDetails.ShortDescription</Span>
+                <span><strong>Product Code: </strong><span class="product-sku">@Model.ProductDetails.Sku</span></span>
+            </div>
+            @{
+                var rateSummary = productReviews?.Count() > 0? (productReviews?.Select(o => o.Rating).Sum() / productReviews?.Count()):0;
+                <div class="reviews-counter d-flex align-items-center">
+                    <div class="rating">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <i class="fa-solid fa-star fa-sm @((rateSummary <= i) ? "" : "fill")"></i>
+                        }
+                    </div>
+                    <span class="ms-1">@productReviews?.Count() Rating(s)</span>
+                </div>
+            }
+
+            <div>
+                <span class="product-price price">
+                    <bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap": "")"> <span>@conGen.CurrencySymbol</span><span class="amount-value">@Model.ProductDetails.Price</span></bdi>
+                </span>
+            </div>
+            <div id="stockStatus"></div>
+            @if (keySpecs.Count > 0)
+            {
+                <div class="product-info my-3">
+                    <ul style="list-style: disc">
+                        @foreach (var item in keySpecs)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                </div>
+            }
+            <div class="mt-5">
+                @if (Model.AvailableSizes.Any())
+                {
+                    <div class="my-2" id="size-section">
+                        <span class="d-block mb-1">Size <small style="color: #2b3035">(XL)</small></span>
+                        <div class="d-flex">
+                            @foreach (var size in Model.AvailableSizes)
+                            {
+                                <span class="details-filter size-filter" size-filter-value="@size.Id" data-value="@size.Id">@size.Name</span>
+                            }
+                        </div>
+                    </div>
+                }
+                @if (Model.AvailableColors.Any())
+                {
+                    <div class="my-2" id="color-section">
+                        <span class="d-block mb-1">Color <small style="color: #2b3035">(black)</small></span>
+                        <div class="d-flex">
+                            @foreach (var color in Model.AvailableColors)
+                            {
+                                <div class="color-filter" color-filter-value="@color.Id" data-value="@color.Id" style="background: @color.HexCode;"></div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+
+            <div class="add-to-cart mb-2 mt-5">
+                <div class="add-to-cart-button" style="width: 140px;">
+                    <button class="btn btn-light btn-sm w-100 disabled" product-variant-id="@Model.ProductDetails.VariantId"><i class="fa-solid fa-bag-shopping me-1"></i> Add to Bag</button>
+                </div>
+                <div class="add-to-cart-adjust" style="display: none">
+                    <div class="d-inline-block me-2">
+                        <div class="input-group" style="width: 140px;">
+                            <button class="btn btn-primary btn-decrement input_number_decrement me-2" type="button"><i class="fa-solid fa-minus fa-xs"></i></button>
+                            <input type="number" class="form-control text-center add-to-cart-qty" aria-label="Qty" min="1" value="1">
+                            <button class="btn btn-primary btn-increment input_number_increment ms-2" type="button"><i class="fa-solid fa-plus fa-xs"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-empty-cart" type="button" style="background: #d34b41;border-color: #d34b41;color: #FFFFFF"><i class="fa-solid fa-trash fa-xs"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="product-description my-4">
+        <nav>
+            <div class="nav nav-tabs fw-bold" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Description</button>
+                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Reviews (@productReviews?.Count())</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                @Html.Raw(@Model.ProductDetails.Description)
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                <div class="customer-review-section">
+                    @if (productReviews?.Count() > 0)
+                    {
+                        foreach (var item in productReviews)
+                        {
+                            <div class="single-review mb-4">
+                                <div class="customer-review mb-2">
+                                    <div><span class="fw-bold">@item?.CustomerName</span><span class="ms-1 text-sm-4 text-carrot"> @DateTime.Parse(item?.DateCommented?.ToString()).ToString("dd MMM yyyy")</span></div>
+                                    <div class="rating">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <i class="fa-solid fa-star fa-sm @((item?.Rating <= i) ? "" : "fill")"></i>
+                                        }
+                                    </div>
+                                    <div class="lh-sm">@item?.Comment</div>
+                                </div>
+                                @if (item?.Reply != null)
+                                {
+                                    <div class="shop-reply">
+                                        <div><span class="fw-bold">From Store</span></div>
+                                        <div class="lh-sm">@item?.Reply</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(function() {
+            $(".owl-carousel").owlCarousel({
+                lazyLoad: true,
+                margin: 10,
+                nav: true,
+                navText: ['<i class="fa-solid fa-chevron-left"></i>', '<i class="fa-solid fa-chevron-right"></i>'],
+                responsiveClass: true,
+                responsive: {
+                    0: {
+                        items: 4,
+                        nav: true
+                    },
+                    600: {
+                        items: 4,
+                        nav: false
+                    },
+                    1000: {
+                        items: 5,
+                        nav: true,
+                        loop: false
+                    }
+                }
+            });
+        });
+
+        $(document).on('click',
+            '.owl-carousel .owl-lazy',
+            function() {
+                var img = $(this).attr("src");
+                $('.product-details-image img').attr('src', img);
+            });
+    </script>
+    <script>
+        var colorSizeCombination = @Html.Raw(Json.Serialize(Model.ColorSizeCombination));
+        var availableColorList = @Html.Raw(Json.Serialize(Model.AvailableColors));
+        var availableSizeList = @Html.Raw(Json.Serialize(Model.AvailableSizes));
+        var id = @Html.Raw(Model.ProductDetails.Id);
+        var color = null;
+        var size = null;
+        let sizeSection = $("#size-section");
+        let colorSection = $("#color-section");
+        var stockQty = null;
+
+        $(function() {
+            //onLoad();
+            function onLoad() {
+
+                if (sizeSection.length) {
+                    $('#size-section').find('.size-filter').first().addClass('active');
+                    size = $('#size-section').find('.size-filter').first().attr("size-filter-value");
+                }
+
+                if (colorSection.length) {
+                    $('#color-section').find('.color-filter').first().addClass('active');
+                    color = $('#color-section').find('.color-filter').first().attr("color-filter-value");
+                }
+                filterColorSize();
+            }
+        });
+
+        addToCartBtnEnable();
+
+        function addToCartBtnEnable() {
+            if (sizeSection.length == 0 && colorSection.length == 0) {
+                $(".add-to-cart-button button").removeClass("disabled");
+            }
+        }
+
+        $(document).on('click',
+            '.size-filter',
+            function() {
+                $('.size-filter').removeClass('active');
+                $(this).addClass('active');
+                size = $(this).data('value');
+
+                if (colorSection.length > 0) {
+                    $('.size-filter').addClass("filter-disable");
+                    $(this).removeClass("filter-disable");
+                }
+
+                getColorsBySize(size);
+                filterColorSize();
+            });
+
+        $(document).on('click',
+            '.color-filter',
+            function() {
+                $('.color-filter').removeClass('active');
+                $(this).addClass('active');
+                color = $(this).data('value');
+
+                if (sizeSection.length > 0) {
+                    $('.color-filter').addClass("filter-disable");
+                    $(this).removeClass("filter-disable");
+                }
+
+                getSizeByColors(color);
+                filterColorSize();
+            });
+
+        function filterColorSize() {
+            filterVariant(id, color, size);
+        }
+
+        function getColorsBySize(s) {
+            $('.color-filter').addClass("filter-disable");
+            let availableColor = colorSizeCombination.filter(x => x.sizeId == s && x.colorId > 0);
+            if (availableColor.length > 0) {
+                let availableColorId = $.map(availableColor, (x) => x.colorId);
+
+                $('.color-filter').each(function() {
+                    const value = $(this).data('value');
+                    if ($.inArray(value, availableColorId) !== -1) {
+                        $(this).removeClass("filter-disable");
+                    }
+                });
+
+                const activeColorId = $('.color-filter.active').data('value');
+                if ($.inArray(activeColorId, availableColorId) === -1) {
+                    $('.color-filter').removeClass("active");
+                    $('.color-filter').not('.filter-disable').first().addClass('active');
+                    color = $('.color-filter.active').data('value');
+                }
+            }
+        }
+
+        function getSizeByColors(c) {
+            $('.size-filter').addClass("filter-disable");
+            let availableSize = colorSizeCombination.filter(x => x.colorId == c && x.sizeId > 0);
+            if (availableSize.length > 0) {
+
+                const availableSizeId = $.map(availableSize, x => x.sizeId);
+                $('.size-filter').each(function() {
+                    const value = $(this).data('value');
+                    if ($.inArray(value, availableSizeId) !== -1) {
+                        $(this).removeClass("filter-disable");
+                    }
+                });
+
+                const activeSizeId = $('.size-filter.active').data('value');
+                if ($.inArray(activeSizeId, availableSizeId) === -1) {
+                    $('.size-filter').removeClass("active");
+                    $('.size-filter').not('.filter-disable').first().addClass('active');
+                    size = $('.size-filter.active').data('value');
+                }
+            }
+        }
+
+
+        function filterVariant(id, color, size) {
+            color = convertNullableInt(color);
+            size = convertNullableInt(size);
+            //console.log(color, size);
+            $.ajax({
+                url: "/filterdetails/" + id + "?color=" + color + "&size=" + size,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function(result) {
+                    //console.log(result);
+
+                    $('.add-to-cart-qty').val(0);
+                    $('.add-to-cart-adjust').attr("style", "display:none");
+                    $('.add-to-cart-button button').attr("style", "display:inherit");
+
+                    if (result != null) {
+                        //console.log(result.qty);
+                        $(".product-sku").html(result.sku);
+                        $(".amount-value").html(result.price.toFixed(2));
+                        $(".add-to-cart-button button").attr("product-variant-id", result.variantId);
+                        $('.product-details-image img').attr('src', '/' + result.variantImage);
+
+                        $(".add-to-cart-button button").removeClass("disabled");
+
+                        var cartByVariant = getCartByVariant(result.variantId);
+
+                        stockQty = result.qty;
+
+                        if (cartByVariant != null) {
+                            $('.add-to-cart-qty').val(cartByVariant.Qty);
+                            $('.add-to-cart-adjust').attr("style", "display:flex");
+                            $('.add-to-cart-button button').attr("style", "display:none");
+                        }
+
+                        $("#stockStatus").html('');
+                        if (result.qty <= @conStock?.OutOfStockThreshold) {
+                            if (@isOutOfStockNotificationEnabled) {
+                                $("#stockStatus").html('<small class="text-danger">Out of stock</small>');
+                                $(".add-to-cart-button button").addClass("disabled");
+                            }
+                        } else if (result.qty <= @conStock?.LowStockThreshold && @isLowStockNotificationEnabled) {
+                            $("#stockStatus").html(`<small class="text-banana">Low stock. Only ${result.qty} available!</small>`);
+                        } else {
+                            $("#stockStatus").html('<small class="text-grass-2">In stock</small>');
+                        }
+                    }
+                },
+                error: function(e) {
+                    alert("Error!" + e);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function addToCart() {
+            var data = JSON.stringify({
+                VariantId: $('.add-to-cart-button button').attr("product-variant-id"),
+                Qty: $('.add-to-cart-qty').val()
+            });
+
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/addtocart",
+                type: 'POST',
+                data: obj,
+                success: function(result) {
+                    //console.log(result);
+                    CartCount();
+                    CartSummary();
+                    //notifier.open({ type: "info", message: "Item Added to Cart" });
+                    //location.reload();
+                },
+                error: function() {
+                    alert("Error!");
+                }
+            });
+        }
+    </script>
+
+    <script>
+        $(function() {
+            $(document).on('click',
+                '.add-to-cart-button button:not(.disabled)',
+                function() {
+                    $('.add-to-cart-qty').val(1);
+                    $('.add-to-cart-adjust').attr("style", "display:flex");
+                    $(this).attr("style", "display:none");
+                    addToCart();
+                });
+
+            $(document).on('click',
+                '.btn-increment',
+                function() {
+                    var qty = $('.add-to-cart-qty').val();
+                    
+
+                    if (qty == Number(stockQty)) {
+                        return swal("Error Occurred!", `Sorry, Currently there are only ${stockQty} item available, you can't add more!'`, "warning")
+                    }
+
+                    $('.add-to-cart-qty').val(parseInt(qty) + 1);
+
+                    const variantId = $('.add-to-cart-button button').attr("product-variant-id");
+                    ItemIncrement(variantId);
+                });
+
+            $(document).on('click',
+                '.btn-decrement',
+                function() {
+                    var qty = $('.add-to-cart-qty').val();
+                    $('.add-to-cart-qty').val(parseInt(qty) - 1);
+                    qty = $('.add-to-cart-qty').val();
+
+                    const variantId = $('.add-to-cart-button button').attr("product-variant-id");
+                    ItemDecrement(variantId);
+
+                    if (parseInt(qty) === 0) {
+                        $('.add-to-cart-adjust').attr("style", "display:none");
+                        $('.add-to-cart-button button:not(.disabled)').attr("style", "display:inherit");
+                        CartItemRemove(variantId);
+                    }
+                });
+
+            $(document).on('click',
+                '.btn-empty-cart',
+                function() {
+                    //var qty = $('.add-to-cart-qty').val();
+                    //$('.add-to-cart-qty').val(parseInt(qty) - 1);
+                    $('.add-to-cart-qty').val(0);
+                    $('.add-to-cart-adjust').attr("style", "display:none");
+                    $('.add-to-cart-button button:not(.disabled)').attr("style", "display:inherit");
+
+                    var variantId = $('.add-to-cart-button button').attr("product-variant-id");
+                    CartItemRemove(variantId);
+                });
+        })
+    </script>
+
+}

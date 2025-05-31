@@ -1,0 +1,23 @@
+services:
+  jenkins-blueocean:
+    image: myjenkins-blueocean:2.452.1-1
+    container_name: jenkins-blueocean
+    restart: always
+    user: root
+    privileged: true
+    environment:
+      - JENKINS_OPTS="--httpPort=8080"
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
+    networks:
+      dev_net:
+        ipv4_address: 172.50.51.3
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - jenkins-docker-certs:/certs/client:ro
+networks:
+  dev_net:
+    external: true
+volumes:
+  jenkins-docker-certs:
+  jenkins-data:

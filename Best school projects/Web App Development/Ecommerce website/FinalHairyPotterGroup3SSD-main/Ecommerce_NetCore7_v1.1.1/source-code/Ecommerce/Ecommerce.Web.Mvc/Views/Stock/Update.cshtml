@@ -1,0 +1,237 @@
+﻿@model ProductStockDto
+@{
+    ViewData["Title"] = "Add Product Stock";
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+}
+
+@section Styles{
+<style>
+    .stock-variable-image {
+        height: 50px;
+        width: 50px;
+        object-fit: cover;
+    }
+
+
+    .stock-image {
+        max-height: 250px !important;
+        max-width: -webkit-fill-available;
+        transition: transform .4s;
+        border: 3px solid #ffffff00;
+        box-shadow: 0 0 4px #ccc;
+        border-radius: 10px;
+    }
+
+    .table th {
+        padding: 0.45rem 0.7rem;
+    }
+    .table td {
+        padding: 0.45rem;
+    }
+</style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Manage Product Stock</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Product Details</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="pb-3">
+                    <img class="stock-image" src="@(Model.ProductImagePreview != null? "/" + Model.ProductImagePreview : "/media/images/no-image.png")" />
+                    <div class="mt-2 lh-sm">
+                        <span class="mb-0" style="font-size: 1.2em;">@Model.Name <a asp-action="Details" asp-controller="Product" asp-route-id="@Model.ProductId" class="text-sky p-0 text-start"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></span>
+                        <span class="d-block"><strong>Category: </strong> <span style="color: #8BC34A">@Model.CategoryName</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Product Variable</div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table" id="tblProductVariant">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Items</th>
+                        <th class="w-80-c text-nowrap text-center">Cur. Stock</th>
+                        <th class="w-100-c text-center">Qty(+/-)</th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ProductVariant != null)
+                    {
+                        foreach (var item in Model.ProductVariant)
+                        {
+                            <tr>
+                                <td hidden><input type="text" asp-for="@item.Id" name="VariantId" class="form-control" /></td>
+                                <td>
+                                    <div class="d-inline-block lh-sm">
+                                        <img class="stock-variable-image d-inline-block me-1" src="@(item.VariantImagePreview != null? "/" + item.VariantImagePreview : "/media/images/no-image.png")" alt="Product picture">
+                                        <div class="d-inline-block">
+                                            <span class="d-block" class="btn btn-link p-0 text-start fw-bold align-top">@item.Title</span>
+                                            <span class="d-block">U. Price: <span class="fw-semibold"><bdi class="@(conGen?.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen?.CurrencySymbol</span><span>@item?.Price</span></bdi></span></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="w-80-c text-center"><span class="variable-qty">@item.Qty</span></td>
+                                <td class="w-100-c text-center"><input type="number" name="NewStockQty" class="form-control"/></td>
+                                <td>
+                                    <textarea class="form-control form-control-sm" name="Description" rows="2"></textarea>
+                                </td>
+                                <td class="text-end">
+                                    <a href="javascript:void(0)" class="btn btn-grass-2-outline btn-sm mb-1" id="stockAddition">Add</a>
+                                    <a href="javascript:void(0)" class="btn btn-carrot-outline btn-sm mb-1" id="stockDeduction">Deduct</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="d-grid gap-2 d-md-block mt-3">
+            <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="errorModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul id="errorMessages"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+    
+    <script>
+
+        function showErrorModal(errors) {
+            var errorList = $('#errorMessages');
+            errorList.empty();
+            errors.forEach(function (error) {
+                errorList.append('<li>' + error + '</li>');
+            });
+            $('#errorModal').modal('show');
+        }
+
+        //Stock addition
+        $(document).on('click', '#stockAddition', function (e) {
+            e.preventDefault();
+            var thisTr = $(this).closest('tr');
+            var data = JSON.stringify({
+                VariantId: thisTr.find('td:eq(0)').find('input[name=VariantId]').val(),
+                Qty: thisTr.find('td:eq(3)').find('input[name=NewStockQty]').val(),
+                Description: thisTr.find('td:eq(4)').find('textarea[name=Description]').val(),
+            });
+
+
+            $.when(AddStock(data)).then(function (response) {
+                //if success
+                console.log(response);
+
+                if(response != 'false'){
+                    thisTr.find('td:eq(2)').find('.variable-qty').html(response);
+                    thisTr.find('td:eq(3)').find('input[name=NewStockQty]').val('');
+                    thisTr.find('td:eq(4)').find('textarea[name=Description]').val('');
+                }
+                notifier.open({ type: "success", message: "Product Updated" });
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+
+        function AddStock(data) {
+            console.log(data);
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Stock/AddStock",
+                type: 'POST',
+                data: obj,
+                success: function (result) {
+                    console.log(result);
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+
+        //Stock deduction
+        $(document).on('click', '#stockDeduction', function (e) {
+            e.preventDefault();
+            var thisTr = $(this).closest('tr');
+            var data = JSON.stringify({
+                VariantId: thisTr.find('td:eq(0)').find('input[name=VariantId]').val(),
+                Qty: thisTr.find('td:eq(3)').find('input[name=NewStockQty]').val(),
+                Description: thisTr.find('td:eq(4)').find('textarea[name=Description]').val(),
+            });
+
+            $.when(removeStock(data)).then(function (response) {
+                //if success
+                console.log(response);
+                if(response != 'false'){
+                    thisTr.find('td:eq(2)').find('.variable-qty').html(response);
+                    thisTr.find('td:eq(3)').find('input[name=NewStockQty]').val('');
+                    thisTr.find('td:eq(4)').find('textarea[name=Description]').val('');
+                }
+                notifier.open({ type: "success", message: "Product Updated" });
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+
+        function removeStock(data) {
+            console.log(data);
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Stock/RemoveStock",
+                type: 'POST',
+                data: obj,
+                success: function (result) {
+                    console.log(result);
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+    </script>
+}

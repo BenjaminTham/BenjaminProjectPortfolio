@@ -1,0 +1,71 @@
+﻿/*order-track step==============================================*/
+.order-track {
+    margin-top: 1rem;
+    /*padding: 0 1rem;*/
+    /*border-top: 1px solid #ededed;*/
+    /*padding-top: 2.5rem;*/
+    display: flex;
+    flex-direction: column;
+}
+
+.order-track-step {
+    display: flex;
+    /*height: 7rem;*/
+}
+
+    .order-track-step:last-child {
+        /*overflow: hidden;
+                height: 4rem;*/
+    }
+
+        .order-track-step:last-child .order-track-status span:last-of-type {
+            display: none;
+        }
+
+.order-track-text{
+    margin-bottom: 20px;
+}
+.order-track-status {
+    margin-right: 1rem;
+    position: relative;
+}
+
+.order-track-status-dot {
+    display: block;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 6px solid #9fe9de;
+}
+
+.order-track-step:last-child .order-track-status-dot {
+    background: #41BFAD;
+}
+
+.order-track-status-line {
+    display: block;
+    margin: 0 auto;
+    margin-top: -5px;
+    width: 6px;
+    height: 100%;
+    background: #9fe9de;
+}
+
+.order-track-status {
+    font-weight: bold;
+}
+
+.order-track-date {
+    font-size: 0.80rem;
+    line-height: 1em;
+}
+
+.order-track {
+    transition: all 0.3s height 0.3s;
+    transform-origin: top center;
+}
+
+.order-track-desc{
+    /*color: #808080;*/
+}

@@ -1,0 +1,99 @@
+﻿@model AdvancedConfigurationDto
+@{
+    AdvancedConfigurationDto conSec = K["AdvancedConfiguration"] != null ? JsonSerializer.Deserialize<AdvancedConfigurationDto>(K["AdvancedConfiguration"]) : new AdvancedConfigurationDto();
+    ViewData["Title"] = "Advanced Settings";
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Advanced Settings</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage advanced settings</div>
+    </div>
+    <div class="card-body">
+        <partial name="_SettingsTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-general">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <form asp-action="UpdateRole" method="post">
+                            <input asp-for="ActiveResetPassword" hidden />
+                            <input asp-for="EnableEmailConfirmation" hidden />
+                            <input asp-for="EnableTwoFactorAuthentication" hidden />
+                            <input asp-for="IsComingSoonEnabled" hidden />
+                            <div class="mb-3">
+                                <h5>Default Roles</h5>
+                                <div>
+                                    <select asp-for="RoleName" class="form-select" asp-items="ViewBag.RoleName" style="max-width: 400px;">
+                                        <option value="">None</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="d-grid gap-2 d-sm-block">
+                                    <button type="submit" class="btn btn-grass-2 py-2 px-5">Update Role</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="mt-4">
+                            <div class="alert alert-danger" role="alert">
+                                Modifying this section may cause application restart. So careful about that!
+                            </div>
+                        </div>
+                        <form asp-action="Advanced" method="post">
+                            <input asp-for="RoleName" hidden />
+                            <input asp-for="IsComingSoonEnabled" hidden />
+                            <div class="mb-3">
+                                <h5>Password reset</h5>
+                                <div class="mb-1 row">
+                                    <div class="checkbox_item">
+                                        <label class="d-flex align-items-center" asp-for="ActiveResetPassword">
+                                            <input type="checkbox" asp-for="ActiveResetPassword">
+                                            Active password-reset functionality
+                                        </label>
+                                    </div>
+                                    <small class="text-yellow-1">If enabled, user can reset their password by email.</small>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h5>Email confirmation</h5>
+                                <div class="mb-1 row">
+                                    <div class="checkbox_item">
+                                        <label class="d-flex align-items-center" asp-for="EnableEmailConfirmation">
+                                            <input type="checkbox" asp-for="EnableEmailConfirmation">
+                                            Required email confirmation for first-time login
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="d-grid gap-2 d-sm-block">
+                                    <button type="submit" class="btn btn-blue py-2 px-5">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script src="~/others/js/app-settings.js"></script>
+}
+
+    

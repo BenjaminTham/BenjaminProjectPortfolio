@@ -1,0 +1,533 @@
+﻿@model CheckoutDto
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = LayoutPage.ShopLayout;
+    var deliveryMethod = ViewData["DeliveryMethod"] as List<DeliveryMethodDto>;
+    var customerInfo = ViewBag.CustomerInfo as CustomerDto;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+    string stripPk = Configuration.GetValue<string>("Stripe:PublishKey")!;
+    string paypalClientId = Configuration.GetValue<string>("Paypal:ClientId")!;
+    string paypalCurrency = Configuration.GetValue<string>("Paypal:Currency")!;
+}
+
+
+@section Styles{
+
+}
+
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span>Checkout</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row p-4 content-section checkout-section">
+        <div class="col-12">
+            <nav>
+                <div class="nav nav-pills nav-justified mb-5" id="pills-tab-checkoutProcess" role="tablist">
+                    <button class="nav-link active" id="shipping-info-tab" data-bs-toggle="tab" data-bs-target="#shipping-info" type="button" role="tab" aria-controls="shipping-info" aria-selected="true">Shipping Info</button>
+                    <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment" type="button" role="tab" aria-controls="payment" aria-selected="false">Payment & Confirmation</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-checkoutProcess">
+                <div class="tab-pane fade show active" id="shipping-info" role="tabpanel" aria-labelledby="shipping-info-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row g-3">
+                                <h5 class="text-uppercase fw-bold mb-0">Personal Details</h5>
+                                <div class="col-sm-6">
+                                    <label for="CustomerFirstName" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="CustomerFirstName" name="CustomerFirstName" value="@customerInfo?.UserFirstName" required>
+                                    <div class="invalid-feedback">
+                                        Valid Last Name is required.
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="CustomerLastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="CustomerLastName" name="CustomerLastName" value="@customerInfo?.UserLastName" required>
+                                    <div class="invalid-feedback">
+                                        Valid First Name is required.
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="CustomerPhoneNumber" class="form-label">Mobile</label>
+                                    <input type="text" class="form-control" id="CustomerPhoneNumber" name="CustomerPhoneNumber" value="@customerInfo?.UserPhoneNumber" required>
+                                    <div class="invalid-feedback">
+                                        Valid Mobile is required.
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="CustomerEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="CustomerEmail" name="CustomerEmail" value="@customerInfo?.UserEmail" required>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address for shipping updates.
+                                    </div>
+                                </div>
+
+                                <h5 class="mt-5 mb-0 text-uppercase fw-bold">Shipping Details</h5>
+                                <div class="col-12 mt-2">
+                                    <label for="ShippingAddress" class="form-label">Shipping Address</label>
+                                    <textarea class="form-control" id="ShippingAddress" name="ShippingAddress" rows="3" required>@customerInfo?.ShippingAddress</textarea>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="CustomerComment" class="form-label">Order Note <span class="text-muted">(Optional)</span></label>
+                                    <textarea class="form-control" id="CustomerComment" name="CustomerComment" rows="4"></textarea>
+                                    <div class="invalid-feedback">
+                                        Please enter your shipping address.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="WillSaveInfo" name="WillSaveInfo">
+                                    <label class="form-check-label" for="WillSaveInfo">Save this information for next time</label>
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-5">
+                                <h5 class="mb-0 mt-5 text-uppercase fw-bold">Delivery Method</h5>
+                                <div class="col-12">
+                                    <div class="plans">
+                                        @if (deliveryMethod != null && deliveryMethod?.Count() > 0)
+                                        {
+                                            foreach (var item in deliveryMethod)
+                                            {
+                                                <label class="plan basic-plan" for="@("deliveryMethodRadio" + item.Id)">
+                                                    <input @(deliveryMethod.FirstOrDefault() == item ? "checked" : "") value="@item.Id" charge="@item.Price" type="radio" name="DeliveryMethod" id="@("deliveryMethodRadio" + item.Id)" />
+                                                    <div class="plan-content">
+                                                        <div class="plan-details">
+                                                            <div class="d-flex justify-content-between fw-bold">
+                                                                <div>
+                                                                    <span>@item.Name</span>
+                                                                </div>
+                                                                <div>
+                                                                    <span><bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span>@item.Price</span></bdi></span>
+                                                                </div>
+                                                            </div>
+                                                            <p>@item.Description</p>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-0 order-summary">
+                                <div class="card-body">
+                                    <h5 class="mb-3 text-uppercase fw-bold">Order Summary</h5>
+                                    <div class="checkout-order-summary">
+                                        <vc:checkout-order-preview></vc:checkout-order-preview>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 my-2">
+                                <button class="btn btn-primary btn-carrot rounded-1 py-2" id="setupPayment" type="button">Setup Payment</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab" tabindex="0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <!-- Tabs nav -->
+                            <div class="nav flex-column nav-pills nav-pills-custom fw-600" id="paymentTab" role="tablist" aria-orientation="vertical">
+                                <a class="nav-link mb-3 p-3 active" id="v-pills-home-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true" data-value="@PaymentMethod.CashOnDelivery">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>@PaymentMethod.CashOnDelivery</span>
+                                        <div>
+                                            <span class="payment_icon" style="margin-left: 5px;">
+                                                <i class="fa-regular fa-handshake fa-lg"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a class="nav-link mb-3 p-3" id="v-pills-profile-tab" data-bs-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false" data-value="@PaymentMethod.CardPayment">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>@PaymentMethod.CardPayment</span>
+                                        <div>
+                                            <span class="payment_icon" style="margin-left: 5px;">
+                                                <img src="assets/images/payment/visa.svg" height="23" />
+                                                <img src="assets/images/payment/mastercard.svg" height="23" />
+                                                <img src="assets/images/payment/amex.svg" height="23" />
+                                                <img src="assets/images/payment/discover.svg" height="23" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a class="nav-link mb-3 p-3" id="v-pills-messages-tab" data-bs-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false" data-value="@PaymentMethod.Paypal">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>@PaymentMethod.Paypal</span>
+                                        <div>
+                                            <span class="payment_icon" style="margin-left: 5px;">
+                                                <img src="assets/images/payment/paypal.svg" height="23" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <div class="tab-pane fade shadow rounded bg-white show active p-5" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                                    <h5 class="mb-3 text-uppercase fw-bold">Cash On Delivery</h5>
+                                    <p class="font-italic text-muted mb-2">Payment will be paid by customer during product shipped.</p>
+                                </div>
+                                @if (conGen.IsStripeEnabled)
+                                {
+                                    <div class="tab-pane fade shadow rounded bg-white p-5" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                        <h5 class="mb-3 text-uppercase fw-bold">Card Payment</h5>
+                                        <form id="stripform" action="//httpbin.org/post" method="POST">
+                                            <input type="hidden" name="token" />
+                                            <div class="row gy-3">
+                                                <div class="col-12">
+                                                    <label for="card-element" class="form-label">Card Details</label>
+                                                    <div id="card-element" class="form-control">
+                                                        <!-- Stripe Element will be inserted here. -->
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="cc-name" class="full-name">Name on card</label>
+                                                    <input type="text" class="form-control" id="full-name" name="full-name" required
+                                                           pattern="^[a-zA-Z0-9\s.,!?]*$" title="Only alphanumeric characters, spaces, '.', ',', '!', and '?' are allowed.">
+                                                    <div class="invalid-feedback">
+                                                        Only alphanumeric characters, spaces, '.', ',', '!', and '?' are allowed.
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-6">
+                                                    <div class="outcome">
+                                                        <div class="error"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+                                
+                                @if (conGen.IsPaypalEnabled)
+                                {
+                                    <div class="tab-pane fade shadow rounded bg-white p-5" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                                        <div class="alert alert-success">
+                                            Click Paypal button for make payment.
+                                        </div>
+                                        <div>
+                                            <div id="paypal-payment-button">
+                                                <!-- Paypal element will be inserted here. -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <div class="d-grid gap-2 my-2">
+                                        <button class="btn btn-carrot btn-carrot rounded-1 py-2" type="button" id="placeOrder">Confirm Order</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts{
+    <script src="https://www.paypal.com/sdk/js?client-id=@paypalClientId&disable-funding=credit"></script>
+    <script>
+        $(function() {
+            $('.form-control').on('blur',
+                function() {
+                    if ($(this).val() != '') {
+                        $(this).removeClass('input-invalid');
+                    }
+                });
+        });
+
+        var paypalOrderDetails;
+        paypal.Buttons({
+            style: {
+                color: 'blue'
+            },
+            onClick: function (data, actions) {
+                var ret = validateShippingInfo();
+                if (!ret) {
+                    return actions.reject();
+                }
+                return actions.resolve();
+            },
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: getAmount(),
+                            currency_code: '@paypalCurrency'
+                        } 
+                    }]
+                });
+            },
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (details) {
+                    paypalOrderDetails = details;
+                    collectData();
+                });
+            },
+            onCancel: function (data) {
+                swal("Payment Cancelled!", "You cancelled the payment", "warning");
+            }
+        }).render('#paypal-payment-button');
+
+        function getAmount(){
+            var element = document.querySelector('.total-value');
+            if(element){
+                var text = element.textContent.trim();
+                var value = parseFloat(text);
+                var fixedValue = value.toFixed(2);
+                console.log(fixedValue.toString());
+                return fixedValue.toString();
+            }
+            return null;
+        }
+
+    </script>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('@stripPk');
+        var elements = stripe.elements();
+
+        var style = {
+            base: {
+                // Add your base input styles here. For example:
+                fontSize: '15px',
+                color: '#32325d',
+                fontFamily: "'Roboto', sans-serif",
+                '::placeholder': {
+                    color: '#000000',
+                },
+            },
+        };
+
+
+        var card = elements.create('card', { hidePostalCode: true, style: style }); // Create an instance of the card Element.
+        card.mount('#card-element'); // Add an instance of the card Element into the `card-element` <div>.
+
+        function setOutcome(result) {
+            //var successElement = document.querySelector('.success');
+            var errorElement = document.querySelector('.error');
+            //successElement.classList.remove('visible');
+            errorElement.classList.remove('visible');
+
+            if (result.token != null) {
+                errorElement.textContent = '';
+                // In this example, we're simply displaying the token
+                //successElement.querySelector('.token').textContent = result.token.id;
+                //successElement.classList.add('visible');
+
+                // In a real integration, you'd submit the form with the token to your backend server
+                //var form = document.querySelector('#stripform');
+                document.querySelector('input[name="token"]').setAttribute('value', result.token.id);
+                //console.log($('input[name="token"]').val());
+                //form.submit();
+            } else if (result.error) {
+                errorElement.textContent = result.error.message;
+                errorElement.classList.add('visible');
+            }
+        }
+
+        card.on('change', function (event) {
+            var options = {
+                name: document.getElementById('full-name').value
+            };
+            stripe.createToken(card, options).then(setOutcome);
+            setOutcome(event);
+        });
+
+
+    </script>
+
+    <script>
+        $(function () {
+            calDeliveryCharge();
+            calTotalCharge();
+        });
+
+        $('input[type=radio][name="DeliveryMethod"]').change(function () {
+            calDeliveryCharge();
+            calTotalCharge();
+        });
+
+        function calDeliveryCharge() {
+            $('.selected-delivery-charge').text($("[name='DeliveryMethod']:checked").attr('charge'));
+        }
+
+        function calTotalCharge() {
+            var delCharge = $('.selected-delivery-charge').text();
+            var subTotal = $('.subtotal-value').text();
+            var total = convertNullOrZeroFloat(delCharge) + convertNullOrZeroFloat(subTotal);
+            $('.total-value').text(total.toFixed(2));
+        }
+    </script>
+
+    <script>
+
+        var button1 = document.getElementById("payment-tab");
+        var button2 = document.getElementById("setupPayment");
+
+        button2.addEventListener("click", function() {
+            button1.click();
+        });
+
+
+        $('#pills-tab-checkoutProcess button').on('show.bs.tab', function (e) {
+            var currentTab = $(e.target).attr('data-bs-target');
+            var isValid = validateShippingInfo();
+            if (currentTab === '#payment' && isValid === false) { // Example condition to prevent switching to Tab 2
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+
+
+        function validateShippingInfo() {
+            if ($("#CustomerFirstName").val() == '') {
+                notifier.open({ type: "error", message: "First Name Required!" });
+                $("#CustomerFirstName").addClass("input-invalid");
+                return false;
+            }
+            $("#CustomerFirstName").removeClass("input-invalid");
+
+            if ($("#CustomerLastName").val() == '') {
+                notifier.open({ type: "error", message: "Last Name Required!" });
+                $("#CustomerLastName").addClass("input-invalid");
+                return false;
+            }
+            $("#CustomerLastName").removeClass("input-invalid");
+
+            if ($("#CustomerEmail").val() == '') {
+                notifier.open({ type: "error", message: "Customer Email Required!" });
+                $("#CustomerEmail").addClass("input-invalid");
+                return false;
+            }
+            $("#CustomerEmail").removeClass("input-invalid");
+
+            if ($("#CustomerPhoneNumber").val() == '') {
+                notifier.open({ type: "error", message: "Customer Mobile Required!" });
+                $("#CustomerPhoneNumber").addClass("input-invalid");
+                return false;
+            }
+            $("#CustomerPhoneNumber").removeClass("input-invalid");
+
+            if ($("#ShippingAddress").val() == '') {
+                notifier.open({ type: "error", message: "Shipping Address Required!" });
+                $("#ShippingAddress").addClass("input-invalid");
+                return false;
+            }
+            $("#ShippingAddress").removeClass("input-invalid");
+
+            return true;
+        }
+        //Collect data
+        $("#placeOrder").click(function (e) {
+            var isValid = validateShippingInfo();
+            if (isValid === false) {
+                return;
+            }
+
+            collectData();
+        });
+
+
+        function collectData() {
+            var transactionId, accountName, accountEmail;
+
+            if (paypalOrderDetails) {
+                transactionId = paypalOrderDetails.id;
+                //transactionID = paypalOrderDetails.purchase_units[0].payments.captures[0].id;
+                accountName = paypalOrderDetails.payer.name.given_name + ' ' + paypalOrderDetails.payer.name.surname;
+                accountEmail = paypalOrderDetails.payer.email_address;
+            }
+
+            var stripe = {
+                Token: $("[name='token']").val()
+            };
+            var paypal = {
+                TransactionId: transactionId,
+                AccountName: accountName,
+                AccountEmail: accountEmail
+            };
+
+            var activePaymentMethodTab = $('#paymentTab .nav-link.active');
+            var activePaymentMethod = activePaymentMethodTab.data('value');
+
+            var data = JSON.stringify({
+                CustomerFirstName: $("[name='CustomerFirstName']").val(),
+                CustomerLastName: $("[name='CustomerLastName']").val(),
+                ShippingAddress: $("[name='ShippingAddress']").val(),
+                CustomerPhoneNumber: $("[name='CustomerPhoneNumber']").val(),
+                CustomerEmail: $("[name='CustomerEmail']").val(),
+                CustomerComment: $("[name='CustomerComment']").val(),
+                DeliveryMethod: $("[name='DeliveryMethod']:checked").val(),
+                PaymentMethod: activePaymentMethod,
+                WillSaveInfo: $('[name="WillSaveInfo"]').prop('checked'),
+                StripeModel: stripe,
+                PaypalModel: paypal
+            });
+
+            $.when(checkoutOrder(data)).then(function (response) {
+                response.success == false ? swal("Error Occurred!", response.message, "warning") : location.href = "/order-completed";
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+        }
+
+        function checkoutOrder(data) {
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/checkout",
+                type: 'POST',
+                data: obj,
+                success: function (result) {
+                    console.log(result);
+                    if (result === true) {
+                        swal("Order Success!", "Your order is completed.", "success")
+                            .then((value) => {
+                                location.href = '/order-completed';
+                            });
+                    } else {
+                        //paypal payment has been completed, there is error on our side so we handle it from here onwards.
+                        console.log("paypal payment has been completed, there is error on our side so we handle it from here onwards.");
+                    }
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+
+    </script>
+}

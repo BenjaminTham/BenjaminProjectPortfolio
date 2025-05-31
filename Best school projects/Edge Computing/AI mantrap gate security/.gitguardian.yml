@@ -1,0 +1,4 @@
+paths-ignore:
+  - "fog/web_server/api_test/*"
+  - "fog/nginx/*"
+  - "fog/api_reference.md"

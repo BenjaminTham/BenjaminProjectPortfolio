@@ -1,0 +1,10 @@
+﻿@{ var categoryList = ViewBag.NavCategory as IEnumerable<NavCategoryVM>; }
+
+<div class="menu">
+    <nav id="stack-menu">
+        <ul>
+            @await Html.PartialAsync("_SubCategory", categoryList)
+        </ul>
+        <div class="moreless-button moreless-button-hidden d-flex justify-content-between align-items-center" style="padding: 10px 20px; cursor: pointer; border-top: 1px solid #efefef; color: #eb3a29;"><span>Show More</span><i class="fa fa-plus"></i></div>
+    </nav>
+</div>

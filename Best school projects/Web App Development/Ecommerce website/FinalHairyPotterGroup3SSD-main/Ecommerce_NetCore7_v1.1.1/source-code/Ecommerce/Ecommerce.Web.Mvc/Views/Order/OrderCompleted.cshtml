@@ -1,0 +1,152 @@
+﻿@{
+    Layout = LayoutPage.ShopLayout;
+    ViewData["Title"] = "Order Completed";
+    var invoice = ViewBag.OrderInvoice as OrderInvoiceDto;
+}
+
+@section Styles{
+
+}
+
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span><i class="fa-regular fa-circle-check"></i> Success</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="p-4 content-section">
+        <div class="text-center mt-4">
+            <span class="fw-bold h-5 d-block">Order Completed</span>
+            <div>
+                <img src="/assets/images/successful-purchase.svg" class="img-fluid" style="max-height: 300px" />
+            </div>
+        </div>
+        <div class="mt-4">
+            <div class="alert alert-success" role="alert">
+                <i class="fas fa-check"></i> <span>Thank you for your order. Please check your invoice below.</span>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="text-center mb-3">
+            <span class="fw-bold h-6 d-block">Order Summary</span>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Invoice No.</th>
+                        <td>@invoice?.InvoiceNo</td>
+                    </tr>
+                    <tr>
+                        <th>Order On</th>
+                        <td>@invoice?.OrderDate</td>
+                    </tr>
+                    <tr>
+                        <th>Payment Method</th>
+                        <td>@invoice?.PaymentMethod</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Customer Name</th>
+                        <td>@invoice?.CustomerName</td>
+                    </tr>
+                    <tr>
+                        <th>Customer Phone</th>
+                        <td>@invoice?.CustomerPhone</td>
+                    </tr>
+                    <tr>
+                        <th>Shipping Address</th>
+                        <td>@invoice?.ShippingAddress</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                @if (invoice?.OrderItems?.Count() > 0)
+                {
+                    <table class="table table-bordered">
+                        <thead style="background-color: #ccc;">
+                            <tr>
+                                <th>Sl.</th>
+                                <th>Items</th>
+                                <th>Price</th>
+                                <th>Qty.</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var sl = 0;
+                                foreach (var item in invoice.OrderItems)
+                                {
+                                    sl++;
+                                    <tr>
+                                        <td>@sl</td>
+                                        <td>@item.Item</td>
+                                        <td>@item.UnitPriceWithCurrency</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.TotalWithCurrency</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 offset-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Subtotal</th>
+                        <td>@invoice?.Subtotal</td>
+                    </tr>
+                    <tr>
+                        <th>Delivery Charge</th>
+                        <td>@invoice?.DeliveryCharge</td>
+                    </tr>
+                    <tr>
+                        <th>Total Amount</th>
+                        <td>@invoice?.TotalAmount</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-12 text-end my-5">
+                <button onclick="downloadInvoice('@invoice?.InvoiceNo')" class="btn btn-carrot-outline">
+                    <i class="fas fa-file-download"></i>
+                    <span>Download Invoice</span>
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+@section Scripts {
+
+
+    <script>
+        function downloadInvoice(invoiceNo) {
+            SuLoader.start();
+            location.href = '/order-completed/' + invoiceNo;
+            SuLoader.done();
+        }
+    </script>
+}

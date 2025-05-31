@@ -1,0 +1,4 @@
+Algorithm,Embedding,y1_Accuracy_diff,y1_Precision_diff,y1_Recall_diff,y1_F1_Score_diff,y2_Accuracy_diff,y2_Precision_diff,y2_Recall_diff,y2_F1_Score_diff
+SVM,SBERT,+0.17%,+0.32%,-0.00%,+0.16%,+0.85%,+0.81%,+0.85%,+0.87%
+Multi-Task Learning,DistilBERT,-0.68%,+0.91%,-2.25%,-0.70%,+0.35%,+0.15%,+0.35%,+0.28%
+Multi-Task Learning,SBERT,+0.68%,+0.96%,+0.32%,+0.64%,-0.17%,-0.18%,-0.17%,-0.18%

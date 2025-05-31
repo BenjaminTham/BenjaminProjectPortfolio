@@ -1,0 +1,70 @@
+﻿@model Ecommerce.Application.Handlers.Customers.Commands.UpdateCustomerCommand
+
+@{
+    ViewData["Title"] = "Update Customer";
+    Layout = LayoutPage.AdminLayout;
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Update Customer</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="UserFirstName" class="control-label"></label>
+                                <input asp-for="UserFirstName" class="form-control" />
+                                <span asp-validation-for="UserFirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="UserLastName" class="control-label"></label>
+                                <input asp-for="UserLastName" class="form-control" />
+                                <span asp-validation-for="UserLastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="UserPhoneNumber" class="control-label"></label>
+                        <input asp-for="UserPhoneNumber" class="form-control" />
+                        <span asp-validation-for="UserPhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="UserEmail" class="control-label"></label>
+                        <input asp-for="UserEmail" class="form-control" />
+                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="BillingAddress" class="control-label"></label>
+                        <textarea asp-for="BillingAddress" rows="4" class="form-control"></textarea>
+                        <span asp-validation-for="BillingAddress" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress" class="control-label"></label>
+                        <textarea asp-for="ShippingAddress" rows="4" class="form-control"></textarea>
+                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-block">
+                        <button type="submit" class="btn btn-blue">Update</button>
+                    </div>
+                </form>
+                <div class="d-grid gap-2 d-md-block mt-3">
+                    <a asp-action="Index" class="btn btn-carrot-outline"><i class="fa fa-reply"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

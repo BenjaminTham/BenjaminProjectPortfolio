@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Stock";
+    Layout = LayoutPage.AdminLayout;
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Stock</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage Stock</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 col-lg-4">
+                <div class="mb-3">
+                    <label class="control-label">Type product name</label>
+                    <input class="form-control py-2" id="productSearch" />
+                    <div class="">
+                        <ul class="list-group mt-2" id="productSearchResult"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+<script>
+
+        $("#productSearch").keyup(function(){
+            var search = $(this).val() == '' ? null : $(this).val();
+            if(search != null && search.length > 2){
+                var result = LiveSearch(search);
+                $('#productSearchResult').html(result);
+            }else{
+                $('#productSearchResult').html('');
+            }
+
+        });
+
+    function LiveSearch(searchValue) {
+            var response;
+            $.ajax({
+                url: "/Product/ProductSearch/" + searchValue,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result);
+                    var li = '';
+
+                    $.each(result, function () {
+                        //li += `<li class="list-group-item">
+                        //        <span class="d-block">`+ this.productName +`</span>
+                        //        <span>Category: `+ this.productCategory +`</span>
+                        //    </li>`
+
+                            li += `<li class="list-group-item">
+                                <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0">
+                                <img src="/`+ this.imagePreview +`" style="height: 40px; width: 40px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;" />
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                <span class="d-block"><a class="btn text-sky text-start p-0" href="/Stock/Update/` + this.productId + `">`+ this.productName +`</a></span>
+                                <span>Category: </span><span>`+ this.productCategory +`</span>
+                                </div>
+                                </div>
+                                </li>`;
+
+
+                    });
+                    response = li;
+
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+            return response;
+        }
+
+</script>
+}

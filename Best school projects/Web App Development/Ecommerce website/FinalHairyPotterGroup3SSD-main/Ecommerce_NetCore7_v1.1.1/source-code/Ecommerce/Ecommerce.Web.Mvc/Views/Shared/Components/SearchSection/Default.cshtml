@@ -1,0 +1,23 @@
+﻿@{
+    var action = ViewBag.SearchSectionAction;
+}
+
+@*<div class="search-section">
+    <form asp-action="@action" method="get">
+        <div class="input-group" style="max-width: 200px">
+            <input type="text" name="searchValue" value="@Context.Request.Query["searchValue"]" class="form-control" placeholder="Search Item" aria-label="Search Item" aria-describedby="button-addon2">
+            <button class="btn btn-light px-2" type="submit" id="button-addon2"><i class="fa fa-search"></i></button>
+            <a asp-action="@action" class="btn btn-light px-2" id="button-addon2">ALL</a>
+        </div>
+    </form>
+</div>*@
+
+<div class="search-section">
+    <form asp-action="@action" method="get">
+        <div class="input-group" style="max-width: 200px">
+            <input type="text" name="searchValue" class="form-control" placeholder="Search Item" aria-label="Search Item" aria-describedby="button-addon2">
+            <button class="btn btn-light px-2" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+            <a href="javascript:void(0)" class="btn btn-light px-2" id="button-addon2">ALL</a>
+        </div>
+    </form>
+</div>

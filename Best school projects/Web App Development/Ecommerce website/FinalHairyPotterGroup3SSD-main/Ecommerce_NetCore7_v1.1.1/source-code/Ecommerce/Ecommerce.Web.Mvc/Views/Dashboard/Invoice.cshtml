@@ -1,0 +1,364 @@
+﻿@{
+    Layout = LayoutPage.ShopLayout;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"]);
+}
+
+@section Styles{
+
+
+<style>
+    .cus-table {
+        display: flex;
+    }
+
+    .cus-column {
+        margin-bottom: 1em;
+        width: 100%;
+    }
+
+    .cus-row {
+        border: 1px solid #e7e7e7;
+        height: 3em;
+        margin: auto;
+        width: 100%;
+    }
+
+</style>
+
+<style>
+    .invoice-section {
+        color: #000;
+        background: #FFFFFF;
+        font-size: 0.87em;
+    }
+
+    .boxer {
+        display: table;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .boxer .box-row {
+            display: table-row;
+            border-bottom: 1px solid #ededed;
+        }
+
+            .boxer .box-row:first-child {
+                font-weight: bold;
+            }
+
+        .boxer .box {
+            display: table-cell;
+            vertical-align: top;
+            padding: 5px;
+            /*border: 1px solid #EEEEEE;*/
+            /*font-family: monospace;*/
+        }
+
+    .box-header .box {
+        background-color: #4a5c770f;
+        /*border: 1px solid #EEEEEE;*/
+    }
+
+    .box-border {
+        border: 1px solid #EEEEEE;
+    }
+
+    .box-footer .box {
+        /*background-color: #4a5c770f;*/
+        background-color: #4a5c770f;
+        border: none;
+    }
+
+
+
+    .center {
+        text-align: center;
+    }
+
+    .right {
+        float: right;
+    }
+
+    .left {
+        float: left;
+    }
+
+</style>
+
+<style>
+    #resp-table {
+        width: 100%;
+        display: table;
+    }
+
+    #resp-table-caption {
+        display: table-caption;
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    #resp-table-header {
+        display: table-header-group;
+        background-color: gray;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    .table-header-cell {
+        display: table-cell;
+        padding: 10px;
+        text-align: justify;
+        border-bottom: 1px solid black;
+    }
+</style>
+}
+
+
+
+
+<div>
+    <input class="invoice-no" type="text" value="IN000000023" hidden />
+</div>
+
+<div class="container" id="element-to-print-2">
+    <div class="invoice-section">
+        <div style="display:flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #F7F7F7;padding: 20px 0px;">
+            <div>
+                @if (conGen.CompanyLogo != null)
+                {
+                    <img src="/@conGen.CompanyLogo" height="30" />
+                }
+                else
+                {
+                    <h2 style="font-weight: bolder;" class="my-0">@conGen.CompanyName</h2>
+                }
+            </div>
+            <h1 style="color: #009AD8; text-transform: uppercase;" class="my-0">Invoice</h1>
+        </div>
+        @*        <div style="display:flex; justify-content: space-between; border-bottom: 2px solid #F7F7F7;padding: 20px 0;">
+            <span>@DateTime.Now.ToString("dd MMM yyyy")</span>
+            <span>Invoice No: IN000000023</span>
+            </div>*@
+        <div style="display:flex; justify-content: space-between; padding: 15px 10px; background: #4a5c770f; margin-bottom: 20px;">
+            <ul style="padding: 0; margin-bottom: 0; list-style: none;">
+                <li>Md. Habul Hasan</li>
+                <li>+880 1900000000</li>
+                <li>House 23, Road 4, Dhaka</li>
+            </ul>
+            <ul style="padding: 0; margin-bottom: 0; list-style: none;">
+                <li><strong>Invoice Number:</strong> IN000000023</li>
+                <li><strong>Order Date:</strong> @DateTime.Now.ToString("dd MMM yyyy")</li>
+                <li><strong>Payment Method:</strong> Cash On Delivery</li>
+                <li><strong>Total Amount :</strong> 63.00</li>
+            </ul>
+
+        </div>
+
+        <div class="boxer">
+            <div class="box-row box-header">
+                <!--Headings-->
+                <div class="box">Sl</div>
+                <div class="box">Item</div>
+                <div class="box">Price</div>
+                <div class="box">Qty.</div>
+                <div class="box text-end">Amount</div>
+                <!--Headings-->
+            </div>
+            <div class="box-row">
+                <div class="box">1</div>
+                <div class="box">Comfy Side Pillow Light Pick Black</div>
+                <div class="box">23.00</div>
+                <div class="box">2</div>
+                <div class="box text-end">46.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">2</div>
+                <div class="box">King Size Comforter Poly Filler Inside 36 " Yellow. Original Color and Febrics for your winter. Comfort inside.</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">3</div>
+                <div class="box">Nu Republic Starboy 4 Longplay Headphone</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">4</div>
+                <div class="box">Fire-Boltt Ninja Unisex Touch to Wake SpO2 Smartwatch - Gold</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">5</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">6</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">7</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">8</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">9</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">10</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">11</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+            <div class="box-row">
+                <div class="box">12</div>
+                <div class="box">King Size Comforter Poly Filler Inside</div>
+                <div class="box">12.00</div>
+                <div class="box">1</div>
+                <div class="box text-end">12.00</div>
+            </div>
+
+            @*            <div class="my-2"></div>
+                <div class="box-row box-footer">
+                <!--Footers-->
+                <div class="box bg-white"></div>
+                <div class="box bg-white"></div>
+                <div class="box bg-white"></div>
+                <div class="box box-border text-end">Total</div>
+                <div class="box box-border text-end">58.00</div>
+                <!--Footers-->
+                </div>*@
+        </div>
+        <div class="row mt-3">
+            <div class="col-5 offset-7">
+                <div class="boxer">
+                    <div class="box-row box-footer">
+                    </div>
+                    <div class="box-row box-footer">
+                        <div class="box box-border">Subtotal</div>
+                        <div class="box box-border text-end">58.00</div>
+                    </div>
+                    <div class="box-row box-footer">
+                        <div class="box box-border">Delivery Charge</div>
+                        <div class="box box-border text-end">5.00</div>
+                    </div>
+
+                    <div class="box-row box-footer">
+                        <div class="box box-border fw-bold">Total</div>
+                        <div class="box box-border text-end fw-bold">63.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*
+    <div class="container py-4" id="element-to-print-2">
+    <div style="box-shadow: 0 0 4px #ccc; background: #fff">
+    <div class="cus-table">
+    <div class="cus-column">
+    <div class="cus-row">SL</div>
+    <div class="cus-row">Item</div>
+    <div class="cus-row">Rate</div>
+    </div>
+    <div class="cus-column">
+    <div class="cus-row">1</div>
+    <div class="cus-row">Comfy Side Pillow Light Pick Black</div>
+    <div class="cus-row">23.00</div>
+    </div>
+    <div class="cus-column">
+    <div class="cus-row">2</div>
+    <div class="cus-row">King Size Comforter Poly Filler Inside</div>
+    <div class="cus-row">12.00</div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+    <div class="container py-4">
+    <div style="box-shadow: 0 0 4px #ccc;" id="element-to-print">
+    <div id="resp-table">
+    <div id="resp-table-caption">
+    <div id="resp-table-header">
+    <div class="table-header-cell">Header 1</div>
+    <div class="table-header-cell">Header 2</div>
+    <div class="table-header-cell">Header 3</div>
+    <div class="table-header-cell">Header 4</div>
+    <div class="table-header-cell">Header 5</div>
+    </div>
+    </div>
+    </div>
+    <p>Hello</p>
+    </div>
+    </div>*@
+
+
+
+@section Scripts{
+<script src="~/lib/html2pdf.js/html2pdf.bundle.min.js"></script>
+<script>
+    $(function(){
+        var invoiceno = document.querySelector('.invoice-no').value;
+        var element = document.getElementById('element-to-print-2');
+        var opt = {
+          margin:       [0.8, 0.4],
+          filename:     'invoice_'+invoiceno + '.pdf',
+          image:        { type: 'png', quality: 0.98 },
+          html2canvas:  { scale: 2, logging: true, dpi: 96, letterRendering: true },
+          jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+          //pagebreak:    { mode: 'avoid-all', before: '#page2el' }
+          pagebreak: {avoid: '.box-row'}
+        };
+
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save();
+
+
+    })
+</script>
+}
+
+
+
+
+
+
+
+

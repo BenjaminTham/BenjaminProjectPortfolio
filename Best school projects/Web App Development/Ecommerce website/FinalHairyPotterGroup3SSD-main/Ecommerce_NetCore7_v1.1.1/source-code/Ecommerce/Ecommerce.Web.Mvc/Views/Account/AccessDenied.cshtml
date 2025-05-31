@@ -1,0 +1,50 @@
+﻿
+@{
+    Layout = LayoutPage.CleanLayout;
+    ViewBag.Title = "Access Denied";
+}
+
+@section Styles{ 
+    <style>
+        html,
+        body {
+            height: 100% !important;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .error-block {
+            width: 100%;
+            max-width: 700px;
+            padding: 15px 35px;
+            margin: auto;
+        }
+
+            .error-block img {
+                max-height: 600px;
+            }
+
+    </style>
+}
+
+<div class="error-block">
+        <div style="max-width: 600px;">
+            <div>
+                <img src="/assets/svg/unauthorized.svg" />
+                <span class="headline" style="font-size: 4.5rem; font-weight: bold; position: absolute; top: 20%; right: 15%; color: #172c59">@ViewBag.ErrorCode</span>
+            </div>
+            <div class="mt-3 text-center">
+                <h3 class="mb-1 font-weight-bold" style="color: #172c59">Access Denied</h3>
+                <p>Sorry, you are not permitted to view this page.</p>
+                <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to Home</a>
+            </div>
+        </div>
+</div>

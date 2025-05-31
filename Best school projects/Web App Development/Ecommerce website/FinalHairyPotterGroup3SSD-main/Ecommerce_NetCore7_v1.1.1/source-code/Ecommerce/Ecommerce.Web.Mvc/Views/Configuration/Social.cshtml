@@ -1,0 +1,67 @@
+﻿@model SocialProfileDto
+@{
+    ViewData["Title"] = "Social Configuration";
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Social Configuration</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage Your Social Link</div>
+    </div>
+    <div class="card-body">
+        <partial name="_ConfigurationTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-shop">
+                <div class="mt-4">
+                    <div class="">
+                        <div class="general-label">
+                            <form asp-action="Social" method="post">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Facebook</th>
+                                        <td><input type="text" class="form-control" asp-for="Facebook"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Youtube</th>
+                                        <td><input type="text" class="form-control" asp-for="Youtube"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Instagram</th>
+                                        <td><input type="text" class="form-control" asp-for="Instagram"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Twitter</th>
+                                        <td><input type="text" class="form-control" asp-for="Twitter"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Pinterest</th>
+                                        <td><input type="text" class="form-control" asp-for="Pinterest"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Linkedin</th>
+                                        <td><input type="text" class="form-control" asp-for="Linkedin"></td>
+                                    </tr>
+
+                                </table>
+                                <div class="mt-3 float-right">
+                                    <div class="d-grid gap-2 d-sm-block">
+                                        <button type="submit" class="btn btn-blue py-2 px-5">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+<script src="~/others/js/app-configuration.js"></script>
+}

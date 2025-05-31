@@ -1,0 +1,103 @@
+@import 'font-awesome/css/font-awesome.min.css';
+
+
+/* General Styles */
+body {
+    font-family: roboto;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #022B3A;
+    font-size: 20px;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 33px;
+  }
+
+  .tags-container {
+    display: flex;
+    justify-content: end;
+  }
+
+  .tags-container div {
+    margin-left: 10px;
+  }
+
+  .tags {
+    font-size: 18px;
+    padding: 10px;
+  }
+  
+  .title {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .search-bar,
+  .dropdown,
+  .date-picker {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Post Styles */
+  .section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .post {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+  }
+  
+  .topic-tags {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .post-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .post-link {
+    color: #007bff;
+    text-decoration: underline;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .notes-container {
+    font-size: 17px;
+  }
+
+  .notes {
+    margin: 0px 10px;
+  }

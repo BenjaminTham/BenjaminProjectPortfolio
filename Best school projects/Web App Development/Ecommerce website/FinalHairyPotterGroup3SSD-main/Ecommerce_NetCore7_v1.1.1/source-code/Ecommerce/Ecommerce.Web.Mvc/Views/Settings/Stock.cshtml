@@ -1,0 +1,102 @@
+﻿@model StockConfigurationDto
+@{
+    ViewData["Title"] = "Stock Settings";
+}
+
+@section Styles{
+<style>
+
+
+</style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Stock Settings</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage app settings</div>
+    </div>
+    <div class="card-body">
+        <partial name="_SettingsTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-general">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="general-label">
+                            <form asp-action="Stock" method="post">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Notification</th>
+                                        <td>
+                                            <div class="mb-3">
+                                                <div class="checkbox_item">
+                                                    <label class="d-flex align-items-center" asp-for="IsLowStockNotificationEnabled">
+                                                        <input type="checkbox" asp-for="IsLowStockNotificationEnabled">
+                                                        Enable low stock notification
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="checkbox_item">
+                                                    <label class="d-flex align-items-center" asp-for="IsOutOfStockNotificationEnabled">
+                                                        <input type="checkbox" asp-for="IsOutOfStockNotificationEnabled">
+                                                        Enable Out Of Stock notification
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Low stock threshold</th>
+                                        <td>
+                                            <div class="w-100-c d-inline-block">
+                                                <input type="number" min="0" class="form-control" asp-for="LowStockThreshold">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Out of stock threshold</th>
+                                        <td>
+                                            <div class="w-100-c d-inline-block">
+                                                <input type="number" min="0" class="form-control" asp-for="OutOfStockThreshold">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Out of stock visibility</th>
+                                        <td>
+                                            <div class="mb-3">
+                                                <div class="checkbox_item">
+                                                    <label class="d-flex align-items-center" asp-for="IsOutOfStockItemHidden">
+                                                        <input type="checkbox" asp-for="IsOutOfStockItemHidden">
+                                                        Hide Out Of Stock item from shop/display
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="mt-3 float-right">
+                                    <div class="d-grid gap-2 d-sm-block">
+                                        <button type="submit" class="btn btn-blue py-2 px-5">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+<script src="~/others/js/app-settings.js"></script>
+}

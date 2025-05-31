@@ -1,0 +1,492 @@
+﻿@using System.Collections
+@model PaginatedList<ShopShowcaseDto>
+@{
+    var selectedCategory = ViewBag.SelectedCategory as CategoryDto??new CategoryDto();
+    ViewData["Title"] = selectedCategory.Name;
+    Layout = LayoutPage.ShopLayout;
+    GeneralConfigurationDto conGen = JsonSerializer.Deserialize<GeneralConfigurationDto>(K["GeneralConfiguration"])!;
+
+
+    var sizeFilter = ViewBag.AvailableSize as List<SizeDto>;
+    var colorFilter = ViewBag.AvailableColor as List<ColorDto>;
+    var categoryFilter = ViewBag.AvailableCategory as List<CategoryDto>;
+
+    IEnumerable<ShopShowcaseDto> productItemList = Model.Items;
+
+    var selectedColor = ViewBag.SelectedColor as List<ColorDto>;
+    var selectedSize = ViewBag.SelectedSize as List<SizeDto>;
+
+    var selectedColorId = selectedColor?.Select(c => c.Id).ToList();
+    var selectedSizeId = selectedSize?.Select(c => c.Id).ToList();
+}
+
+@section Styles{
+    <style>
+        .available-color {
+            content: '';
+            box-shadow: 0 0 2px 1px #dfdfdf;
+            border: 1px solid #f7f7f7;
+            margin-right: 6px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            height: 16px;
+            width: 16px;
+        }
+
+        .single-product-image {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .variant-section {
+            position: absolute;
+            width: 100%;
+            bottom: -150px;
+            background-color: #ffffff;
+            -webkit-transition: all 0.4s linear;
+            -moz-transition: all 0.4s linear;
+            -o-transition: all 0.4s linear;
+            transition: all 0.4s linear;
+        }
+
+        .single-product-image:hover .variant-section {
+            bottom: 0;
+        }
+
+        .available-filter {
+            border: 1px solid #ebebeb;
+            padding: 1px 3px;
+            column-width: 20px;
+            margin-right: 4px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            font-size: 11px;
+            text-align: center;
+            border-radius: 2px;
+        }
+    </style>
+}
+
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <vc:category-bread-cumb option="@(new BreadCumbOptionsVM { Slug = selectedCategory.Slug } )" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-4">
+            <div class="item-filter">
+                <div class="vertical-filters-filters header-container d-flex justify-content-between"><span class="header-title">FILTERS</span><span class="header-clearAllBtn" onclick="clearFilter()">RESET FILTER</span></div>
+                <div class="vertical-filters-filters categories-container">
+                    <span class="vertical-filters-header">Categories</span>
+                    @if (categoryFilter.Any())
+                    {
+                        <ul class="categories-filter-list">
+                            @foreach (var category in categoryFilter)
+                            {
+                                <li>
+                                    <a class="common-customCheckbox vertical-filters-label" href="/shop/@category.Slug">
+                                        @category.Name
+                                    </a>
+                                    @*<label class="common-customCheckbox vertical-filters-label">
+                                            <input type="checkbox" value="@category.Id">@category.Name
+                                            <div class="common-checkboxIndicator"></div>
+                                        </label>*@
+
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+
+                @if (sizeFilter.Any())
+                {
+                    <div class="vertical-filters-filters categories-container">
+                        <span class="vertical-filters-header">Size</span>
+                        <ul class="size-filter-list">
+                            @foreach (var size in sizeFilter)
+                            {
+                                <li>
+                                    <label class="common-customCheckbox vertical-filters-label">
+                                        <input type="checkbox" value="@size.Id">@size.Name
+                                        <div class="common-checkboxIndicator"></div>
+                                    </label>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (colorFilter.Any())
+                {
+                    <div class="vertical-filters-filters">
+                        <span class="vertical-filters-header">Color</span>
+                        <ul class="color-filter-list">
+                            @foreach (var color in colorFilter)
+                            {
+                                <li class="colour-listItem">
+                                    <label class="common-customCheckbox" data-count="19137">
+                                        <span class="colour-label colour-colorDisplay" data-colorhex="black" style="background-color: @color.HexCode;"></span>@color.Name<input type="checkbox" value="@color.Id">
+                                        <div class="common-checkboxIndicator"></div>
+                                    </label>
+                                </li>
+                            }
+                        </ul>
+                        @*<div class="filters-more"><span>+ 38 more</span></div>*@
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-8">
+
+            @if (productItemList.Any())
+            {
+                <div class="pt-4">
+                    <div>
+                        <div>
+                            <span>
+                                @if (selectedColor != null && selectedColor.Count() > 0)
+                                {
+                                    @foreach (var color in selectedColor)
+                                    {
+                                        <button class="btn btn-sm btn-outline-danger rounded filtered-tag-5">@color.Name<i class="fa-solid fa-xmark px-2" onclick="removeColor(@color.Id)"></i></button>
+                                    }
+                                }
+                                @if (selectedSize != null && selectedSize.Count() > 0)
+                                {
+                                    @foreach (var size in selectedSize)
+                                    {
+                                        <button class="btn btn-sm btn-outline-danger rounded filtered-tag-5">@size.Name<i class="fa-solid fa-xmark px-2" onclick="removeSize(@size.Id)"></i></button>
+                                    }
+                                }
+                            </span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-end mt-2">
+                        <div style="max-width: 300px;">
+                            <select aria-label=".form-select-sm example" class="form-select form-select-sm" id="short-by">
+                                <option selected>Default</option>
+                                <option data-short-column="ProductName" data-short-order="Asc">Name: A to Z</option>
+                                <option data-short-column="ProductName" data-short-order="Desc">Name: Z to A</option>
+                                <option data-short-column="Price" data-short-order="Desc">Price: High to Low</option>
+                                <option data-short-column="Price" data-short-order="Asc">Price: Low to High</option>
+                                <option data-short-column="Id" data-short-order="Desc">New to Old</option>
+                                <option data-short-column="Id" data-short-order="Asc">Old to New</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-searchProductsContainer">
+                    <div class="row padding-md products-section">
+                        @foreach (var item in productItemList)
+                        {
+                            <div class="col-lg-3 col-md-6 col-12">
+                                <div class="single-product">
+                                    <div class="single-product-image">
+                                        <img alt="#" class="img-fluid" src="@(item.ProductImage != null ? "/" + item.ProductImage : "/assets/images/no-image.png")" >
+
+                                        @if (item.AvailableColorVariant.Any() || item.AvailableSizesVariant.Any())
+                                        {
+                                            <div class="p-2 variant-section">
+                                                @if (item.AvailableColorVariant.Any())
+                                                {
+                                                    <div class="py-1 d-flex">
+                                                        @foreach (var color in item.AvailableColorVariant)
+                                                        {
+                                                            <div class="available-color" style="background: @color.HexCode;"></div>
+                                                        }
+                                                    </div>
+                                                }
+
+                                                @if (item.AvailableSizesVariant.Any())
+                                                {
+                                                    <div class="d-flex">
+                                                        @foreach (var size in item.AvailableSizesVariant)
+                                                        {
+                                                            <span class="available-filter">@size.Name</span>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+
+                                    </div>
+                                    <div class="single-product-info mt-2">
+                                        <div class="single-product-title text-ellipsis--2 height-40">
+                                            <a class="text-decoration-none text-dark" href="/productdetails/@item.Slug">@item.Name</a>
+                                        </div>
+                                        <div class="single-product-price">
+                                            <span class="price fw-700">
+                                                <bdi class="@(conGen.CurrencyPosition == CurrencyPosition.End ? "currency-swap" : "")"> <span>@conGen.CurrencySymbol</span><span>@item.Price</span> </bdi>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="single-product-btn-section d-flex justify-content-center">
+                                        <a class="btn btn-sm buy btn-grass-2-outline px-4" href="/productdetails/@item.Slug">Buy Now</a>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <a class="btn btn-light btn-sm wish-btn" data-product-id="@item?.ProductId" href="javascript:void(0)"><i class="fa-regular fa-heart"></i></a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="shop-paging mt-3">
+                    <div class="d-flex flex-wrap justify-content-center">
+                        <nav aria-label="...">
+                            @{
+                                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                            }
+                            <ul class="pagination pagination-sm">
+                                @if (Model.HasPreviousPage)
+                                {
+                                    <li class="page-item"><a class="page-link" asp-action="ByCategory" asp-route-page="@(Model.PageIndex - 1)"><i class="fa-solid fa-angle-left"></i></a></li>
+                                    <li class="page-item"><a class="page-link" asp-action="ByCategory" asp-route-page="@(Model.PageIndex - 1)" asp-route-sortColumn="@Context.Request.Query["sortColumn"]" asp-route-sortOrder="@Context.Request.Query["sortOrder"]">@(Model.PageIndex - 1)</a></li>
+                                }
+                                <li class="page-item active"><span class="page-link">@Model.PageIndex</span></li>
+                                @if (Model.HasNextPage)
+                                {
+                                    <li class="page-item"><a class="page-link" asp-action="ByCategory" asp-route-page="@(Model.PageIndex + 1)" asp-route-sortColumn="@Context.Request.Query["sortColumn"]" asp-route-sortOrder="@Context.Request.Query["sortOrder"]">@(Model.PageIndex + 1)</a></li>
+                                    <li class="page-item"><a class="page-link" asp-action="ByCategory" asp-route-page="@(Model.PageIndex + 1)"><i class="fa-solid fa-angle-right"></i></a></li>
+                                }
+
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center my-5 mt-md-4 mb-md-5">
+                    <div class="row mb-5">
+                        <div class="col-md-6 offset-md-3">
+                            <img style="max-width: 400px; opacity: 0.5" src="/assets/images/space-rocket-yellow.svg" />
+                        </div>
+                    </div>
+                    <div class="my-2 h-8">No Items Available In This Category!</div>
+                    <a class="btn btn-grass-2" asp-controller="Shop" asp-action="Index"><i class="fas fa-shopping-bag me-2"></i>Continue Shopping</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        const isAuth = Boolean("@Html.Raw(User?.Identity?.IsAuthenticated)");
+        console.log(isAuth);
+        updateWish();
+
+        function updateWish() {
+            if (isAuth) {
+                const cookieName = '@Html.Raw(User?.Identity?.Name?.ToString())';
+
+                //let wishCookie = getCookie(cookieName);
+                //let wishCookieIds = JSON.parse(wishCookie) ?? [];
+
+                let wishCookie = getCookie(cookieName);
+                let wishCookieIds = [];
+                wishCookieIds = wishCookie == null ? wishCookieIds : wishCookie?.toString().split(",").map(Number);
+
+                $('.products-section .wish-btn').removeClass('wished');
+                $('.products-section .wish-btn i').removeClass('fa-solid');
+                $('.products-section .wish-btn i').addClass('fa-regular');
+
+                $('.products-section .wish-btn').each(function () {
+                    let item = $(this);
+                    if (jQuery.inArray(item.data('product-id'), wishCookieIds) !== -1) {
+                        item.addClass('wished');
+                        item.find('i').addClass('fa-solid');
+                        item.find('i').removeClass('fa-regular');
+                    }
+                });
+            }
+
+        }
+
+        function removeColor(id) {
+            var selectedColorId = @Html.Raw(Json.Serialize(selectedColorId));
+            selectedColorId = selectedColorId.filter(c => c !== id);
+            var selectedColor = selectedColorId.join(", ");
+
+            if ('URLSearchParams' in window) {
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set("color", selectedColor);
+                if (selectedColor == '') {
+                    searchParams.delete("color");
+                }
+                window.location.search = searchParams.toString();
+            }
+        }
+
+        function removeSize(id) {
+            var selectedSizeId = @Html.Raw(Json.Serialize(selectedSizeId));
+            selectedSizeId = selectedSizeId.filter(c => c !== id);
+            var selectedSize = selectedSizeId.join(", ");
+
+            if ('URLSearchParams' in window) {
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set("size", selectedSize);
+                if (selectedSize == '') {
+                    searchParams.delete("size");
+                }
+                window.location.search = searchParams.toString();
+            }
+        }
+
+        //size filter checkbox
+        $(document).on('click', '.size-filter-list li input[type="checkbox"]', function () {
+            var checkedValues = [];
+            $(".size-filter-list li").find("input[type='checkbox']:checked").each(function() {
+                checkedValues.push($(this).val());
+            });
+            var selectedSize = checkedValues.join(", ");
+
+            if ('URLSearchParams' in window) {
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set("size", selectedSize);
+                if (selectedSize == '') {
+                    searchParams.delete("size");
+                }
+                window.location.search = searchParams.toString();
+            }
+        });
+
+
+        //color filter checkbox
+        $(document).on('click', '.color-filter-list li input[type="checkbox"]', function () {
+            var checkedValues = [];
+            $(".color-filter-list li").find("input[type='checkbox']:checked").each(function () {
+                checkedValues.push($(this).val());
+            });
+            var selectedColor = checkedValues.join(", ");
+
+            if ('URLSearchParams' in window) {
+                var searchParams = new URLSearchParams(window.location.search);
+                searchParams.set("color", selectedColor);
+                if (selectedColor == '') {
+                    searchParams.delete("color");
+                }
+                window.location.search = searchParams.toString();
+            }
+        });
+
+        function clearFilter() {
+            // Get the current URL and parse its search parameters
+            var urlParams = new URLSearchParams(window.location.search);
+
+            // Remove the parameter
+            urlParams.delete("size");
+            urlParams.delete("color");
+
+            // Build the updated URL with the remaining parameters
+            var updatedUrl = window.location.origin + window.location.pathname + "?" + urlParams.toString();
+
+            // Redirect to the updated URL
+            window.location.replace(updatedUrl);
+        }
+
+
+        $('.single-product-btn-section .wish-btn').hover(function () {
+            let isWished = $('.single-product-btn-section .wish-btn').hasClass('wished');
+            if (isWished) {
+                $(this).toggleClass('wished');
+                $(this).find('i').toggleClass('fa-solid');
+                $(this).find('i').toggleClass('fa-regular');
+            } else {
+                $(this).toggleClass('wished');
+                $(this).find('i').toggleClass('fa-solid');
+                $(this).find('i').toggleClass('fa-regular');
+            }
+        }, function () {
+            let isWished = $('.single-product-btn-section .wish-btn').hasClass('wished');
+            if (isWished) {
+                $(this).toggleClass('wished');
+                $(this).find('i').toggleClass('fa-solid');
+                $(this).find('i').toggleClass('fa-regular');
+            } else {
+                $(this).toggleClass('wished');
+                $(this).find('i').toggleClass('fa-solid');
+                $(this).find('i').toggleClass('fa-regular');
+            }
+        });
+
+
+        //wish icon click
+        $(document).on('click', '.single-product-btn-section .wish-btn', function () {
+            let isWished = $(this).hasClass('wished');
+            let productId = $(this).data('product-id');
+
+            const cookieName = '@Html.Raw(User?.Identity?.Name?.ToString())';
+            addToWishList(productId, isWished, cookieName);
+            updateWish();
+
+            $(this).toggleClass('wished');
+            $(this).find('i').toggleClass('fa-solid');
+            $(this).find('i').toggleClass('fa-regular');
+        });
+
+
+        //sort-by filter dropdown
+        $(document).on('change', '#short-by', function () {
+            $('#short-by option').each(function () {
+                let item = $(this);
+                item.text(item.text().replace("Short By: ", ""));
+            });
+
+            var sortColumn = $('#short-by option:selected').data('short-column');
+            var sortOrder = $('#short-by option:selected').data('short-order');
+            console.log(sortColumn, sortOrder);
+
+            var url = "@Url.Action("Index", "Shop")";
+            if ((sortColumn != null && sortOrder != null)) {
+                url += "/?sortColumn=" + sortColumn + "&sortOrder=" + sortOrder;
+            }
+            window.location.href = url;
+        });
+
+        onLoad();
+        function onLoad() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortColumn = urlParams.get('sortColumn');
+            const sortOrder = urlParams.get('sortOrder');
+
+            $('#short-by option[data-short-column="' + sortColumn + '"][data-short-order="' + sortOrder + '"]').prop("selected", true);
+
+            let selectedText = $('#short-by option:selected').text();
+            if (!selectedText.includes('Short By: ')) {
+                $('#short-by option:selected').text('Short By: ' + selectedText);
+            }
+
+
+            var selectedSizeId = @Html.Raw(Json.Serialize(selectedSizeId));
+            var $sizeCheckboxes = $('.size-filter-list li input[type="checkbox"]'); // Get all checkboxes on the page
+            $sizeCheckboxes.each(function() {
+                var $checkbox = $(this);
+                //var checkboxId = parseInt($checkbox.attr('id'));
+                var checkboxVal = parseInt($checkbox.val());
+                if (selectedSizeId.includes(checkboxVal)) {
+                    $checkbox.prop('checked', true); // Check the checkbox if ID matches
+                }
+            });
+
+
+            var selectedColorId = @Html.Raw(Json.Serialize(selectedColorId));
+            var $colorCheckboxes = $('.color-filter-list li input[type="checkbox"]'); // Get all checkboxes on the page
+            $colorCheckboxes.each(function () {
+                var $checkbox = $(this);
+                var checkboxVal = parseInt($checkbox.val());
+                if (selectedColorId.includes(checkboxVal)) {
+                    $checkbox.prop('checked', true); // Check the checkbox if ID matches
+                }
+            });
+        }
+    </script>
+}

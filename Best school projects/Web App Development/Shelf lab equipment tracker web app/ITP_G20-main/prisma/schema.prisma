@@ -1,0 +1,75 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TrayStatus {
+  IN
+  OUT
+  OUT_OF_BOUND
+}
+
+enum Function {
+  NONE
+  INVENTORY
+  READWRITE
+  GEOFENCE
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+}
+
+model Tray {
+  id        Int        @id @default(autoincrement()) // Unique identifier for each Tray
+  epc       String     @unique // Tray identifier in RFID using EPC
+  status    TrayStatus @default(OUT) // Status of the Tray: true if in the rack, false if taken out
+  statusChg DateTime   @default(now()) // Time when the status of the Tray was changed
+  rackId    Int? // Foreign key referencing the Rack
+
+  // Relation field with Rack
+  Rack Rack? @relation(fields: [rackId], references: [id])
+
+  @@index([rackId]) // Index for the foreign key rackId
+}
+
+model Rack {
+  id       Int    @id @default(autoincrement()) // Unique identifier for each Rack
+  location String // Location of the Rack
+  name     String // Name of the Rack
+
+  // Relation field with Tray
+  trays Tray[] // One Rack can hold multiple Trays
+}
+
+model Reader {
+  id       String    @id @default(uuid()) // Unique identifier for each Reader
+  ip       String    @unique // IP address of the Reader
+  antennas Antenna[] // One Reader can have multiple Antennas
+}
+
+model Antenna {
+  id          String   @id @default(uuid()) // Unique identifier for each Antenna
+  antennaPort Int // Port number of the Antenna
+  function    Function // Function of the Antenna: Inventory, ReadWrite, Geofence
+  readerId    String? // Foreign key referencing the Reader
+
+  // Relation field with Reader
+  Reader Reader? @relation(fields: [readerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([readerId]) // Index for the foreign key readerId
+}
+
+model SystemStatus {
+  id           String   @id @default(uuid()) // Unique identifier for the SystemStatus
+  systemStatus Boolean // Status of the Inventory: true if running, false if stopped
+  systemTime   DateTime // Time when the Inventory was started or stopped
+}

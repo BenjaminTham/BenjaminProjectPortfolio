@@ -1,0 +1,8 @@
+﻿@{
+    var action = ViewBag.ItemSortAction;
+    var sort = ViewBag.ItemSortColumn;
+    var name = ViewBag.ItemDisplayName;
+}
+
+@*<a class="item-sort" asp-action="@action" asp-route-page="@Context.Request.Query["page"]" asp-route-sortColumn="@sort" asp-route-sortOrder="@ViewData["sortOrder"]" asp-route-searchValue="@Context.Request.Query["searchValue"]">@name<i class="fa fa-sort item-sort-icon"></i></a>*@
+<a href="javascript:void(0)" class="item-sort" su-action="@action" su-page="@Context.Request.Query["page"]" su-sortColumn="@sort" su-sortOrder="@ViewData["sortOrder"]" su-searchValue="@Context.Request.Query["searchValue"]">@name<i class="fa fa-sort item-sort-icon"></i></a>

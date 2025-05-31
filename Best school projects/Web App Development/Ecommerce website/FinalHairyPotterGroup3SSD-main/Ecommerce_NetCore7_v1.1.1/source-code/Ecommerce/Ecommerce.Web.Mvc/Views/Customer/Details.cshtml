@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Customer Info";
+    Layout = LayoutPage.AdminLayout;
+    var customer = ViewData["CustomerInfo"] as CustomerProfileDto;
+}
+
+@section Styles{
+    <style>
+        .customer-card {
+            /*background-image: url(/assets/images/address.svg);*/
+        }
+
+        @@media (min-width:767px) {
+            .border-col-media {
+                border-right: 1px solid #dee2e6 !important;
+            }
+        }
+    </style>
+}
+
+

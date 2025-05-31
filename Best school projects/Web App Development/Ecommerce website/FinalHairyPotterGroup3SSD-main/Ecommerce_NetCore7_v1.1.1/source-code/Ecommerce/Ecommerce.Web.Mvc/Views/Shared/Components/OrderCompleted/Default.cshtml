@@ -1,0 +1,108 @@
+﻿@{
+    var invoice = ViewBag.OrderInvoice as OrderInvoiceDto;
+}
+
+
+
+<div>
+    <div class="text-center mb-5">
+        <h3>Order Summary</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Invoice No.</th>
+                    <td>@invoice.InvoiceNo</td>
+                </tr>
+                <tr>
+                    <th>Order On</th>
+                    <td>@invoice.OrderDate</td>
+                </tr>
+                <tr>
+                    <th>Payment Method</th>
+                    <td>@invoice.PaymentMethod</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Customer Name</th>
+                    <td>@invoice.CustomerName</td>
+                </tr>
+                <tr>
+                    <th>Customer Phone</th>
+                    <td>@invoice.CustomerPhone</td>
+                </tr>
+                <tr>
+                    <th>Shipping Address</th>
+                    <td>@invoice.ShippingAddress</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            @if (invoice.OrderItems != null && invoice.OrderItems.Count() != 0)
+            {
+                <table class="table table-bordered">
+                    <thead style="background-color: #ccc;">
+                        <tr>
+                            <th>Sl.</th>
+                            <th>Items</th>
+                            <th>Price</th>
+                            <th>Qty.</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var sl = 0;
+                            foreach (var item in invoice.OrderItems)
+                            {
+                                sl++;
+                                <tr>
+                                    <td>@sl</td>
+                                    <td>@item.Item</td>
+                                    <td>@item.UnitPriceWithCurrency</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.TotalWithCurrency</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 offset-md-6">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Subtotal</th>
+                    <td>@invoice.Subtotal</td>
+                </tr>
+                <tr>
+                    <th>Delivery Charge</th>
+                    <td>@invoice.DeliveryCharge</td>
+                </tr>
+                <tr>
+                    <th>Total Amount</th>
+                    <td>@invoice.TotalAmount</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-end my-5">
+            <button onclick="downloadInvoice(@invoice.OrderId)" class="btn btn-secondary py-3">
+                <i class="fas fa-file-download"></i>
+                <span>Download Invoice</span>
+            </button>
+        </div>
+    </div>
+</div>

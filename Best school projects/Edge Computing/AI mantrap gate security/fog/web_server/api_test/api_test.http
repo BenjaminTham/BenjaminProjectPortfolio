@@ -1,0 +1,140 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=PyCharm
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "P@ssw0rd"
+}
+
+### Logout
+GET http://localhost:5000/api/auth/logout
+
+### List users
+POST http://localhost:5000/api/user/list
+Content-Type: application/json
+
+{
+  "role": "admin"
+}
+
+### Add user
+POST http://localhost:5000/api/user/add
+Content-Type: application/json
+
+{
+  "username": "limcheehean2",
+  "email": "lychee0504+1@gmail.com",
+  "password": "P@ssw0rd",
+  "role": "personnel",
+  "alert_subscribed": false
+}
+
+
+### Update user
+POST http://localhost:5000/api/user/update/4
+Content-Type: application/json
+
+{
+  "email": "lychee0504+1@gmail.com",
+  "password": "P@ssw0rd123",
+  "alert_subscribed": true
+}
+
+### Delete user
+DELETE http://localhost:5000/api/user/delete/4
+
+
+### List mantraps
+POST http://localhost:5000/api/mantrap/list
+Content-Type: application/json
+
+{
+  "location": "E2-05-05"
+}
+
+### Add mantrap
+POST http://localhost:5000/api/mantrap/add
+Content-Type: application/json
+
+{
+  "location": "E5-05-06"
+}
+
+### Update mantrap
+POST http://localhost:5000/api/mantrap/update/2
+Content-Type: application/json
+
+{
+  "location": "E2-05-07"
+}
+
+### Delete mantrap
+DELETE http://localhost:5000/api/mantrap/delete/2
+
+
+### Open mantrap gate
+GET http://localhost:5000/api/mantrap/1/open
+
+
+### Enroll biometrics
+POST http://localhost:5000/api/biometrics/enroll/1
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="face"; filename="face.png"
+Content-Type: image/png
+
+< ./face.png
+--WebAppBoundary
+Content-Disposition: form-data; name="face_0"; filename="face.png"
+Content-Type: image/png
+
+< ./face.png
+--WebAppBoundary
+Content-Disposition: form-data; name="face_1"; filename="face.png"
+Content-Type: image/png
+
+< ./face.png
+--WebAppBoundary
+Content-Disposition: form-data; name="face_2"; filename="face.png"
+Content-Type: image/png
+
+< ./face.png
+--WebAppBoundary
+Content-Disposition: form-data; name="face_3"; filename="face.png"
+Content-Type: image/png
+
+< ./face.png
+--WebAppBoundary
+Content-Disposition: form-data; name="voice"; filename="voice.wav"
+Content-Type: audio/wav
+
+< ./voice.wav
+--WebAppBoundary
+
+
+### Delete biometrics
+DELETE http://localhost:5000/api/biometrics/delete/1
+
+### Get face embeddings
+GET http://localhost:5000/api/biometrics/embeddings/2e048d59-cbfb-4444-a8b9-7d90430fa6ce/face_embeddings.pkl
+
+### Get voice embeddings
+GET http://localhost:5000/api/biometrics/embeddings/2e048d59-cbfb-4444-a8b9-7d90430fa6ce/voiceprints.pkl
+
+###
+POST http://localhost:5000/api/log/list
+Content-Type: application/json
+
+{
+}
+
+###
+GET http://localhost:5000/api/log/file/multi_20250309223558333.png
+
+

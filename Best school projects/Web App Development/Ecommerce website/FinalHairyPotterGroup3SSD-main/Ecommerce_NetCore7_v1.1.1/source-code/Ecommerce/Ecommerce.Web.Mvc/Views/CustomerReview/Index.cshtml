@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Customer Review";
+}
+
+@section Styles{
+
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Customer Review</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblReviews" class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">ProductName</th>
+                        <th>Rating</th>
+                        <th>Review By</th>
+                        <th>Date Commented</th>
+                        <th>Replied</th>
+                        <th>IsActive</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts{
+<script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblReviews').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("RenderView")',
+                    pages: 5, //number of pages to cache
+                    method: 'POST' // Ajax HTTP method
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [7], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "productName", "name": "ProductName" },
+                    {
+                        "data": "rating", "name": "Rating",
+                        "render": function (data, type, row) {
+                            var rate = row.rating;
+                            var myHtml = '';
+                            myHtml += '<ul class="rating_star">'
+                            for (var i = 0; i < 5; i++)
+                            {
+                                if (rate > 0)
+                                {
+                                    myHtml += '<li><i class="fas fa-star"></i></li>'
+                                }
+                                else
+                                {
+                                    myHtml += '<li><i class="far fa-star"></i></li>'
+                                }
+                                rate--;
+                            }
+                            myHtml += '</ul>'
+                            return myHtml;
+                        }
+                    },
+                    { "data": "customerName", "name": "CustomerName" },
+                    {
+                        "data": "dateCommented", "name": "DateCommented",
+                        "render": function (data, type, row) {
+                            return row.dateCommented != null ? '<span>' + dayjs(row.dateCommented).format('DD MMM, YYYY hh:mm A')+'</span>' : '';
+                        }
+                    },
+                    {
+                        "data": "reply", "name": "Reply",
+                        "render": function (data, type, row) {
+                            return row.reply != null ? '<span class="text-success" style="font-size: 1.2em;"><i class="fas fa-check"></i></span>' : '<span style="font-size: 1.2em;color: #ffc1c7;"><i class="fas fa-times"></i></span>';
+                        }
+                    },
+                    {
+                        "data": null,
+                        "name": "IsActive",
+                        "render": function (data, type, row) {
+                            return row.isActive == true ? '<span class="badge badge-soft-success">Yes</span>' : '<span class="badge badge-soft-danger">No</span>';
+                        }
+                    },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_ProductReview_Edit).Result.Succeeded)
+                                {
+                                        <text>
+                                            myHtml += '<a class="btn btn-soft-primary btn-sm me-1" href="@Url.Action("Details")/' + row.id + '"><i class="fa fa-pen"></i></a>';
+                                        </text>
+                                }
+                            }
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+</script>
+}

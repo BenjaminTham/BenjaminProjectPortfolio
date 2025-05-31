@@ -1,0 +1,45 @@
+﻿@functions {
+    private string GetActiveStyle(string actionName)
+    {
+        var currentAction = ViewContext.RouteData.Values["action"].ToString();
+        return currentAction == actionName ? "background-color: #007bff; color: #fff;" : "background-color: transparent; color: inherit; border-radius: 10px;";
+    }
+}
+
+<div class="nav flex-row nav-pills nav-pills-custom fw-600 mb-4 vw-100 w-100" id="customer_account_tab" role="tablist" aria-orientation="vertical">
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="Index" style="@GetActiveStyle("Index"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-sliders f-w-25"></i><span>Dashboards</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="Orders" style="@GetActiveStyle("Orders"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-boxes-packing f-w-25"></i><span>Orders</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="Reviews" style="@GetActiveStyle("Reviews"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-star f-w-25"></i><span>Reviews</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="WishList" style="@GetActiveStyle("WishList"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-regular fa-heart f-w-25"></i><span>Wishlist</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="Address" style="@GetActiveStyle("Address"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-location-dot f-w-25"></i><span>Address</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="AccountInfo" style="@GetActiveStyle("AccountInfo"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-user-gear f-w-25"></i><span>Account Info</span></span>
+        </div>
+    </a>
+    <a class="nav-link mb-1 py-2" asp-controller="My" asp-action="Password" style="@GetActiveStyle("Password"); margin:10px">
+        <div class="d-flex justify-content-between align-items-center">
+            <span><i class="fa-solid fa-key f-w-25"></i><span>Password</span></span>
+        </div>
+    </a>
+</div>

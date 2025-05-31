@@ -1,0 +1,177 @@
+﻿@model IEnumerable<TopCategoriesConfigurationDto>
+
+@{
+    ViewData["Title"] = "Top Categories";
+}
+
+@section Styles{
+    <link href="~/media/css/media-select.css" rel="stylesheet" />
+    <style>
+        .sortable .single-item {
+            transition: transform .4s;
+        }
+
+            .sortable .single-item:hover {
+                cursor: grab;
+                transform: scale(1.02);
+                box-shadow: 0 0px 5px #d7d7d7;
+                z-index: 1;
+            }
+
+        [su-media-section] img {
+            height: 100px;
+            width: 100px;
+            object-fit: cover;
+            box-shadow: 0 0 3px #ccc;
+            border-radius: 3px;
+        }
+    </style>
+}
+
+    <div class="page-title-box">
+        <h4 class="page-title">Top Categories</h4>
+    </div>
+
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="card-title">Manage Top Categories</div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="CategoryId" class="control-label">Select A Category</label>
+                        <select id="select-category" class="form-select" asp-items="ViewBag.CategoryId"></select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="addItem">Add Item</button>
+                </div>
+                <div class="col-md-6">
+                    <form asp-action="TopCategories" method="post" id="topCategoriesItem">
+                        <ul class="list-group mt-2 sortable" style="margin-bottom: 50px;">
+                        @foreach (var item in Model)
+                        {
+                            <li class="list-group-item single-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div su-media-section>
+                                            <img class="img-fluid mb-1" su-media-preview src="@(item.ImagePreview != null? "/" + item.ImagePreview : "/media/images/no-image.png")" alt="Product picture">
+                                            <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                            </div>
+                                            <input su-media-selected-input type="text" name="Image" value="@item.Image" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <input hidden class="f-pid" name="CategoryId" value="@item.CategoryId" />
+                                        <strong class="d-block f-name">@item.Title</strong>
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <button class="btn btn-soft-danger btn-sm item-remove"><i class="fa fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <input type="button" id="saveTopCategories" value="Update" class="btn btn-success mt-2 py-2 px-5" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image select modal -->
+<vc:image></vc:image>
+
+
+@section Scripts{
+    <script src="~/media/js/media-select.js"></script>
+    <script>
+        $(function () {
+            $(".sortable").sortable();
+        });
+
+        $(document).on("click", "#addItem", function () {
+            var selectedCategoryId = $('#select-category').val();
+            var selectedCategoryName = $("#select-category option:selected").text();
+
+            var li = '';
+            li += `<li class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div su-media-section>
+                                                    <img class="img-fluid mb-1" su-media-preview src="/media/images/no-image.png" alt="Product picture">
+                                                    <div class="btn-group btn-group-xs" role="group" aria-label="Basic outlined example">
+                                                        <button type="button" class="btn btn-soft-primary" su-media-popup>Select</button>
+                                                        <button type="button" class="btn btn-soft-danger" su-media-deselect>×</button>
+                                                    </div>
+                                                    <input su-media-selected-input type="text" name="Image" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <input hidden class="f-pid" name="CategoryId" value="`+ selectedCategoryId + `" />
+                                                <strong class="d-block f-name">`+ selectedCategoryName + `</strong>
+                                            </div>
+                                            <div class="d-inline-block">
+                                                <button class="btn btn-soft-danger btn-sm item-remove"><i class="fa fa-trash-alt"></i></button>
+                                            </div>
+                                        </div>
+                                    </li>`
+
+            $("#topCategoriesItem ul").append(li);
+        });
+
+
+        $(document).on("click", ".item-remove", function () {
+            $(this).closest('li').remove();
+        });
+
+        //Collect data
+        $("#saveTopCategories").click(function (e) {
+            e.preventDefault();
+
+            var topCategories = [];
+            topCategories.length = 0;
+            var order = 0;
+            $.each($("#topCategoriesItem ul li"), function () {
+                order++;
+                topCategories.push({
+                    CategoryId: $(this).find('input[name=CategoryId]').val(),
+                    Image: $(this).find('input[name=Image]').val(),
+                    Order: order
+                });
+            });
+
+
+            var data = JSON.stringify(topCategories);
+
+            $.when(saveTopCategories(data)).then(function (response) {
+                //if success
+                notifier.open({ type: "success", message: "Categories Updated" });
+            }).fail(function (err) {
+                console.log(err);
+                notifier.open({ type: "error", message: err });
+            });
+        });
+
+        function saveTopCategories(data) {
+            console.log(data);
+            var obj = jQuery.parseJSON(data);
+            return $.ajax({
+                url: "/Configuration/TopCategories",
+                type: 'POST',
+                data: { data: obj },
+                success: function (result) {
+                    //location.reload();
+                },
+                error: function () {
+                    alert("Error!");
+                }
+            });
+        }
+
+    </script>
+}

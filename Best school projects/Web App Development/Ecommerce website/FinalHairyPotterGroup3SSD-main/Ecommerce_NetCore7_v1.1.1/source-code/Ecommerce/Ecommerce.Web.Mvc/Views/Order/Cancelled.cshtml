@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Cancelled Order";
+    Layout = LayoutPage.AdminLayout;
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">Cancelled Order</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="tblOrder" class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="all">Invoice No.</th>
+                        <th>Customer</th>
+                        <th>Shipping Address</th>
+                        <th>Order Amount</th>
+                        <th>Delivery Charge</th>
+                        <th>Current Status</th>
+                        <th class="all"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div>
+    <ul>
+        <li>Here <span class="ms-1 badge badge-soft-success badge-md">new</span> means orders within last <strong>24 hours</strong></li>
+    </ul>
+</div>
+
+
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+    $(function () {
+
+            suTable = $('#tblOrder').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "ajax": $.fn.dataTable.pipeline({
+                    url: '@Url.Action("CancelledRenderView")',
+                    pages: 5, //number of pages to cache
+                    method: 'POST' // Ajax HTTP method
+                }),
+                "order": [[0, "desc"]],
+                "columnDefs": [
+                    { "targets": [0], "visible": false, "searchable": false },
+                    { "targets": [7], "searchable": false, "orderable": false, "className": "text-end user-action" }
+                ],
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    {
+                        "data": 'invoiceNo', "name": "InvoiceNo",
+                        "render": function (data, type, row) {
+                            var text = data;
+                            if (row.isNew) text += '<span class="ms-1 badge badge-soft-success badge-sm">new</span>';
+                            return text;
+                        }
+                    },
+                    { "data": "customerName", "name": "CustomerName" },
+                    { "data": "shippingAddress", "name": "ShippingAddress" },
+                    {
+                        "data": "orderAmount", "name": "OrderAmount",
+                        "render": function (data) {
+                            return $.number(data, 2);
+                        }
+                    },
+                    {
+                        "data": "deliveryCharge", "name": "DeliveryCharge",
+                        "render": function (data) {
+                            return $.number(data, 2);
+                        }
+                    },
+                    {
+                        "data": null,
+                        "name": "CurrentOrderStatus",
+                        "render": function (data, type, row) {
+                            var text = "";
+                            switch(row.currentOrderStatus) {
+                            case "@DefaultOrderStatusValue.Pending().StatusValue.ToString()":
+                                text = '<span class="badge bg-soft-yellow-1 badge-sm">'+row.currentOrderStatus+'</span>';
+                                break;
+                            case "@DefaultOrderStatusValue.Cancelled().StatusValue.ToString()":
+                                text = '<span class="badge bg-soft-carrot badge-sm">'+row.currentOrderStatus+'</span>';
+                                break;
+                            case "@DefaultOrderStatusValue.Delivered().StatusValue.ToString()":
+                                text = '<span class="badge bg-soft-green badge-sm">'+row.currentOrderStatus+'</span>';
+                                break;
+                            default:
+                                text = '<span class="badge bg-soft-blue badge-sm">'+row.currentOrderStatus+'</span>';
+                            }
+
+                            if(row.paymentStatus != null){
+                                text += '<span class="badge bg-grass-2 badge-sm ms-1">'+row.paymentStatus+'</span>';
+                            }
+                            return text;
+                        }
+                    },
+                    {
+                        'data': null,
+                        'render': function (data, type, row) {
+                            var myHtml = '';
+                            @{
+                                if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Order_Edit).Result.Succeeded)
+                                {
+                                    <text>
+                                        myHtml += '<a class="btn btn-sky-outline btn-sm m-1" onclick="editClick(' + row.id + ')" href="@Url.Action("Details")/' + row.id + '"><i class="fa-solid fa-angles-right"></i></a>';
+                                    </text>
+                                }
+                                //if(AuthorizationService.AuthorizeAsync(User, Permissions.Permissions_Order_Delete).Result.Succeeded)
+                                //{
+                                //    <text>
+                                //        myHtml += '<a class="btn btn-soft-danger btn-sm m-1" su-delete su-data-id="' + row.id + '" su-data-action="@Url.Action("Delete")"  href="javascript:void(0)"><i class="fa fa-trash-alt"></i></a>';
+                                //    </text>
+                                //}
+                            }
+
+                            return myHtml;
+                        }
+                    }
+                ]
+            });
+        });
+
+
+
+
+
+
+    </script>
+}

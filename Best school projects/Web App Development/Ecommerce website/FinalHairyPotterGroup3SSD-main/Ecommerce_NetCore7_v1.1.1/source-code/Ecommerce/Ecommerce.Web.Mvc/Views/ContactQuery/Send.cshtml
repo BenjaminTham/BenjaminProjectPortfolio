@@ -1,0 +1,99 @@
+﻿@model ContactQueryDto
+
+@{
+    ViewData["Title"] = "Contact Us";
+    Layout = LayoutPage.ShopLayout;
+}
+
+<div class="top-header">
+    <div class="container">
+        <div class="page-title">
+            <span><i class="fa-regular fa-envelope"></i> Contact Us</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="p-4 content-section">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <div class="text-center mt-3">
+                    Contact us to find out more or let us know how we can help you better.
+                </div>
+                <div class="text-center">
+                    <img src="/assets/images/contact-us.svg" class="img-fluid" style="max-height: 400px">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <div class="py-4 px-3 mw-400">
+                        <form class="row" asp-controller="ContactQuery" asp-action="Send" method="post">
+                            <div class="mb-2">
+                                <label asp-for="FullName"></label>
+                                <input type="text" class="form-control" asp-for="FullName">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+                            <div class="mb-2">
+                                <label asp-for="Email"></label>
+                                <input type="email" class="form-control" asp-for="Email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="mb-2">
+                                <label asp-for="Subject"></label>
+                                <input type="text" class="form-control" asp-for="Subject">
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+                            <div class="mb-2">
+                                <label asp-for="MessageBody"></label>
+                                <textarea class="form-control" asp-for="MessageBody" rows="4"></textarea>
+                                <span asp-validation-for="MessageBody" class="text-danger"></span>
+                            </div>
+                            <div class="mb-2">
+                                <button class="btn btn-banana w-100 signup-button" type="submit">Send Message</button>
+                            </div>
+                            <div>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">Only alphanumeric characters, spaces, '.', '!', and '?' are allowed.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Check if there's an error message in TempData and show modal
+            var errorMessage = '@TempData["errorMessage"]';
+            if (errorMessage.length > 0) {
+                $('#errorModal').modal('show');
+            }
+        });
+    </script>
+}

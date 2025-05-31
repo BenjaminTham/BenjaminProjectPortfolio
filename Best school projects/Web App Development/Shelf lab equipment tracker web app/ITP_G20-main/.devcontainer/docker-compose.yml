@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    ports:
+      - 3000:3000
+      - 5555:5555
+    links:
+      - db
+      - mqtt5
+    depends_on:
+      - db
+      - mqtt5
+    networks:
+      - my_network
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - my_network
+
+  mqtt5:
+    image: eclipse-mosquitto:latest
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
+      - 9001:9001
+    networks:
+      - my_network
+
+  ntp:
+    image: cturra/ntp:latest
+    ports:
+      - 123:123/udp
+    environment:
+      - NTP_SERVERS=127.127.1.1
+      - LOG_LEVEL=0
+      - TZ=Singapore/Singapore
+    networks:
+      - my_network
+
+volumes:
+  postgres-data:
+  config:
+  data:
+  log:
+
+
+networks:
+  my_network:
+    driver: bridge

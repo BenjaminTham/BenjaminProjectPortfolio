@@ -1,0 +1,166 @@
+﻿@model IEnumerable<FeatureProductConfigurationDto>
+
+@{
+    ViewData["Title"] = "Feature Items";
+}
+
+@section Styles{
+    <style>
+        .sortable .single-item {
+            transition: transform .4s;
+        }
+
+            .sortable .single-item:hover {
+                cursor: grab;
+                transform: scale(1.02);
+                box-shadow: 0 0px 5px #d7d7d7;
+                z-index: 1;
+            }
+    </style>
+}
+
+<div class="page-title-box">
+    <h4 class="page-title">Feature Items</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage Feature Items</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <div class="px-2 py-4">
+                        <label class="control-label">Search by Product</label>
+                        <input class="form-control py-2" id="productSearch" />
+                        <div class="">
+                            <ul class="list-group mt-2 sortable" id="productSearchResult"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <form asp-action="FeatureItems" method="post" id="featureItem">
+                    <ul class="list-group mt-2 sortable" id="productSearchResult" style="margin-bottom: 50px;">
+                        @foreach (var item in Model)
+                        {
+                            <li class="list-group-item single-item">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <img class="f-img" src="/@item.ImagePreview" style="height: 50px; width: 50px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;" />
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <input hidden class="f-pid" name="ProductId" value="@item.ProductId" />
+                                        <strong class="d-block f-name">@item.ProductName</strong>
+                                        <span>Category: </span><span class="f-category">@item.ProductCategory</span>
+                                    </div>
+                                    <div class="d-inline-block">
+                                        <button class="btn btn-soft-danger btn-sm item-remove"><i class="fa fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-grid gap-2 d-sm-block">
+                        <input type="submit" value="Update" class="btn btn-soft-primary mt-2 pt-sm-2 py-2 px-5" />
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
+    <script>
+        $(function () {
+            $(".sortable").sortable();
+        });
+
+        $("#productSearch").keyup(function () {
+            var search = $(this).val() == '' ? null : $(this).val();
+            if (search != null && search.length > 2) {
+                var result = LiveSearch(search);
+                $('#productSearchResult').html(result);
+            } else {
+                $('#productSearchResult').html('');
+            }
+        });
+
+        function LiveSearch(searchValue) {
+            var response;
+            $.ajax({
+                url: "/Product/ProductSearch/" + searchValue,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (result) {
+                    if (result != null) {
+                        var li = '';
+                        $.each(result, function () {
+
+                            li += `<li class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <img  class="f-img" src="/`+ this.imagePreview + `" style="height: 40px; width: 40px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;" />
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <input hidden class="f-pid" value="` + this.productId + `" />
+                                            <strong class="d-block  f-name">`+ this.productName + `</strong>
+                                            <span>Category: </span><span class="f-category">`+ this.productCategory + `</span>
+                                        </div>
+                                        <div class="d-inline-block">
+                                            <button class="btn btn-soft-primary btn-sm item-select">Select</button>
+                                        </div>
+                                    </div>
+                                </li>`;
+                        });
+                        response = li;
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+            return response;
+        }
+
+        $(document).on("click", ".item-select", function () {
+            var selectedProduct = $(this).closest('li');
+            var pImg = selectedProduct.find('.f-img').attr('src');
+            var pId = selectedProduct.find('.f-pid').val();
+            var pCategory = selectedProduct.find('.f-category').html();
+            var pName = selectedProduct.find('.f-name').html();
+
+            var li = '';
+            li += `<li class="list-group-item">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <img class="f-img" src="`+ pImg + `" style="height: 50px; width: 50px; object-fit: cover;box-shadow: 0 0 3px #ccc; border-radius: 3px;" />
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <input hidden class="f-pid" name="ProductId" value="`+ pId + `" />
+                                <strong class="d-block f-name">`+ pName + `</strong>
+                                <span>Category: </span><span class="f-category">`+ pCategory + `</span>
+                            </div>
+                            <div class="d-inline-block">
+                                <button class="btn btn-soft-danger btn-sm item-remove"><i class="fa fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </li>`;
+
+            $("#featureItem ul").append(li);
+            //$('#productSearchResult').html('');
+        });
+
+        $(document).on("click", ".item-remove", function () {
+            $(this).closest('li').remove();
+        });
+
+
+    </script>
+}

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<OrderStatusDto>
+@{
+    Layout = LayoutPage.ShopLayout;
+    ViewData["Title"] = "Order Tracking";
+    var invoiceNo = ViewBag.InvoiceNo as string;
+    var currentOrderStatus = ViewBag.CurrentOrderStatus as string;
+}
+
+@section Styles{
+<link href="~/others/css/order-track.css" rel="stylesheet" />
+}
+
+
+<!-- breadcrumb_section - start
+            ================================================== -->
+<div class="breadcrumb_section">
+    <div class="container">
+        <ul class="breadcrumb_nav ul_li">
+            <li><a href="/">Home</a></li>
+            <li>Order Tracking</li>
+        </ul>
+    </div>
+</div>
+<!-- breadcrumb_section - end
+================================================== -->
+<!-- order_tracking_section - start
+================================================== -->
+<section class="order_tracking_section section_space">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col col-lg-10">
+                <div class="order_tracking_form text-center">
+                    
+                    <h2 class="title_text">Track Your Order</h2>
+                    <div>
+                        <img src="/assets/svg/location-tracking-pana.svg" style="max-width: 300px" />
+                    </div>
+                    <p>Track your order details by Invoice no.</p>
+                    <form asp-action="Index" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form_item">
+                                    <h3 class="form_title">Order ID/Invoice No.</h3>
+                                    <input type="text" name="invoiceNo" value="@invoiceNo" placeholder="Enter your order id number">
+                                </div>
+                            </div>
+                            @*                            <div class="col col-md-6">
+                                <div class="form_item">
+                                <h3 class="form_title">Billing Email</h3>
+                                <input type="email" name="billing_email" placeholder="Found your order confirmation email">
+                                </div>
+                                </div>*@
+                        </div>
+                        <div class="submit_btn_wrap">
+                            <button type="submit" class="btn btn_primary">Track Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                @if (Model != null)
+                {
+                    <div class="">
+                        <div class="">
+                            @*                            <div>
+                                <h6 class="mb-0">Order Invoice</h6>
+                                <h5 class="font-weight-bold mb-0">@invoiceNo</h5>
+                                <h5 class="font-weight-bold">@currentOrderStatus</h5>
+                                </div>*@
+                            <div>
+                                <span class="fw-bold me-2">Invoice No: </span><span>@invoiceNo</span>
+                                <span class="fw-bold d-block">
+                                    <span>Order Status: </span>
+                                    <span style="background: var(--primary-color);color: #fff;padding: 2px 10px;border-radius: 6px;">@currentOrderStatus</span>
+                                </span>
+                            </div>
+
+                            <div class="order-track">
+                                @foreach (var item in Model)
+                                {
+                                    <div class="order-track-step">
+                                        <div class="order-track-status">
+                                            <span class="order-track-status-dot"></span>
+                                            <span class="order-track-status-line"></span>
+                                        </div>
+                                        <div class="order-track-text">
+                                            <span class="order-track-status d-block">@item.OrderStatusValue.StatusValue</span>
+                                            <small class="order-track-date d-block">@DateTime.Parse(item.LastModifiedDate.ToString()).ToString("dd MMM yyyy")</small>
+                                            <small class="order-track-desc">@(item.Description != null? item.Description: item.OrderStatusValue.Description )</small>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center">No result found</p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<!-- order_tracking_section - end
+================================================== -->

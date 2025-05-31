@@ -1,0 +1,106 @@
+﻿@model SmtpConfigurationDto
+@{
+    ViewData["Title"] = "SMTP Settings";
+}
+
+@section Styles{
+<style>
+
+
+</style>
+}
+
+
+<div class="page-title-box">
+    <h4 class="page-title">SMTP Settings</h4>
+</div>
+
+
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">Manage SMTP settings</div>
+    </div>
+    <div class="card-body">
+        <partial name="_SettingsTab" />
+        <div class="tab-content" id="nav-tabContent">
+            <div id="nav-general">
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="general-label">
+                            <form asp-action="Smtp" method="post">
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">From Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" asp-for="EmailFromName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">From Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" asp-for="EmailFromEmail" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">SMTP Username</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" asp-for="EmailUserName" autocomplete="new-password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">SMTP Password</label>
+                                    <div class="col-sm-10">
+                                        <div class="input-group">
+                                            <input type="password" asp-for="EmailPassword" autocomplete="new-password" value="@Model.EmailPassword" class="form-control">
+                                            <span toggle="#EmailPassword" class="field-icon toggle-password input-group-text" style="cursor: pointer;"><i class="fa fa-fw fa-eye-slash"></i></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">SMTP Host</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" asp-for="EmailHost" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <label for="horizontalInput1" class="col-sm-2 control-label">SMTP Port</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" asp-for="EmailPort" class="form-control">
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-10 ms-auto">
+                                        <div class="d-grid gap-2 d-sm-block">
+                                            <button type="submit" class="btn btn-blue py-2 px-5">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+<script src="~/others/js/app-settings.js"></script>
+<script>
+    $(".toggle-password").click(function () {
+
+        $(this).find("i").toggleClass("fa-eye-slash fa-eye");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+</script>
+}

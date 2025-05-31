@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Login Scene.unity
+    guid: 312baccf94f2a924abb69577d924ac83
+  - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 8e028b90323aa524c88c85a9211d3dbc
+  - enabled: 1
+    path: Assets/Scenes/Selection Scene.unity
+    guid: 3a404d589490a424490d08478528202b
+  - enabled: 1
+    path: Assets/Scenes/Customise Age Scene.unity
+    guid: fa48200d74546704fb9d59f10127ca82
+  - enabled: 1
+    path: Assets/Scenes/Customise Condition.unity
+    guid: e0fa90f47e715ec4f93412e53b73e7aa
+  - enabled: 1
+    path: Assets/Scenes/Confirm Scene.unity
+    guid: ebcffd666ff1aa449adafc03aceda6a9
+  - enabled: 1
+    path: Assets/Scenes/Tutorial Scene.unity
+    guid: 2ae4f38160cb022419908e3e6be04d29
+  - enabled: 0
+    path: Assets/Scenes/BlankAR.unity
+    guid: 6bdce89659816455b9f906fc62d19910
+  - enabled: 1
+    path: Assets/Scenes/BlankAR 1.unity
+    guid: 0de49cf72c93ac042aca2d1c83b6baaa
+  - enabled: 1
+    path: Assets/Scenes/FAQ Scene.unity
+    guid: 833e186e622aab64784330c3fdbc88e8
+  - enabled: 1
+    path: Assets/Scenes/Session End Scene.unity
+    guid: 458b619e459eb184fa9f24d3167a1fb6
+  - enabled: 1
+    path: Assets/Scenes/Previous Sessions Scene.unity
+    guid: 87de426fc72de9a46bd8bf3cbd4cebac
+  - enabled: 1
+    path: Assets/Scenes/Account Settings Scene.unity
+    guid: bae3357be830167488bcb746c2254bc8
+  - enabled: 1
+    path: Assets/Scenes/Session Summary (Elderly)Scene.unity
+    guid: 163066cc603c87246a47d3c81dcb6341
+  - enabled: 1
+    path: Assets/Scenes/Video Scene.unity
+    guid: 42e21798f0009934fae11eabc3c7bd02
+  - enabled: 1
+    path: Assets/Scenes/Confirm2 Scene.unity
+    guid: e99b83e9b65e8b840b52805a95bdbe94
+  - enabled: 1
+    path: Assets/Scenes/Session Tutorial.unity
+    guid: bbebf7ef232b09444bce7bc4cd25eee6
+  - enabled: 1
+    path: Assets/Scenes/Profile Settings Scene.unity
+    guid: ecd65e69699a5de45a0da16477e77d9e
+  - enabled: 1
+    path: Assets/Scenes/Customise Last Step.unity
+    guid: 6245d1cab276346958e7c2431a9496a3
+  - enabled: 1
+    path: Assets/Scenes/FIrst Time Setup.unity
+    guid: f3aaf38e5a7224ac69602c1db2d4f178
+  - enabled: 1
+    path: Assets/Scenes/Session Summary (Teenager) Scene.unity
+    guid: 33fd38451bb5227449d2ffb95f277e5f
+  - enabled: 0
+    path: Assets/Scenes/SampleScene.unity
+    guid: 770db42c012729f479961b3e985a2f90
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 89a6d18d3df8d3e4fa917b0f9a963bc0, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: de8a8e4f987434338a4b1062feb8d069, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 1b9007b8cf5ffb24bbc47e1f393082db, type: 2}
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: 1eb95d77acb39444e8cf44313496a874, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 58f40b12bbc864f3c96c6505a9a1e1e3, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: c27606a2a10777942a0c5119f935470a, type: 2}

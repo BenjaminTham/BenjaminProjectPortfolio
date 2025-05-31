@@ -1,0 +1,25 @@
+﻿
+@{
+    var headerSlider = ViewBag.HeaderSlider as IEnumerable<HeaderSliderDto>;
+}
+
+
+<div class="owl-carousel owl-theme" id="main-slider">
+    @foreach (var item in headerSlider!)
+    {
+        <div>
+            <div class="container">
+                <div class="position-relative">
+                    <div class="slider-text-overlay">
+                        <span class="slider-subtitle">@item?.HeaderTextLineOne</span>
+                        <span class="slider-title">@item?.HeaderTextLineTwo</span>
+                        <span class="slider-description">@item?.SubText</span>
+                        <a class="btn btn-sky btn-sm mt-3 rounded-0 px-4" asp-action="Index" asp-controller="Shop">Buy Now <i class="fa-solid fa-angle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <img class="slider-img" src="@(item?.ImagePreview != null ? "/" + item.ImagePreview : "/assets/images/no-image.png")" alt="slider">
+        </div>
+    }
+</div>
+
